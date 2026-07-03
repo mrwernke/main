@@ -1,0 +1,1 @@
+{  "name": "Settings",  "type": "object",  "properties": {    "tutor_email": {      "type": "string"    },    "zoom_link": {      "type": "string"    },    "admin_username": {      "type": "string"    },    "admin_password": {      "type": "string"    }  },  "required": [    "tutor_email",    "zoom_link"  ]}
