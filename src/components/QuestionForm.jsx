@@ -99,9 +99,6 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
           rows={3}
           className={inputCls}
         />
-        <div className="mt-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-gray-600">
-          Use <span className="font-mono">$x^2 + 3x$</span> for inline math, or <span className="font-mono">$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$</span> for centered math.
-        </div>
         <MathPreview value={f.question_text} />
       </div>
       <div>
