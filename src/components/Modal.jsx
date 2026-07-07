@@ -1,4 +1,4 @@
-export default function Modal({ open, onClose, title, children, maxWidth = "max-w-md" }) {
+﻿export default function Modal({ open, onClose, title, children, maxWidth = "max-w-md" }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -12,7 +12,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = "max-
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-2xl leading-none w-7 h-7 flex items-center justify-center"
           >
-            ×
+            Ã—
           </button>
         </div>
         <div className="p-5">{children}</div>

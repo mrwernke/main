@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useSession } from "@/lib/session";
@@ -107,7 +107,7 @@ export default function TestPage() {
   const q = questions[current];
 
   if (phase === "loading") {
-    return <div className="p-10 text-center text-gray-400">Loading…</div>;
+    return <div className="p-10 text-center text-gray-400">Loadingâ€¦</div>;
   }
 
   if (phase === "locked") {

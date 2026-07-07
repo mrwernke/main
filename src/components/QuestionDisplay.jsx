@@ -1,8 +1,11 @@
+﻿import { useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 import LatexText from "@/components/LatexText";
 import { isAnswerCorrect } from "@/lib/grading";
 
 export default function QuestionDisplay({ question, selectedAnswer, onSelect, showResult }) {
+  const [referencePage, setReferencePage] = useState("none");
+  const [referenceOpen, setReferenceOpen] = useState(false);
   const choices = [
     { key: "A", text: question.choice_a },
     { key: "B", text: question.choice_b },
@@ -12,6 +15,28 @@ export default function QuestionDisplay({ question, selectedAnswer, onSelect, sh
 
   return (
     <div>
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+        <span className="text-sm font-medium text-gray-700">Reference Page:</span>
+        <button
+          type="button"
+          onClick={() => setReferenceOpen((open) => !open)}
+          className="rounded-md border border-[#1E2A4A] px-3 py-2 text-sm font-medium text-[#1E2A4A] transition-colors hover:bg-[#1E2A4A] hover:text-white"
+        >
+          {referenceOpen ? "HIDE" : "SHOW"}
+        </button>
+      </div>
+      {referenceOpen && (
+        <div className="mb-5 rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Reference Sheet Preview
+          </div>
+          <img
+            src="/SAT Reference Sheet.png"
+            alt="SAT Reference Sheet"
+            className="w-full rounded-lg border border-gray-200 bg-white object-contain"
+          />
+        </div>
+      )}
       <LatexText className="text-base text-gray-800 mb-5 leading-relaxed prose prose-sm max-w-none" >
         {question.question_text}
       </LatexText>

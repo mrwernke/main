@@ -1,10 +1,23 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { SAT_DOMAINS, SAT_TOPICS, DIFFICULTIES } from "@/lib/config";
+import { SAT_DOMAINS, SAT_TOPICS, DIFFICULTIES, QUESTION_USAGES } from "@/lib/config";
+import LatexText from "@/components/LatexText";
 import { Image as ImageIcon, Loader2, X } from "lucide-react";
 
-export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficulty }) {
+const normalizeDifficulty = (difficulty) => (difficulty === "Challenge" ? "Hard" : difficulty);
+
+function MathPreview({ value }) {
+  if (!value?.trim()) return null;
+  return (
+    <div className="mt-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
+      <p className="mb-1 text-[11px] font-semibold uppercase text-gray-400">Math Preview</p>
+      <LatexText className="prose prose-sm max-w-none text-sm text-gray-700">{value}</LatexText>
+    </div>
+  );
+}
+
+export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficulty, showUsage = false }) {
   const [f, setF] = useState({
     question_text: "",
     question_type: "multiple_choice",
@@ -16,22 +29,32 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
     correct_answer: "A",
     topic: SAT_TOPICS[0],
     difficulty: DIFFICULTIES[0],
+    usage: "practice",
     explanation: "",
     points: 1,
     image_url: "",
     ...initial,
+    difficulty: normalizeDifficulty(initial?.difficulty) || DIFFICULTIES[0],
+    usage: initial?.usage || "practice",
   });
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const set = (k, v) => setF((s) => ({ ...s, [k]: v }));
 
   const uploadFile = async (file) => {
     if (!file || !file.type.startsWith("image/")) return;
     setUploading(true);
+    setUploadError("");
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const payload = file instanceof File ? file : { file };
+      const { file_url } = await base44.integrations.Core.UploadFile(payload);
+      if (!file_url) {
+        setUploadError("Image upload was not available. Please try again.");
+        return;
+      }
       set("image_url", file_url);
     } catch {
-      /* ignore */
+      setUploadError("Image upload failed. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -56,7 +79,18 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
   const labelCls = "text-sm font-medium text-gray-700 block mb-1";
 
   return (
-    <div className="space-y-4" onPaste={handlePaste}>
+    <div
+      className="space-y-4"
+      onPaste={handlePaste}
+      onDrop={(e) => {
+        const file = e.dataTransfer?.files?.[0];
+        if (file) {
+          e.preventDefault();
+          uploadFile(file);
+        }
+      }}
+      onDragOver={(e) => e.preventDefault()}
+    >
       <div>
         <label className={labelCls}>Question Text</label>
         <textarea
@@ -65,6 +99,10 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
           rows={3}
           className={inputCls}
         />
+        <div className="mt-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-gray-600">
+          Use <span className="font-mono">$x^2 + 3x$</span> for inline math, or <span className="font-mono">$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$</span> for centered math.
+        </div>
+        <MathPreview value={f.question_text} />
       </div>
       <div>
         <label className={labelCls}>Question Image (optional)</label>
@@ -87,7 +125,7 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
               <ImageIcon className="w-5 h-5 text-gray-400" />
             )}
             <span className="text-xs text-gray-500">
-              {uploading ? "Uploading…" : "Paste a screenshot (Ctrl/Cmd+V) or click to upload"}
+              {uploading ? "Uploading..." : "Paste a screenshot (Ctrl/Cmd+V), drag an image here, or click to upload"}
             </span>
             <input
               type="file"
@@ -97,6 +135,7 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
             />
           </label>
         )}
+        {uploadError ? <p className="mt-2 text-xs text-red-500">{uploadError}</p> : null}
       </div>
       <div>
         <label className={labelCls}>Question Type</label>
@@ -129,6 +168,7 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
                 onChange={(e) => set(`choice_${c}`, e.target.value)}
                 className={inputCls}
               />
+              <MathPreview value={f[`choice_${c}`]} />
             </div>
           ))}
           <div>
@@ -146,6 +186,22 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
             </select>
           </div>
         </>
+      )}
+      {showUsage && (
+        <div>
+          <label className={labelCls}>Used In</label>
+          <select
+            value={f.usage || "practice"}
+            onChange={(e) => set("usage", e.target.value)}
+            className={`${inputCls} bg-white`}
+          >
+            {QUESTION_USAGES.map((usage) => (
+              <option key={usage.value} value={usage.value}>
+                {usage.label}
+              </option>
+            ))}
+          </select>
+        </div>
       )}
       <div>
         <label className={labelCls}>Topic</label>
@@ -200,6 +256,7 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
           rows={2}
           className={inputCls}
         />
+        <MathPreview value={f.explanation} />
       </div>
       <div className="flex gap-2 justify-end pt-2">
         <Button variant="outline" onClick={onCancel}>
@@ -210,3 +267,4 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
     </div>
   );
 }
+

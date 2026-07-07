@@ -1,10 +1,10 @@
-export const ADMIN_USERNAME = "NPP";
+﻿export const ADMIN_USERNAME = "NPP";
 export const ADMIN_PASSWORD = "6SigmaStats";
 
 export const TEST_LABELS = {
-  1: "Initial Test 1",
-  2: "Practice Test 2",
-  3: "Practice Test 3",
+  1: "Test 1",
+  2: "Test 2",
+  3: "Test 3",
 };
 
 export const SAT_DOMAINS = [
@@ -52,6 +52,14 @@ export const SAT_DOMAINS = [
 
 export const SAT_TOPICS = SAT_DOMAINS.flatMap((d) => d.topics);
 
-export const DIFFICULTIES = ["Easy", "Medium", "Challenge"];
+export const DIFFICULTIES = ["Easy", "Medium", "Hard"];
+
+export const QUESTION_USAGES = [
+  { value: "practice", label: "Practice Questions" },
+  { value: "test_1", label: "Test 1" },
+  { value: "test_2", label: "Test 2" },
+  { value: "test_3", label: "Test 3" },
+];
 
 export const NOTIFY_EMAIL = "mwernke17@gmail.com";
+

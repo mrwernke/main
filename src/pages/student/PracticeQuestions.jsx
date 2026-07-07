@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useSession } from "@/lib/session";
 import { SAT_DOMAINS } from "@/lib/config";
@@ -11,7 +11,7 @@ import { ListChecks, ArrowRight, RotateCcw, CheckCircle2, XCircle, Loader2 } fro
 const DIFFICULTY_STYLES = {
   Easy: "bg-emerald-50 text-emerald-700 border-emerald-200",
   Medium: "bg-amber-50 text-amber-700 border-amber-200",
-  Challenge: "bg-rose-50 text-rose-700 border-rose-200",
+  Hard: "bg-rose-50 text-rose-700 border-rose-200",
 };
 
 export default function PracticeQuestions() {
@@ -37,7 +37,7 @@ export default function PracticeQuestions() {
     const filter = { usage: "practice" };
     if (chosenTopic !== "all") filter.topic = chosenTopic;
     const qs = await base44.entities.Question.filter(filter);
-    const diffRank = { Easy: 1, Medium: 2, Challenge: 3 };
+    const diffRank = { Easy: 1, Medium: 2, Hard: 3 };
     qs.sort((a, b) => {
       const t = (a.topic || "").localeCompare(b.topic || "");
       if (t !== 0) return t;
@@ -167,7 +167,7 @@ export default function PracticeQuestions() {
   }
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400 flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading questions…</div>;
+    return <div className="p-10 text-center text-gray-400 flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading questionsâ€¦</div>;
   }
 
   if (questions.length === 0) {
@@ -222,7 +222,7 @@ export default function PracticeQuestions() {
           )}
         </div>
         <div className="text-sm text-gray-400">
-          {current + 1} of {questions.length} · {stats.correct}/{stats.total} correct
+          {current + 1} of {questions.length} Â· {stats.correct}/{stats.total} correct
         </div>
       </div>
 
@@ -235,7 +235,7 @@ export default function PracticeQuestions() {
       />
 
       <button onClick={reset} className="mb-3 text-sm text-gray-400 hover:text-gray-600">
-        ← Back to topic selection
+        â† Back to topic selection
       </button>
 
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
@@ -268,7 +268,7 @@ export default function PracticeQuestions() {
           {isAnswerCorrect(q, selected) ? (
             <><CheckCircle2 className="w-4 h-4" /> Correct!</>
           ) : (
-            <><XCircle className="w-4 h-4" /> Not quite — the correct answer is {correctAnswerLabel(q)}.</>
+            <><XCircle className="w-4 h-4" /> Not quite â€” the correct answer is {correctAnswerLabel(q)}.</>
           )}
         </div>
       )}

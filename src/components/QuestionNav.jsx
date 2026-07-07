@@ -1,11 +1,11 @@
-import { Check, X } from "lucide-react";
+﻿import { Check, X } from "lucide-react";
 import { isAnswerCorrect } from "@/lib/grading";
 
 // Difficulty color theme: background tint, border, text
 const DIFFICULTY_THEME = {
   Easy: { bg: "bg-emerald-50", border: "border-emerald-300", text: "text-emerald-700", dot: "bg-emerald-400" },
   Medium: { bg: "bg-amber-50", border: "border-amber-300", text: "text-amber-700", dot: "bg-amber-400" },
-  Challenge: { bg: "bg-rose-50", border: "border-rose-300", text: "text-rose-700", dot: "bg-rose-400" },
+  Hard: { bg: "bg-rose-50", border: "border-rose-300", text: "text-rose-700", dot: "bg-rose-400" },
 };
 
 export default function QuestionNav({ questions, current, checked, answers, onJump }) {
@@ -29,7 +29,7 @@ export default function QuestionNav({ questions, current, checked, answers, onJu
               className={`relative w-12 h-12 rounded-lg border-2 font-semibold text-sm transition-all flex flex-col items-center justify-center ${theme.bg} ${theme.border} ${theme.text} ${
                 isCurrent ? "ring-2 ring-offset-1 ring-[#1E2A4A] scale-105" : "hover:brightness-95"
               }`}
-              title={`Question ${i + 1}${q.difficulty ? " · " + q.difficulty : ""}`}
+              title={`Question ${i + 1}${q.difficulty ? " Â· " + q.difficulty : ""}`}
             >
               <span className="leading-none">{i + 1}</span>
               {isDone && (
@@ -48,7 +48,7 @@ export default function QuestionNav({ questions, current, checked, answers, onJu
       <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-emerald-400" /> Easy</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-amber-400" /> Medium</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-rose-400" /> Challenge</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-rose-400" /> Hard</span>
       </div>
     </div>
   );

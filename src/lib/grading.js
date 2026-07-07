@@ -1,4 +1,4 @@
-// Compare a student's selected answer against a question's correct answer.
+﻿// Compare a student's selected answer against a question's correct answer.
 // Handles multiple-choice (A/B/C/D) and grid-in (numeric) question types.
 export function isAnswerCorrect(q, sel) {
   if (!q) return false;

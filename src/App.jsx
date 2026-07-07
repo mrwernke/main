@@ -1,7 +1,7 @@
-import { Toaster } from "@/components/ui/toaster"
+﻿import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -46,7 +46,7 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // This app uses custom session login (see SessionProvider), not Base44 OAuth.
+  // This app uses custom session login (see SessionProvider) and can run without a hosted backend.
   if (authError?.type === 'user_not_registered') {
     return <UserNotRegisteredError />;
   }
@@ -75,7 +75,8 @@ const AuthenticatedApp = () => {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/students" element={<StudentDatabase />} />
             <Route path="/admin/students/:id" element={<StudentDetail />} />
-            <Route path="/admin/tests" element={<PracticeTestsAdmin />} />
+            <Route path="/admin/tests" element={<Navigate to="/admin/tests/1" replace />} />
+            <Route path="/admin/tests/:testNumber" element={<PracticeTestsAdmin />} />
             <Route path="/admin/questions" element={<PracticeQuestionsAdmin />} />
             <Route path="/admin/calendar" element={<AdminCalendar />} />
             <Route path="/admin/approvals" element={<AccountApprovals />} />
@@ -105,3 +106,5 @@ function App() {
 }
 
 export default App
+
+

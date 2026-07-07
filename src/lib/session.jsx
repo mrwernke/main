@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { base44 } from "@/api/base44Client";
+﻿import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { ADMIN_USERNAME, ADMIN_PASSWORD, NOTIFY_EMAIL } from "./config";
 import { getSettings } from "./settings";
+import { dataService } from "./data-service";
 
 const SessionContext = createContext(null);
 
@@ -31,7 +31,7 @@ export function SessionProvider({ children }) {
       return { session };
     }
 
-    const students = await base44.entities.Student.filter({ username, password });
+    const students = await dataService.loginStudent(username, password);
     if (!students.length) throw new Error("Invalid username or password");
     const student = students[0];
     if (student.approval_status === "pending") {
@@ -48,7 +48,7 @@ export function SessionProvider({ children }) {
 
   const refreshStudent = useCallback(async () => {
     if (user?.role !== "student") return user;
-    const updated = await base44.entities.Student.get(user.id);
+    const updated = await dataService.getStudentById(user.id);
     const session = { role: "student", ...updated };
     localStorage.setItem("sat_session", JSON.stringify(session));
     setUser(session);
@@ -56,9 +56,9 @@ export function SessionProvider({ children }) {
   }, [user]);
 
   const register = async (data) => {
-    const existing = await base44.entities.Student.filter({ username: data.username });
+    const existing = await dataService.loginStudent(data.username, "");
     if (existing.length) throw new Error("Username already taken");
-    const student = await base44.entities.Student.create({
+    const student = await dataService.createStudent({
       ...data,
       approval_status: "pending",
       test1_unlocked: false,
@@ -72,7 +72,7 @@ export function SessionProvider({ children }) {
     try {
       await Promise.all(
         recipients.map((to) =>
-          base44.integrations.Core.SendEmail({ from_name: "Math SAT Prep", to, subject, body }).catch(() => {})
+          dataService.sendEmail({ from_name: "SAT Math Prep", to, subject, body }).catch(() => {})
         )
       );
     } catch {

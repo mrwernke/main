@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+﻿import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
       } catch (appError) {
         console.warn('App public settings unavailable; continuing with custom session auth.', appError);
 
-        // Custom login uses SessionProvider — don't block the app on Base44 platform auth.
+        // Custom login uses SessionProvider â€” don't block the app on a hosted auth service.
         setIsLoadingPublicSettings(false);
         setIsLoadingAuth(false);
         setIsAuthenticated(false);
@@ -132,7 +132,20 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    return {
+      user: null,
+      isAuthenticated: false,
+      isLoadingAuth: false,
+      isLoadingPublicSettings: false,
+      authError: null,
+      appPublicSettings: null,
+      authChecked: true,
+      logout: () => {},
+      navigateToLogin: () => {},
+      checkUserAuth: async () => {},
+      checkAppState: async () => {},
+    };
   }
   return context;
 };
+

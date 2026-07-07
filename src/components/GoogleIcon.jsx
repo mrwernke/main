@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 export default function GoogleIcon({ className = "w-5 h-5" }) {
   return (
@@ -10,3 +10,4 @@ export default function GoogleIcon({ className = "w-5 h-5" }) {
     </svg>
   );
 }
+

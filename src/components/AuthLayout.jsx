@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   return (
@@ -21,3 +21,4 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
     </div>
   );
 }
+

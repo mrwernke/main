@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+﻿import { useLocation } from 'react-router-dom';
 import { useSession } from '@/lib/session';
 
 export default function PageNotFound() {
@@ -57,3 +57,4 @@ export default function PageNotFound() {
     </div>
   )
 }
+

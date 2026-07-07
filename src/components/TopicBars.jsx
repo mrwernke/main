@@ -1,4 +1,4 @@
-import { SAT_TOPICS } from "@/lib/config";
+﻿import { SAT_TOPICS } from "@/lib/config";
 
 export default function TopicBars({ breakdown }) {
   if (!breakdown) return null;

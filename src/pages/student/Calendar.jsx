@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useSession } from "@/lib/session";
 import CalendarGrid, { formatDate, formatTime } from "@/components/CalendarGrid";
@@ -57,7 +57,7 @@ export default function StudentCalendar() {
         const details = requested
           .map(
             (s) =>
-              `${formatDate(new Date(s.slot_date + "T00:00"))} at ${formatTime(s.start_time)}${s.end_time ? ` – ${formatTime(s.end_time)}` : ""}`
+              `${formatDate(new Date(s.slot_date + "T00:00"))} at ${formatTime(s.start_time)}${s.end_time ? ` â€“ ${formatTime(s.end_time)}` : ""}`
           )
           .join("\n");
         await base44.integrations.Core.SendEmail({
@@ -104,7 +104,7 @@ export default function StudentCalendar() {
                     (s) =>
                       `${new Date(s.slot_date + "T00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })} ${formatTime(s.start_time)}`
                   )
-                  .join(" · ")}
+                  .join(" Â· ")}
                 {selectedSlots.length > 3 && ` +${selectedSlots.length - 3} more`}
               </p>
             </div>
@@ -121,7 +121,7 @@ export default function StudentCalendar() {
       )}
 
       {loading ? (
-        <div className="text-center text-gray-400 py-10">Loading calendar…</div>
+        <div className="text-center text-gray-400 py-10">Loading calendarâ€¦</div>
       ) : (
         <CalendarGrid
           slots={slots}
@@ -161,7 +161,7 @@ export default function StudentCalendar() {
             </p>
             <p className="text-gray-500 mb-5">
               {formatTime(viewing.start_time)}
-              {viewing.end_time ? ` – ${formatTime(viewing.end_time)}` : ""}
+              {viewing.end_time ? ` â€“ ${formatTime(viewing.end_time)}` : ""}
             </p>
 
             {viewing.status === "pending" ? (

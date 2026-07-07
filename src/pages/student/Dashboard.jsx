@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useSession } from "@/lib/session";
 import { base44 } from "@/api/base44Client";
 import { TEST_LABELS } from "@/lib/config";
@@ -41,14 +41,14 @@ export default function Dashboard() {
   const bestScore = results.length ? Math.max(...results.map((r) => r.score || 0)) : null;
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400">Loading…</div>;
+    return <div className="p-10 text-center text-gray-400">Loadingâ€¦</div>;
   }
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#1E2A4A]">
-          Hi {user.first_name}! 👋
+          Hi {user.first_name}! ðŸ‘‹
         </h2>
         <p className="text-gray-500">Here's your SAT Math prep overview.</p>
       </div>
@@ -57,7 +57,7 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
           <Award className="w-5 h-5 text-amber-500 mb-2" />
           <p className="text-2xl font-bold text-[#1E2A4A]">
-            {bestScore ?? "—"}
+            {bestScore ?? "â€”"}
           </p>
           <p className="text-sm text-gray-500">Best Score</p>
         </div>
@@ -138,7 +138,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-sm text-gray-500">
                       {formatTime(s.start_time)}
-                      {s.end_time ? ` – ${formatTime(s.end_time)}` : ""}
+                      {s.end_time ? ` â€“ ${formatTime(s.end_time)}` : ""}
                     </p>
                   </div>
                   {s.zoom_link ? (

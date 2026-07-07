@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+﻿import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   FileText,
@@ -12,6 +12,7 @@ import {
   LogIn,
   Home as HomeIcon,
   Lock,
+  LockOpen,
   LogOut,
   CheckCircle2,
   Mail,
@@ -20,10 +21,12 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useSession } from "@/lib/session";
 import { getSettings } from "@/lib/settings";
+import { TEST_LABELS } from "@/lib/config";
 
 const publicNav = [
   { label: "Welcome", path: "/", icon: HomeIcon },
   { label: "Login", path: "/login", icon: LogIn },
+  { label: "New Account", path: "/register", icon: UserCheck },
   { label: "Resources", path: "/resources", icon: BookOpen },
 ];
 
@@ -54,7 +57,9 @@ export default function Sidebar({ onClose }) {
     return location.pathname === path || location.pathname.startsWith(path + "/");
   };
 
-  let nav = publicNav;
+  let nav = tutorEmail
+    ? [...publicNav, { label: "Email Tutor", href: `mailto:${tutorEmail}`, icon: Mail }]
+    : publicNav;
   let greeting = null;
 
   if (user?.role === "student") {
@@ -62,9 +67,9 @@ export default function Sidebar({ onClose }) {
     greeting = `Welcome ${user.first_name} ${user.last_name}`;
     nav = [
       { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard, exact: true },
-      { label: "Initial Test 1", path: "/test/1", icon: FileText, locked: !unlocked[1], taken: takenTests.includes(1) },
-      { label: "Practice Test 2", path: "/test/2", icon: FileText, locked: !unlocked[2], taken: takenTests.includes(2) },
-      { label: "Practice Test 3", path: "/test/3", icon: FileText, locked: !unlocked[3], taken: takenTests.includes(3) },
+      { label: TEST_LABELS[1], path: "/test/1", icon: FileText, locked: !unlocked[1], taken: takenTests.includes(1) },
+      { label: TEST_LABELS[2], path: "/test/2", icon: FileText, locked: !unlocked[2], taken: takenTests.includes(2) },
+      { label: TEST_LABELS[3], path: "/test/3", icon: FileText, locked: !unlocked[3], taken: takenTests.includes(3) },
       { label: "Practice Questions", path: "/practice", icon: ListChecks },
       { label: "Calendar", path: "/calendar", icon: CalendarDays },
     ];
@@ -72,10 +77,12 @@ export default function Sidebar({ onClose }) {
     nav = [
       { label: "Dashboard", path: "/admin", icon: LayoutDashboard, exact: true },
       { label: "Student Database", path: "/admin/students", icon: Users },
-      { label: "Practice Tests", path: "/admin/tests", icon: FileText },
-      { label: "Practice Questions", path: "/admin/questions", icon: ClipboardList },
       { label: "Calendar", path: "/admin/calendar", icon: CalendarDays },
       { label: "Approvals", path: "/admin/approvals", icon: UserCheck },
+      { label: "Question Database", path: "/admin/questions", icon: ClipboardList },
+      { label: "Test 1", path: "/admin/tests/1", icon: FileText },
+      { label: "Test 2", path: "/admin/tests/2", icon: FileText },
+      { label: "Test 3", path: "/admin/tests/3", icon: FileText },
       { label: "Settings", path: "/admin/settings", icon: Settings },
     ];
   }
@@ -119,8 +126,13 @@ export default function Sidebar({ onClose }) {
             >
               <Icon className="w-4 h-4 shrink-0" />
               <span className="flex-1">{item.label}</span>
-              {item.taken && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
-              {item.locked && <Lock className="w-3.5 h-3.5 text-white/50" />}
+              {item.taken ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              ) : item.locked ? (
+                <Lock className="w-3.5 h-3.5 text-white/50" />
+              ) : item.path?.startsWith("/test/") ? (
+                <LockOpen className="w-3.5 h-3.5 text-sky-300" />
+              ) : null}
             </Link>
           );
         })}
@@ -135,7 +147,7 @@ export default function Sidebar({ onClose }) {
             >
               <LogOut className="w-4 h-4" /> Log out
             </button>
-            {user.role === "student" && tutorEmail && (
+            {user && tutorEmail && (
               <a
                 href={`mailto:${tutorEmail}`}
                 target="_blank"
@@ -152,3 +164,5 @@ export default function Sidebar({ onClose }) {
     </aside>
   );
 }
+
+
