@@ -26,25 +26,28 @@ export default function PracticeTestsAdmin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testNum]);
 
-const save = async (f) => {
-    if (!modal?.data?.id) return;
-    
+  const save = async (f) => {
     // 1. Strip the incoming form properties into a clean object
     const cleanForm = { ...f };
     
-    // 2. Explicitly overwrite the usage destination so the API cannot misinterpret it
+    // 2. Explicitly force the destination to this test
     cleanForm.usage = `test_${testNum}`;
     
-    // 3. Normalize challenge difficulty string if present
+    // 3. Normalize difficulty string if present
     if (cleanForm.difficulty === "Challenge") {
       cleanForm.difficulty = "Hard";
     }
 
     try {
-      // Send the sanitized payload with a clean reference ID
-      await base44.entities.Question.update(modal.data.id, cleanForm);
+      if (modal.mode === "add") {
+        // Create a brand new database record
+        await base44.entities.Question.create(cleanForm);
+      } else if (modal.mode === "edit" && modal.data?.id) {
+        // Update the existing record
+        await base44.entities.Question.update(modal.data.id, cleanForm);
+      }
     } catch (err) {
-      console.error("Failed to update test question:", err);
+      console.error("Failed to save test question:", err);
     }
 
     setModal(null);
@@ -83,6 +86,9 @@ const save = async (f) => {
 
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-gray-500">{questions.length} questions</p>
+        <Button onClick={() => setModal({ mode: "add", data: { usage: `test_${testNum}` } })}>
+          Add Question to Test
+        </Button>
       </div>
 
       {loading ? (
@@ -120,7 +126,7 @@ const save = async (f) => {
       <Modal
         open={!!modal}
         onClose={() => setModal(null)}
-        title="Edit Question"
+        title={modal?.mode === "add" ? "Add Question to Test" : "Edit Question"}
         maxWidth="max-w-lg"
       >
         {modal && (
