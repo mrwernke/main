@@ -122,8 +122,8 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
               <ImageIcon className="w-5 h-5 text-gray-400" />
             )}
             <span className="text-xs text-gray-500">
-              {uploading ? "Uploading..." : "Paste a screenshot (Ctrl/Cmd+V), drag an image here, or click to upload"}
-            </span>
+  {uploading ? "Uploading..." : "Paste screenshot (Ctrl+V), drag image here, or click to upload"}
+</span>
             <input
               type="file"
               accept="image/*"
@@ -256,10 +256,26 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
         <MathPreview value={f.explanation} />
       </div>
       <div className="flex gap-2 justify-end pt-2">
-        <Button variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button onClick={() => onSubmit(f)}>Save Question</Button>
+        <Button 
+  onClick={() => {
+    const cleanStr = (str) => typeof str === "string" 
+      ? str.replace(/[\u00A0\u00C2]/g, " ").replace(/—/g, "&mdash;").replace(/–/g, "&ndash;") 
+      : str;
+
+    const sanitizedForm = {
+      ...f,
+      question_text: cleanStr(f.question_text),
+      explanation: cleanStr(f.explanation),
+      choice_a: cleanStr(f.choice_a),
+      choice_b: cleanStr(f.choice_b),
+      choice_c: cleanStr(f.choice_c),
+      choice_d: cleanStr(f.choice_d),
+    };
+    onSubmit(sanitizedForm);
+  }}
+>
+  Save Question
+</Button>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export default function QuestionNav({ questions, current, checked, answers, onJu
               className={`relative w-12 h-12 rounded-lg border-2 font-semibold text-sm transition-all flex flex-col items-center justify-center ${theme.bg} ${theme.border} ${theme.text} ${
                 isCurrent ? "ring-2 ring-offset-1 ring-[#1E2A4A] scale-105" : "hover:brightness-95"
               }`}
-              title={`Question ${i + 1}${q.difficulty ? " Â· " + q.difficulty : ""}`}
+             title={`Question ${i + 1}${q.difficulty ? " - " + q.difficulty : ""}`}
             >
               <span className="leading-none">{i + 1}</span>
               {isDone && (

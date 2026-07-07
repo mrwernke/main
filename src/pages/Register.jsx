@@ -148,7 +148,7 @@ export default function Register() {
 
           <div>
             <h3 className="text-sm font-semibold text-[#1E2A4A] mb-1">Prior Testing Results</h3>
-            <p className="text-xs text-gray-400 mb-3">Optional â€” help your tutor understand your starting point.</p>
+            <p className="text-xs text-gray-400 mb-3">Help your tutor understand your starting point.</p>
 
             <h4 className="text-sm font-medium text-gray-600 mb-2">PSAT Math Scores</h4>
             <div className="grid sm:grid-cols-2 gap-3 mb-4">

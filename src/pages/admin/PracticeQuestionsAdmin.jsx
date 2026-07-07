@@ -199,9 +199,15 @@ export default function PracticeQuestionsAdmin() {
             <div key={q.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
-                  <p className="text-xs text-gray-400 mb-1">
-                    {i + 1} - {usageLabel(q.usage)} - {q.topic} - <span className="font-medium">{q.difficulty}</span>
-                  </p>
+                  <p className="text-xs text-gray-400 mb-1 flex items-center gap-1.5">
+  <span>{i + 1}</span>
+  <span className="text-gray-300">|</span>
+  <span>{usageLabel(q.usage)}</span>
+  <span className="text-gray-300">|</span>
+  <span>{q.topic}</span>
+  <span className="text-gray-300">|</span>
+  <span className="font-medium text-gray-500">{q.difficulty}</span>
+</p>
                   <LatexText className="text-sm text-gray-800 prose prose-sm max-w-none">{q.question_text}</LatexText>
                   {q.image_url ? (
                     <img src={q.image_url} alt="" className="mt-3 max-h-32 rounded-lg border border-gray-200" />

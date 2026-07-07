@@ -12,7 +12,7 @@
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-2xl leading-none w-7 h-7 flex items-center justify-center"
           >
-            Ã—
+            &times;
           </button>
         </div>
         <div className="p-5">{children}</div>

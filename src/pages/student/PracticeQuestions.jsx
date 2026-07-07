@@ -167,7 +167,7 @@ export default function PracticeQuestions() {
   }
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400 flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading questionsâ€¦</div>;
+    return <div className="p-10 text-center text-gray-400 flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading questions ...</div>;
   }
 
   if (questions.length === 0) {
@@ -222,7 +222,7 @@ export default function PracticeQuestions() {
           )}
         </div>
         <div className="text-sm text-gray-400">
-          {current + 1} of {questions.length} Â· {stats.correct}/{stats.total} correct
+          {current + 1} of {questions.length} - {stats.correct}/{stats.total} correct
         </div>
       </div>
 
@@ -235,7 +235,7 @@ export default function PracticeQuestions() {
       />
 
       <button onClick={reset} className="mb-3 text-sm text-gray-400 hover:text-gray-600">
-        â† Back to topic selection
+        &larr; Back to topic selection
       </button>
 
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
@@ -268,7 +268,7 @@ export default function PracticeQuestions() {
           {isAnswerCorrect(q, selected) ? (
             <><CheckCircle2 className="w-4 h-4" /> Correct!</>
           ) : (
-            <><XCircle className="w-4 h-4" /> Not quite â€” the correct answer is {correctAnswerLabel(q)}.</>
+            <><XCircle className="w-4 h-4" /> Not quite &mdash; the correct answer is {correctAnswerLabel(q)}.</>
           )}
         </div>
       )}
