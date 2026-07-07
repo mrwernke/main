@@ -27,15 +27,29 @@ export default function PracticeTestsAdmin() {
   }, [testNum]);
 
 const save = async (f) => {
-  // Ensure the explicitly bound test route takes priority over form dropdown overrides
-  const finalPayload = {
-    ...f,
-    usage: `test_${testNum}`
+    if (!modal?.data?.id) return;
+    
+    // 1. Strip the incoming form properties into a clean object
+    const cleanForm = { ...f };
+    
+    // 2. Explicitly overwrite the usage destination so the API cannot misinterpret it
+    cleanForm.usage = `test_${testNum}`;
+    
+    // 3. Normalize challenge difficulty string if present
+    if (cleanForm.difficulty === "Challenge") {
+      cleanForm.difficulty = "Hard";
+    }
+
+    try {
+      // Send the sanitized payload with a clean reference ID
+      await base44.entities.Question.update(modal.data.id, cleanForm);
+    } catch (err) {
+      console.error("Failed to update test question:", err);
+    }
+
+    setModal(null);
+    fetchQs();
   };
-  await base44.entities.Question.update(modal.data.id, finalPayload);
-  setModal(null);
-  fetchQs();
-};
 
   const remove = async (q) => {
     if (!confirm("Remove this question from the database?")) return;
