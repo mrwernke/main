@@ -46,7 +46,13 @@ export default function PracticeQuestionsAdmin() {
   });
 
   const save = async (f) => {
-    const payload = { ...f, difficulty: f.difficulty === "Challenge" ? "Hard" : f.difficulty, usage: f.usage || "practice" };
+    // Force EVERYTHING on this page to be a practice question
+    const payload = { 
+      ...f, 
+      difficulty: f.difficulty === "Challenge" ? "Hard" : f.difficulty, 
+      usage: "practice" 
+    };
+    
     if (modal.mode === "add" || modal.mode === "import") {
       await base44.entities.Question.create(payload);
     } else {

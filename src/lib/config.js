@@ -55,10 +55,7 @@ export const SAT_TOPICS = SAT_DOMAINS.flatMap((d) => d.topics);
 export const DIFFICULTIES = ["Easy", "Medium", "Hard"];
 
 export const QUESTION_USAGES = [
-  { value: "practice", label: "Practice Questions" },
-  { value: "test_1", label: "Test 1" },
-  { value: "test_2", label: "Test 2" },
-  { value: "test_3", label: "Test 3" },
+  { value: "practice", label: "Practice Questions" }
 ];
 
 export const NOTIFY_EMAIL = "mwernke17@gmail.com";
