@@ -37,7 +37,11 @@ export default function PracticeQuestionsAdmin() {
 
   const filtered = questions.filter((q) => {
     const matchesTopic = topic === "all" || q.topic === topic;
-    const matchesUsage = usage === "all" || (q.usage || "practice") === usage;
+    
+    // Normalize empty or missing fields to "practice", but match explicitly chosen strings directly
+    const currentUsage = q.usage || "practice";
+    const matchesUsage = usage === "all" || currentUsage === usage;
+    
     return matchesTopic && matchesUsage;
   });
 

@@ -26,11 +26,16 @@ export default function PracticeTestsAdmin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testNum]);
 
-  const save = async (f) => {
-    await base44.entities.Question.update(modal.data.id, { ...f, usage: `test_${testNum}` });
-    setModal(null);
-    fetchQs();
+const save = async (f) => {
+  // Ensure the explicitly bound test route takes priority over form dropdown overrides
+  const finalPayload = {
+    ...f,
+    usage: `test_${testNum}`
   };
+  await base44.entities.Question.update(modal.data.id, finalPayload);
+  setModal(null);
+  fetchQs();
+};
 
   const remove = async (q) => {
     if (!confirm("Remove this question from the database?")) return;
