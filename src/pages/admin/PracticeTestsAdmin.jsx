@@ -27,23 +27,23 @@ export default function PracticeTestsAdmin() {
   }, [testNum]);
 
   const save = async (f) => {
-    // 1. Strip the incoming form properties into a clean object
-    const cleanForm = { ...f };
-    
-    // 2. Explicitly force the destination to this test
-    cleanForm.usage = `test_${testNum}`;
-    
-    // 3. Normalize difficulty string if present
-    if (cleanForm.difficulty === "Challenge") {
-      cleanForm.difficulty = "Hard";
-    }
+    // Explicitly build a pristine database object from the ground up
+    const cleanForm = {
+      question_text: f.question_text || "",
+      question_type: f.question_type || "multiple_choice",
+      topic: f.topic || "",
+      difficulty: f.difficulty === "Challenge" ? "Hard" : (f.difficulty || "Medium"),
+      correct_answer: f.correct_answer || "",
+      numeric_answer: f.numeric_answer || "",
+      options: f.options || ["", "", "", ""],
+      image_url: f.image_url || null,
+      usage: `test_${testNum}` // Explicitly forced at root level
+    };
 
     try {
       if (modal.mode === "add") {
-        // Create a brand new database record
         await base44.entities.Question.create(cleanForm);
       } else if (modal.mode === "edit" && modal.data?.id) {
-        // Update the existing record
         await base44.entities.Question.update(modal.data.id, cleanForm);
       }
     } catch (err) {
@@ -80,7 +80,7 @@ export default function PracticeTestsAdmin() {
           </Link>
         ))}
         <Link to="/admin/questions" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:border-gray-300">
-          <Database className="w-4 h-4" /> Question Database
+          <Database className="w-4 h-4" /> Practice Questions
         </Link>
       </div>
 
@@ -134,6 +134,7 @@ export default function PracticeTestsAdmin() {
             initial={modal.data}
             onSubmit={save}
             onCancel={() => setModal(null)}
+            // Explicitly omitting showUsage so the location dropdown stays hidden
           />
         )}
       </Modal>

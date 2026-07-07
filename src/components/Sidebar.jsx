@@ -79,7 +79,7 @@ export default function Sidebar({ onClose }) {
       { label: "Student Database", path: "/admin/students", icon: Users },
       { label: "Calendar", path: "/admin/calendar", icon: CalendarDays },
       { label: "Approvals", path: "/admin/approvals", icon: UserCheck },
-      { label: "Question Database", path: "/admin/questions", icon: ClipboardList },
+     { label: "Practice Questions", path: "/admin/questions" }
       { label: "Test 1", path: "/admin/tests/1", icon: FileText },
       { label: "Test 2", path: "/admin/tests/2", icon: FileText },
       { label: "Test 3", path: "/admin/tests/3", icon: FileText },
