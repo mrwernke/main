@@ -80,7 +80,8 @@
         {type:'arrows',min:-4+Math.pow(2,-3.5),max:8,leftDomainAsymptote:-4,f:x=>2*Math.log2(x+4)-1},{type:'arrows',min:-Math.log2(7),max:8,rightAsymptote:1,f:x=>Math.pow(2,-x)+1},{type:'circles',min:-3,max:5,f:x=>Math.log2(x+4)-1},
         {type:'circles',min:-4,max:5,f:x=>-1.2*Math.abs(x+1)+4},
         {type:'arrows',min:-8,max:8,rangeOpenMax:3.5,f:x=>x<3?.5*x+2:-x,segments:[{min:-8,max:3,f:x=>.5*x+2},{min:3,max:8,f:x=>-x}]},
-        {type:'circle-shape',shape:'circle',cx:2,cy:-3,r:4,min:-2,max:6,f:x=>-3}
+        {type:'circle-shape',shape:'circle',cx:2,cy:-3,r:4,min:-2,max:6,f:x=>-3},
+        {type:'circles',min:-4,max:3,f:x=>.08*x*x*x*x+.08*x*x*x-.6*x*x}
       ];
       let active=0, t=.82, visited=[], revealed={};
       function drawPlane(){let markup=''; for(let x=-8;x<=8;x++){markup+=`<line x1="${sx(x)}" y1="${sy(yMin)}" x2="${sx(x)}" y2="${sy(yMax)}" stroke="#d9e1e8" stroke-width="1"/>`; if(x&&x%2===0)markup+=`<text x="${sx(x)}" y="${sy(0)+18}" text-anchor="middle" class="tick-label">${x}</text>`;} for(let y=-8;y<=8;y++){markup+=`<line x1="${sx(xMin)}" y1="${sy(y)}" x2="${sx(xMax)}" y2="${sy(y)}" stroke="#d9e1e8" stroke-width="1"/>`; if(y&&y%2===0)markup+=`<text x="${sx(0)-12}" y="${sy(y)+4}" text-anchor="end" class="tick-label">${y}</text>`;} document.querySelector('#grid').innerHTML=markup; document.querySelector('#axes').innerHTML=`<line x1="${sx(xMin)}" y1="${sy(0)}" x2="${sx(xMax)}" y2="${sy(0)}" stroke="#15213a" stroke-width="2"/><line x1="${sx(0)}" y1="${sy(yMin)}" x2="${sx(0)}" y2="${sy(yMax)}" stroke="#15213a" stroke-width="2"/><text x="${sx(xMax)-4}" y="${sy(0)-9}" class="axis-label">x</text><text x="${sx(0)+10}" y="${sy(yMax)+14}" class="axis-label">y</text>`; }
