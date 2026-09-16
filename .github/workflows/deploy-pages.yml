@@ -43,8 +43,10 @@ jobs:
           rm -rf dist
           mkdir -p dist/sat-math-prep
           mkdir -p dist/math-applets/domain-range-helper
+          mkdir -p dist/math-applets/absolute-value-graphing
           cp -R sat-math-prep/dist/. dist/sat-math-prep/
           cp math-applets/domain-range-helper/index.html dist/math-applets/domain-range-helper/index.html
+          cp math-applets/absolute-value-graphing/index.html dist/math-applets/absolute-value-graphing/index.html
           cp main-site/index.html dist/index.html
 
       - name: Upload Pages artifact
