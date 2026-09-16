@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: process.env.GITHUB_ACTIONS ? "/SATMathPrep/" : "/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
