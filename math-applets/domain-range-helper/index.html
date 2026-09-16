@@ -118,7 +118,7 @@
       slider.addEventListener('input',e=>setT(Number(e.target.value)/1000)); document.querySelector('#reset').addEventListener('click',reset);
       let dragging=false; function drag(e){const rect=graph.getBoundingClientRect(),px=(e.clientX-rect.left)/rect.width*W,py=(e.clientY-rect.top)/rect.height*H,item=cases[active];if(item.shape==='circle'){let angle=Math.atan2(unsy(py)-item.cy,unsx(px)-item.cx);if(angle<0)angle+=Math.PI*2;setT(angle/(Math.PI*2));return;}if(item.shape==='parametric'){const points=sample(item);let closest=0,distance=Infinity;points.forEach((point,index)=>{const nextDistance=(sx(point.x)-px)**2+(sy(point.y)-py)**2;if(nextDistance<distance){distance=nextDistance;closest=index;}});setT(closest/(points.length-1));return;}setT((unsx(px)-item.min)/(item.max-item.min));}
       graph.addEventListener('pointerdown',e=>{dragging=true;graph.setPointerCapture(e.pointerId);drag(e);}); graph.addEventListener('pointermove',e=>{if(dragging)drag(e);}); graph.addEventListener('pointerup',()=>dragging=false); graph.addEventListener('pointercancel',()=>dragging=false);
-      drawPlane(); reset();
+      drawPlane(); document.querySelector('#graph-number').textContent=`Graph ${active+1} of ${cases.length}`; reset();
     </script>
   </body>
 </html>
