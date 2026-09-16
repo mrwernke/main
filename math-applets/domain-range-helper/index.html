@@ -77,7 +77,7 @@
         {type:'arrows',min:-4.66,max:4.66,f:x=>.125*x*x*x-x},{type:'arrows',min:1-Math.cbrt(60),max:1+Math.cbrt(100),f:x=>-.1*(x-1)*(x-1)*(x-1)+2},{type:'circles',min:-3,max:4,f:x=>.16*(x+1)*(x+1)*(x-2)},
         {type:'arrows',min:-Math.pow(440,.25),max:Math.pow(440,.25),f:x=>.025*x*x*x*x-3},{type:'circles',min:-3.95,max:4,openRight:true,f:x=>-.02*(x-1)*(x-1)*(x-1)*(x-1)+4},{type:'circles',min:-2.9,max:3,f:x=>.08*x*x*x*x-4},
         {type:'arrows',min:-8,max:Math.log2(12),leftAsymptote:-4,f:x=>Math.pow(2,x)-4},{type:'arrows',min:-Math.log2(11)/.7,max:8,rightAsymptote:-3,f:x=>Math.pow(2,-.7*x)-3},{type:'circles',min:-3,max:2,f:x=>Math.pow(2,x)-5},
-        {type:'arrows',min:-4+Math.pow(2,-3.5),max:8,leftDomainAsymptote:-4,f:x=>2*Math.log2(x+4)-1},{type:'arrows',min:-Math.log2(7),max:8,rightAsymptote:1,f:x=>Math.pow(2,-x)+1},{type:'circles',min:-2,max:6,holes:[{x:1,y:3}],holeDomainText:'-2 < x < 1, 1 < x ≤ 6',holeRangeText:'1 < y < 3, 3 < y < 4',f:x=>Math.log2(x+3)+1},
+        {type:'arrows',min:-4+Math.pow(2,-3.5),max:8,leftDomainAsymptote:-4,f:x=>2*Math.log2(x+4)-1},{type:'arrows',min:-Math.log2(7),max:8,rightAsymptote:1,f:x=>Math.pow(2,-x)+1},{type:'circles',min:-2,max:6,holes:[{x:1,y:3}],holeDomainText:'-2 < x < 1, 1 < x ≤ 6',holeRangeText:'1 < y < 3, 3 < y ≤ 4',f:x=>Math.log2(x+3)+1},
         {type:'circles',min:-4,max:5,f:x=>-1.2*Math.abs(x+1)+4},
         {type:'arrows',min:-8,max:8,rangeOpenMax:3.5,f:x=>x<3?.5*x+2:-x,segments:[{min:-8,max:3,f:x=>.5*x+2},{min:3,max:8,f:x=>-x}]},
         {type:'circle-shape',shape:'circle',cx:2,cy:-3,r:4,min:-2,max:6,f:x=>-3},
