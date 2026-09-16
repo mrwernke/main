@@ -26,17 +26,29 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: sat-math-prep/package-lock.json
 
       - name: Install dependencies
+        working-directory: sat-math-prep
         run: npm ci
 
       - name: Build
+        working-directory: sat-math-prep
+        env:
+          VITE_BASE_PATH: /SATMathPrep/sat-math-prep/
         run: npm run build
+
+      - name: Assemble site
+        run: |
+          rm -rf dist
+          mkdir -p dist/sat-math-prep
+          cp -R sat-math-prep/dist/. dist/sat-math-prep/
+          cp main-site/index.html dist/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: sat-math-prep/dist
 
   deploy:
     environment:

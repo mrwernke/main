@@ -1,38 +1,20 @@
-# SAT Math Prep
+# Math Projects
 
-This project is a standalone SAT Math Prep application that can run locally without the original Base44 backend. In development it uses a browser-based local storage fallback for students, questions, settings, and other data.
+This repository contains the SAT Math Prep site and a growing collection of math applets.
 
-## Prerequisites
+## Projects
 
-1. Install Node.js 20+.
-2. In the project directory, install dependencies:
+- `sat-math-prep/` - SAT Math Prep application and its standalone Vite project.
+- `math-applets/domain-range-helper/` - first math applet, under development.
+
+## SAT Math Prep
+
+Run the SAT Math Prep project locally from its directory:
 
 ```bash
+cd sat-math-prep
 npm install
-```
-
-## Run Locally
-
-Start the Vite dev server:
-
-```bash
 npm run dev
 ```
 
-Then open the local URL printed by Vite, usually:
-
-```text
-http://localhost:5173/
-```
-
-## Optional remote backend
-
-If you later connect this app to a hosted database or authentication provider, you can add a local env file with:
-
-```bash
-VITE_USE_BASE44=true
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=https://your-app.example.com
-```
-
-The app will only use the remote client when that flag is enabled.
+GitHub Pages deploys the SAT Math Prep project from `sat-math-prep/` using the workflow in `.github/workflows/deploy-pages.yml`.
