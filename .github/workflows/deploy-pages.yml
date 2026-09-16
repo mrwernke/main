@@ -35,7 +35,7 @@ jobs:
       - name: Build
         working-directory: sat-math-prep
         env:
-          VITE_BASE_PATH: /SATMathPrep/sat-math-prep/
+          VITE_BASE_PATH: /main/sat-math-prep/
         run: npm run build
 
       - name: Assemble site
@@ -48,7 +48,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: sat-math-prep/dist
+          path: dist
 
   deploy:
     environment:
