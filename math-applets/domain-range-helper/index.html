@@ -73,19 +73,20 @@
       const cases=[
         {type:'arrows',min:-8,max:8,f:x=>.5*x+1},{type:'arrows',min:-4.8,max:8,f:x=>-1.25*x+2},{type:'arrows',min:-8,max:8,holes:[{x:4,y:-3}],f:x=>.25*x-4},
         {type:'arrows',min:-8,max:8,f:x=>Math.abs(x-2)-3},{type:'arrows',min:-8,max:8,f:x=>-Math.abs(x+1)+5},{type:'circles',min:-5,max:4,f:x=>1.5*Math.abs(x-1)-4},
+        {type:'circles',min:-4,max:5,f:x=>-1.2*Math.abs(x+1)+4},
+        {type:'arrows',min:-8,max:8,rangeOpenMax:3.5,f:x=>x<3?.5*x+2:-x,segments:[{min:-8,max:3,f:x=>.5*x+2},{min:3,max:8,f:x=>-x}]},
+        {type:'right-arrow',min:-5,max:8,finiteStartOpen:true,f:x=>x<3?.5*x+1.5:-x,segments:[{min:-5,max:3,f:x=>.5*x+1.5},{min:3,max:8,f:x=>-x}]},
         {type:'arrows',min:-Math.sqrt(44),max:Math.sqrt(44),f:x=>.25*x*x-3},{type:'arrows',min:-Math.sqrt(32),max:Math.sqrt(32),f:x=>-.375*x*x+4},{type:'circles',min:-4,max:5,f:x=>.35*(x+1)*(x+1)-5},
         {type:'arrows',min:-4.66,max:4.66,f:x=>.125*x*x*x-x},{type:'arrows',min:1-Math.cbrt(60),max:1+Math.cbrt(100),f:x=>-.1*(x-1)*(x-1)*(x-1)+2},{type:'circles',min:-3,max:4,f:x=>.16*(x+1)*(x+1)*(x-2)},
         {type:'arrows',min:-Math.pow(440,.25),max:Math.pow(440,.25),f:x=>.025*x*x*x*x-3},{type:'circles',min:-3.95,max:4,openRight:true,f:x=>-.02*(x-1)*(x-1)*(x-1)*(x-1)+4},{type:'circles',min:-2.9,max:3,f:x=>.08*x*x*x*x-4},
         {type:'arrows',min:-8,max:Math.log2(12),leftAsymptote:-4,f:x=>Math.pow(2,x)-4},{type:'arrows',min:-Math.log2(11)/.7,max:8,rightAsymptote:-3,f:x=>Math.pow(2,-.7*x)-3},{type:'circles',min:-3,max:2,f:x=>Math.pow(2,x)-5},
         {type:'arrows',min:-4+Math.pow(2,-3.5),max:8,leftDomainAsymptote:-4,f:x=>2*Math.log2(x+4)-1},{type:'arrows',min:-Math.log2(7),max:8,rightAsymptote:1,f:x=>Math.pow(2,-x)+1},{type:'circles',min:-2,max:6,holes:[{x:1,y:3}],holeDomainText:'-2 < x < 1, 1 < x ≤ 6',holeRangeText:'1 < y < 3, 3 < y ≤ 4',f:x=>Math.log2(x+3)+1},
-        {type:'circles',min:-4,max:5,f:x=>-1.2*Math.abs(x+1)+4},
-        {type:'arrows',min:-8,max:8,rangeOpenMax:3.5,f:x=>x<3?.5*x+2:-x,segments:[{min:-8,max:3,f:x=>.5*x+2},{min:3,max:8,f:x=>-x}]},
         {type:'circle-shape',shape:'circle',cx:2,cy:-3,r:4,min:-2,max:6,f:x=>-3},
         {type:'circles',min:-4,max:3,f:x=>.08*x*x*x*x+.08*x*x*x-.6*x*x},
         {type:'arrows',min:-4.173158487434508,max:3.493155188912188,f:x=>-.08*x*x*x*x-.08*x*x*x+.6*x*x},
         {type:'parametric',shape:'parametric',axis:'right-parabola',min:3-Math.sqrt(11),max:3+Math.sqrt(11),point:y=>({x:(y-3)*(y-3)-3,y}),answerDomain:'x ≥ -3',answerRange:'All Real Numbers',paramStartArrow:true,paramEndArrow:true,f:y=>y},
         {type:'parametric',shape:'parametric',axis:'left-finite',min:-6,max:1,point:y=>({x:3-.24*(y+1)*(y+1),y}),answerDomain:'-3 < x ≤ 3',answerRange:'-6 < y ≤ 1',paramStartOpen:true,paramEndClosed:true,f:y=>y},
-        {type:'right-arrow',min:-5,max:8,finiteStartOpen:true,f:x=>x<3?.5*x+1.5:-x,segments:[{min:-5,max:3,f:x=>.5*x+1.5},{min:3,max:8,f:x=>-x}]}
+        
       ];
       let active=0, t=.82, visited=[], revealed={};
       function drawPlane(){let markup=''; for(let x=-8;x<=8;x++){markup+=`<line x1="${sx(x)}" y1="${sy(yMin)}" x2="${sx(x)}" y2="${sy(yMax)}" stroke="#d9e1e8" stroke-width="1"/>`; if(x&&x%2===0)markup+=`<text x="${sx(x)}" y="${sy(0)+18}" text-anchor="middle" class="tick-label">${x}</text>`;} for(let y=-8;y<=8;y++){markup+=`<line x1="${sx(xMin)}" y1="${sy(y)}" x2="${sx(xMax)}" y2="${sy(y)}" stroke="#d9e1e8" stroke-width="1"/>`; if(y&&y%2===0)markup+=`<text x="${sx(0)-12}" y="${sy(y)+4}" text-anchor="end" class="tick-label">${y}</text>`;} document.querySelector('#grid').innerHTML=markup; document.querySelector('#axes').innerHTML=`<line x1="${sx(xMin)}" y1="${sy(0)}" x2="${sx(xMax)}" y2="${sy(0)}" stroke="#15213a" stroke-width="2"/><line x1="${sx(0)}" y1="${sy(yMin)}" x2="${sx(0)}" y2="${sy(yMax)}" stroke="#15213a" stroke-width="2"/><text x="${sx(xMax)-4}" y="${sy(0)-9}" class="axis-label">x</text><text x="${sx(0)+10}" y="${sy(yMax)+14}" class="axis-label">y</text>`; }
