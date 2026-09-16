@@ -39,7 +39,7 @@
       const equation=document.querySelector('#equation'), plane=document.querySelector('#plane'), grid=document.querySelector('#grid'), pointsGroup=document.querySelector('#student-points'), line=document.querySelector('#v-lines');
       const labels=['Vertex','x-values','y-values','Plot points','Range','Maximum or minimum','End behavior']; let state, attempts=0, plotted=[], tableStage='vertex', practiceCount=0;
       const choose=items=>items[Math.floor(Math.random()*items.length)], fmt=n=>n<0?`−${Math.abs(n)}`:`${n}`;
-      function makeState(){practiceCount++;if(practiceCount<=4)return {a:choose([-3,-2,2,3]),h:choose([-3,-2,-1,1,2,3]),k:choose([-2,-1,1,2])};return {a:choose([-2,-1,1,2]),h:choose([-3,-2,-1,0,1,2,3]),k:choose([-2,-1,0,1,2])};}
+      function makeState(){practiceCount++;if(practiceCount<=4){let a,h,k;do{a=choose([-3,-2,2,3]);h=choose([-3,-2,-1,1,2,3]);k=choose([-2,-1,1,2]);}while(practiceCount<=3&&new Set([a,h,k]).size<3);return {a,h,k};}return {a:choose([-2,-1,1,2]),h:choose([-3,-2,-1,0,1,2,3]),k:choose([-2,-1,0,1,2])};}
       function equationText(){const {a,h,k}=state,aText=a===1?'':a===-1?'−':'−'+Math.abs(a),inside=h===0?'x':h>0?`x − ${h}`:`x + ${Math.abs(h)}`,tail=k===0?'':k>0?` + ${k}`:` − ${Math.abs(k)}`;return `f(x) = ${aText}|${inside}|${tail}`;}
       function y(x){return state.a*Math.abs(x-state.h)+state.k;}
       function setStep(step){document.querySelector(`#step-${step}`).classList.add('active');renderProgress(step);}
