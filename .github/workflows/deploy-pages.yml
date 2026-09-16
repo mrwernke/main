@@ -42,7 +42,9 @@ jobs:
         run: |
           rm -rf dist
           mkdir -p dist/sat-math-prep
+          mkdir -p dist/math-applets/domain-range-helper
           cp -R sat-math-prep/dist/. dist/sat-math-prep/
+          cp math-applets/domain-range-helper/index.html dist/math-applets/domain-range-helper/index.html
           cp main-site/index.html dist/index.html
 
       - name: Upload Pages artifact
