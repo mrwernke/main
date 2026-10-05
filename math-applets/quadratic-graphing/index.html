@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quadratic Graphing Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's World of Math</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Quadratic Graphing Lab</h1>
+      <p class="intro">Build a parabola one decision at a time. Practice each form, plot your points, and describe the graph.</p>
+      <div class="form-picker" role="group" aria-label="Choose a quadratic form">
+        <button class="form-choice" data-form="standard" aria-pressed="true">Standard form <span>y = ax² + bx + c</span></button>
+        <button class="form-choice" data-form="factored" aria-pressed="false">Factored form <span>y = a(x − r₁)(x − r₂)</span></button>
+        <button class="form-choice" data-form="vertex" aria-pressed="false">Vertex form <span>y = a(x − h)² + k</span></button>
+      </div>
+      <section class="equation-card" aria-label="Practice function">
+        <div class="card-head"><span>Graph this function</span><label class="picker-label">Function <select id="function-picker" aria-label="Choose a function"></select></label></div>
+        <div class="equation" id="equation"></div>
+      </section>
+      <section class="work" aria-label="Graphing practice">
+        <div class="step active" id="step-1">
+          <div class="form-work" data-for="standard">
+            <h2>1. Find the line of symmetry and vertex</h2>
+            <p class="muted">First use x = −b/(2a) to find the line of symmetry.</p>
+            <div class="answer-row"><span>x =</span><input class="coord" id="standard-axis" inputmode="decimal" aria-label="Standard form line of symmetry"><button id="check-standard-axis">Check line of symmetry</button></div>
+            <p class="feedback" id="standard-axis-feedback" aria-live="polite"></p>
+            <div id="standard-y-work" hidden>
+              <p class="muted">Substitute your x-value into f(x) to find the y-coordinate of the vertex.</p>
+              <div class="answer-row"><span id="standard-substitution"></span><input class="coord" id="standard-y" inputmode="decimal" aria-label="Standard form vertex y-coordinate"><button id="check-standard-y">Check y-coordinate</button></div>
+              <p class="feedback" id="standard-y-feedback" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="form-work" data-for="factored" hidden>
+            <h2>1. Find the x-intercepts</h2>
+            <p class="muted">Set each factor equal to zero. Enter the two x-intercepts in either order.</p>
+            <div class="answer-row">(<input class="coord" id="root-1" inputmode="decimal" aria-label="First x-intercept">, 0) and (<input class="coord" id="root-2" inputmode="decimal" aria-label="Second x-intercept">, 0)<button id="check-roots">Check x-intercepts</button></div>
+            <p class="feedback" id="roots-feedback" aria-live="polite"></p>
+          </div>
+          <div class="form-work" data-for="vertex" hidden>
+            <h2>1. Find the vertex and line of symmetry</h2>
+            <p class="muted">Enter the vertex as an ordered pair.</p>
+            <div class="answer-row">(<input class="coord" id="vertex-x" inputmode="decimal" aria-label="Vertex form vertex x-coordinate">, <input class="coord" id="vertex-y" inputmode="decimal" aria-label="Vertex form vertex y-coordinate">)<button id="check-vertex">Check vertex</button></div>
+            <p class="feedback" id="vertex-feedback" aria-live="polite"></p>
+            <div id="vertex-axis-work" hidden>
+              <p class="muted">The line of symmetry passes through the vertex. Complete its equation.</p>
+              <div class="answer-row">x = <input class="coord" id="vertex-axis" inputmode="decimal" aria-label="Vertex form line of symmetry"><button id="check-vertex-axis">Check line of symmetry</button></div>
+              <p class="feedback" id="vertex-axis-feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+        <div class="step" id="step-2">
+          <div class="form-work table-work" data-for="table">
+            <div>
+              <h2>2. Start the table</h2>
+              <p class="muted" id="table-instructions">Enter the vertex in the middle of the table.</p>
+              <button id="check-xs">Check</button>
+              <p class="feedback" id="x-feedback" aria-live="polite"></p>
+            </div>
+            <table><thead><tr><th>Point</th><th>x</th><th>y</th></tr></thead><tbody id="table-body"></tbody></table>
+          </div>
+          <div class="form-work" data-for="factored" hidden>
+            <h2>2. Find the line of symmetry</h2>
+            <p class="muted">Average the two x-intercepts to find the line of symmetry.</p>
+            <div class="answer-row symmetry-equation">
+              <div class="symmetry-formula">
+                <span>x =</span>
+                <span class="fraction">
+                  <span class="numerator"><input class="coord" id="average-1" inputmode="decimal" aria-label="First intercept in symmetry formula"><span>+</span><input class="coord" id="average-2" inputmode="decimal" aria-label="Second intercept in symmetry formula"></span>
+                  <span class="denominator"><span class="sr-only">divided by</span>2</span>
+                </span>
+                <span>=</span>
+                <input class="coord" id="factored-axis" inputmode="decimal" aria-label="Factored form line of symmetry">
+              </div>
+              <button id="check-average">Check line of symmetry</button>
+            </div>
+            <p class="feedback" id="average-feedback" aria-live="polite"></p>
+          </div>
+        </div>
+        <div class="step" id="step-3">
+          <div class="form-work" data-for="table">
+            <h2>3. Complete the y-values</h2>
+            <p class="muted">Use the function to calculate the matching y-value for each x-value.</p>
+            <button id="check-ys">Check y-values</button>
+            <p class="feedback" id="y-feedback" aria-live="polite"></p>
+          </div>
+          <div class="form-work" data-for="factored" hidden>
+            <h2>3. Find the vertex</h2>
+            <p class="muted">Substitute the line-of-symmetry x-value into f(x) to find the y-coordinate.</p>
+            <div class="answer-row"><span id="factored-substitution"></span><input class="coord" id="factored-y" inputmode="decimal" aria-label="Factored form vertex y-coordinate"><button id="check-factored-y">Check y-coordinate</button></div>
+            <p class="feedback" id="factored-y-feedback" aria-live="polite"></p>
+            <div id="factored-vertex-work" hidden>
+              <p class="muted">Now enter the vertex as an ordered pair.</p>
+              <div class="answer-row">(<input class="coord" id="factored-vx" inputmode="decimal" aria-label="Factored form vertex ordered pair x-coordinate">, <input class="coord" id="factored-vy" inputmode="decimal" aria-label="Factored form vertex ordered pair y-coordinate">)<button id="check-factored-vertex">Check vertex</button></div>
+              <p class="feedback" id="factored-vertex-feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+        <div class="step" id="step-4">
+          <h2>4. Plot your points</h2>
+          <p class="muted" id="plot-instructions">Click the coordinate plane to plot your five table points.</p>
+          <div id="a-work" class="hint" hidden>
+            <h3>Use the a-value for two more points</h3>
+            <p id="a-instructions"></p>
+          </div>
+          <label class="option-row"><input type="checkbox" id="autoscale" checked> Auto-scale the graph to fit the points (equal x and y scale)</label>
+          <div class="plane-wrap">
+            <svg id="plane" viewBox="0 0 600 600" role="img" aria-label="Coordinate plane for plotting points">
+              <defs><marker id="curve-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#15213a" /></marker></defs>
+              <g id="grid"></g>
+              <path id="parabola" fill="none" stroke="#15213a" stroke-width="3" marker-start="url(#curve-arrow)" marker-end="url(#curve-arrow)"></path>
+              <g id="student-points"></g>
+            </svg>
+          </div>
+          <p class="plot-note" id="plot-note" aria-live="polite">0 of 5 points plotted</p>
+          <p class="feedback" id="plot-feedback" aria-live="polite"></p>
+        </div>
+        <div class="step" id="step-5">
+          <h2>5. Domain and Range</h2>
+          <p>Is the domain All Real Numbers?</p>
+          <div class="answer-row"><button class="domain-choice" data-domain="yes">Yes</button><button class="domain-choice" data-domain="no">No</button></div>
+          <p class="feedback" id="domain-feedback" aria-live="polite"></p>
+          <div id="range-work" hidden>
+            <p>Complete the range inequality:</p>
+            <div class="domain-row"><strong>y</strong><select id="range-symbol" aria-label="Range inequality symbol"><option value="">choose</option><option value=">">&gt;</option><option value="<">&lt;</option><option value=">=">≥</option><option value="<=">≤</option></select><input id="range-number" class="coord" inputmode="decimal" aria-label="Range boundary number"><button id="check-range">Check range</button></div>
+            <p class="feedback" id="range-feedback" aria-live="polite"></p>
+          </div>
+        </div>
+        <div class="step" id="step-6">
+          <h2>6. Maximum or minimum?</h2>
+          <p>Does the vertex represent a maximum or a minimum?</p>
+          <div class="answer-row"><button class="choice" data-choice="maximum">Maximum</button><button class="choice" data-choice="minimum">Minimum</button></div>
+          <p class="feedback" id="extrema-feedback" aria-live="polite"></p>
+        </div>
+        <div class="step" id="step-7">
+          <h2>7. Find the y-intercept</h2>
+          <p class="muted">Use x = 0 in f(x). Complete the y-intercept as an ordered pair.</p>
+          <div class="answer-row">(0, <input class="coord" id="y-intercept" inputmode="decimal" aria-label="Y-intercept y-coordinate">)<button id="check-intercept">Check y-intercept</button></div>
+          <p class="feedback" id="intercept-feedback" aria-live="polite"></p>
+        </div>
+        <div class="step" id="step-8">
+          <h2>8. End behavior</h2>
+          <p>Complete both statements. Look at the direction of the arrows to help.</p>
+          <div class="end-box"><span>As x → −∞, y →</span><select id="left-end" aria-label="Left end behavior"><option value="">choose</option><option value="positive">+∞</option><option value="negative">−∞</option></select></div>
+          <div class="end-box"><span>As x → +∞, y →</span><select id="right-end" aria-label="Right end behavior"><option value="">choose</option><option value="positive">+∞</option><option value="negative">−∞</option></select></div>
+          <button id="check-ends">Check end behavior</button>
+          <p class="feedback" id="ends-feedback" aria-live="polite"></p>
+        </div>
+        <div class="step" id="complete">
+          <h2>Good Job</h2><p>It is all correct. Now practice a new function or choose a different form.</p><button id="new-function">New Function</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
