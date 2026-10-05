@@ -46,11 +46,13 @@ jobs:
           mkdir -p dist/math-applets/absolute-value-graphing
           mkdir -p dist/math-applets/quadratic-graphing
           mkdir -p dist/math-applets/quadratic-from-graph
+          mkdir -p dist/math-applets/quadratic-factoring
           cp -R sat-math-prep/dist/. dist/sat-math-prep/
           cp math-applets/domain-range-helper/index.html dist/math-applets/domain-range-helper/index.html
           cp math-applets/absolute-value-graphing/index.html dist/math-applets/absolute-value-graphing/index.html
           cp math-applets/quadratic-graphing/{index.html,styles.css,app.js,model.mjs,confetti.js} dist/math-applets/quadratic-graphing/
           cp math-applets/quadratic-from-graph/{index.html,styles.css,app.js,model.mjs} dist/math-applets/quadratic-from-graph/
+          cp math-applets/quadratic-factoring/{index.html,styles.css,app.js,model.mjs} dist/math-applets/quadratic-factoring/
           cp main-site/index.html dist/index.html
 
       - name: Upload Pages artifact

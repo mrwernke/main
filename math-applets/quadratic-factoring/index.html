@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Factoring Quadratics with the Box Method</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's World of Math</a>
+        <span class="eyebrow">Interactive math applet</span>
+      </div>
+      <h1>Factoring Quadratics with the Box Method</h1>
+      <p class="intro">Choose a problem type, complete the row and column factors, and check that their products give every term of the quadratic.</p>
+      <div class="form-picker type-picker" role="group" aria-label="Problem type">
+        <button class="form-choice" id="monic-mode" aria-pressed="true">Factor when a=1 <span>x² + bx + c</span></button>
+        <button class="form-choice" id="non-monic-mode" aria-pressed="false">Factor when a&gt;1 <span>ax² + bx + c</span></button>
+      </div>
+      <section class="equation-card" aria-label="Expression to factor">
+        <div class="card-head">
+          <span>Factor this expression</span>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose an expression"></select></label>
+        </div>
+        <div class="equation" id="expression"></div>
+      </section>
+      <section class="factoring-work" aria-label="Box method practice">
+        <div>
+          <h2>Complete the box</h2>
+          <p class="muted" id="box-instructions"></p>
+          <div class="factor-box" role="group" aria-label="Multiplication box">
+            <span class="column-x"><input id="top-coefficient" inputmode="numeric" autocomplete="off" aria-label="First column x coefficient" aria-describedby="input-feedback" hidden /><span>x</span></span>
+            <input id="top-factor" class="top-factor" inputmode="text" autocomplete="off" aria-label="Second column integer" aria-describedby="input-feedback" />
+            <span class="row-x"><input id="side-coefficient" inputmode="numeric" autocomplete="off" aria-label="First row x coefficient" aria-describedby="input-feedback" hidden /><span>x</span></span>
+            <input id="side-factor" class="side-factor" inputmode="text" autocomplete="off" aria-label="Second row integer" aria-describedby="input-feedback" />
+            <div class="cell upper-left" id="leading-cell"><span class="sr-only">Target leading term: </span><span id="leading-term">x²</span><span class="status-mark" id="leading-mark" aria-hidden="true"></span></div>
+            <div class="cell upper-right"><span class="sr-only">Upper right product: </span><span id="top-product">?</span></div>
+            <div class="cell lower-left"><span class="sr-only">Bottom left product: </span><span id="side-product">?</span></div>
+            <div class="cell lower-right" id="constant-cell"><span class="sr-only">Target constant: </span><span id="constant"></span><span class="status-mark" id="product-mark" aria-hidden="true"></span></div>
+            <div class="middle-target" id="middle-circle"><span class="sr-only">Target middle term: </span><span id="middle-term"></span><span class="status-mark" id="sum-mark" aria-hidden="true"></span></div>
+          </div>
+          <p class="feedback" id="input-feedback" aria-live="polite"></p>
+        </div>
+        <div class="checks">
+          <h2 id="checks-heading">Check both conditions</h2>
+          <div class="condition" id="leading-check" hidden>
+            <h3>Multiply to the leading coefficient</h3>
+            <p id="leading-feedback" aria-live="polite"></p>
+          </div>
+          <div class="condition" id="product-check">
+            <h3>Multiply to the constant</h3>
+            <p id="product-feedback" aria-live="polite"></p>
+          </div>
+          <div class="condition" id="sum-check">
+            <h3>Add to the middle term</h3>
+            <p id="sum-feedback" aria-live="polite"></p>
+          </div>
+          <form id="factor-entry" hidden>
+            <h2>Write the complete factors</h2>
+            <p id="factor-instructions"></p>
+            <div class="factor-answer">
+              <span>(</span><input id="first-factor" aria-label="First complete factor" aria-describedby="factor-instructions factor-feedback" autocomplete="off" spellcheck="false" /><span>)(</span><input id="second-factor" aria-label="Second complete factor" aria-describedby="factor-instructions factor-feedback" autocomplete="off" spellcheck="false" /><span>)</span>
+            </div>
+            <button id="submit-factors" type="submit">Submit</button>
+            <p class="feedback" id="factor-feedback" aria-live="polite"></p>
+          </form>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <p>You wrote the correct factors:</p>
+            <p id="factored-result" class="factored-result"></p>
+          </section>
+          <div class="answer-row">
+            <button id="reset">Try Again</button>
+            <button id="next" hidden>Next Example</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

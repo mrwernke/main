@@ -9,6 +9,7 @@ This repository contains the SAT Math Prep site and a growing collection of math
 - `math-applets/absolute-value-graphing/` - guided absolute-value graphing lab.
 - `math-applets/quadratic-graphing/` - quadratic graphing lab with standard, factored, and vertex form practice.
 - `math-applets/quadratic-from-graph/` - write all three quadratic forms from a marked graph, with box-method multiplication.
+- `math-applets/quadratic-factoring/` - factor monic quadratic expressions using a live multiplication box.
 - `main-site/` - Wernke's World of Math directory linking to the applets.
 
 ## Math applets
@@ -62,6 +63,39 @@ applets must be served together.
 
 ```bash
 node --test math-applets/quadratic-from-graph/model.test.mjs
+```
+
+The box-method factoring lab has two problem types: twenty expressions with
+`a = 1` and sixteen with `a = 2–9` (two per leading coefficient).
+The `a = 1` practice begins with
+`x² - 5x - 14`. Students enter signed integers in the top and left blanks.
+Difference-of-squares practice includes `x² - 9`, `x² - 16`, `x² - 25`,
+`x² - 36`, `x² - 49`, and `x² - 100`; the center circle shows `0x` so the opposite
+linear terms must cancel.
+Regular quadratics are mixed among these examples, with constants ranging from
+-100 to 100 and two zero-constant problems: `x² + 5x` and `x² - 6x`.
+Constants in the 50-70 range include 56, -60, and 63.
+The off-diagonal products update as they type. The bottom-right constant and
+central middle-term circle independently turn green with a check or red with
+an X for the product and sum conditions. Both conditions must match to unlock
+two complete-factor inputs inside parentheses. Students type factors such as
+`x+3` and `x-4` (or `x` for a zero constant), then submit. Only a correct
+submission reveals the factored expression, confetti, and Next Example button.
+Changing either box input clears the final answer. Reversed factor order, repeated factors,
+zero constants, and a zero middle term are supported. Blank or invalid inputs
+do not receive a correct/incorrect result. This applet also requires the
+quadratic grapher's shared stylesheet, number parser, and confetti module.
+For `a = 2–9`, students also enter positive integer coefficients on the row
+and column x labels. The upper-left leading term gets its own product check as soon as both
+x-coefficients are entered, without waiting for the constants. All four box
+cells are square; the center circle's diameter is 90% of a cell's height.
+The middle-term check adds the cross products, not just the constants.
+All three conditions must match before students submit complete factors such
+as `2x-5` and `3x+4`. Changing any box input clears the final answer;
+switching problem type resets the example and all progress.
+
+```bash
+node --test math-applets/quadratic-factoring/model.test.mjs
 ```
 
 ## SAT Math Prep
