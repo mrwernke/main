@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quadratic Equation from a Graph</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's World of Math</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Quadratic Equation from a Graph</h1>
+      <p class="intro">Read the marked points, write the equation in vertex and factored forms, then use the box method to build standard form.</p>
+      <section class="equation-card">
+        <div class="card-head"><span>Write the equation for this graph</span><label class="picker-label">Graph <select id="graph-picker" aria-label="Choose a graph"></select></label></div>
+        <p>Vertex form → Factored form → Standard form</p>
+      </section>
+      <div class="lab-layout">
+        <section class="questions" aria-label="Equation practice">
+          <section class="stage" id="stage-1">
+            <h2>1. Read the vertex and a-value</h2>
+            <p class="muted">Enter the vertex. To find a, compare its y-coordinate with a marked point one unit left or right: a is the change in y.</p>
+            <div class="answer-row">(<input class="coord" id="vx" inputmode="decimal" aria-label="Vertex x-coordinate">, <input class="coord" id="vy" inputmode="decimal" aria-label="Vertex y-coordinate">)</div>
+            <div class="answer-row"><label>a = <input class="coord" id="vertex-a" inputmode="decimal" aria-label="Vertex a-value"></label><button id="check-vertex">Check vertex and a</button></div>
+            <p class="feedback" id="vertex-feedback" aria-live="polite"></p>
+          </section>
+          <section class="stage" id="stage-2" hidden>
+            <h2>2. Write vertex form</h2>
+            <p class="muted">Use y = a(x − h)² + k. Enter signed numbers in the blanks; for example, x − (−2) means x + 2.</p>
+            <div class="math-answer"><span>y =</span><input class="coord" id="form-va" inputmode="decimal" aria-label="Vertex form a"><span>(x −</span><input class="coord" id="form-h" inputmode="decimal" aria-label="Vertex form h"><span>)² +</span><input class="coord" id="form-k" inputmode="decimal" aria-label="Vertex form k"></div>
+            <button id="check-vertex-form">Check vertex form</button>
+            <p class="feedback" id="vertex-form-feedback" aria-live="polite"></p>
+          </section>
+          <section class="stage" id="stage-3" hidden>
+            <h2>3. Read the x-intercepts and a-value</h2>
+            <p class="muted">Enter both x-intercepts in either order and the same a-value.</p>
+            <div class="answer-row">(<input class="coord" id="root-1" inputmode="decimal" aria-label="First x-intercept">, 0) and (<input class="coord" id="root-2" inputmode="decimal" aria-label="Second x-intercept">, 0)</div>
+            <div class="answer-row"><label>a = <input class="coord" id="factored-a" inputmode="decimal" aria-label="Factored a-value"></label><button id="check-roots">Check intercepts and a</button></div>
+            <p class="feedback" id="roots-feedback" aria-live="polite"></p>
+          </section>
+          <section class="stage" id="stage-4" hidden>
+            <h2>4. Write factored form</h2>
+            <p class="muted">Use y = a(x − r₁)(x − r₂). Enter both roots and the a-value.</p>
+            <div class="math-answer"><span>y =</span><input class="coord" id="form-fa" inputmode="decimal" aria-label="Factored form a"><span>(x −</span><input class="coord" id="form-r1" inputmode="decimal" aria-label="Factored form first root"><span>)(x −</span><input class="coord" id="form-r2" inputmode="decimal" aria-label="Factored form second root"><span>)</span></div>
+            <button id="check-factored-form">Check factored form</button>
+            <p class="feedback" id="factored-form-feedback" aria-live="polite"></p>
+          </section>
+          <section class="stage" id="stage-5" hidden>
+            <h2>5. Multiply with the box method</h2>
+            <p class="result-equation" id="box-factors"></p>
+            <p class="muted">Multiply the term above each column by the term beside each row. Leave a outside for now. Enter x-terms like −2x or 3x, and the constant as a number. For a zero product, enter 0.</p>
+            <table class="box-method" aria-label="Box method for multiplying the two factors">
+              <thead><tr><td></td><th scope="col">x</th><th scope="col" id="top-constant"></th></tr></thead>
+              <tbody>
+                <tr><th scope="row">x</th><td class="given">x²</td><td><input id="box-tr" aria-label="Top right box product" autocomplete="off" spellcheck="false"></td></tr>
+                <tr><th scope="row" id="side-constant"></th><td><input id="box-bl" aria-label="Bottom left box product" autocomplete="off" spellcheck="false"></td><td><input id="box-br" aria-label="Bottom right box product" inputmode="decimal"></td></tr>
+              </tbody>
+            </table>
+            <button id="check-box">Check box products</button>
+            <p class="feedback" id="box-feedback" aria-live="polite"></p>
+          </section>
+          <section class="stage" id="stage-6" hidden>
+            <h2>6. Combine like terms</h2>
+            <p class="muted">Add the two x-terms from the box. Keep a outside the parentheses. Enter signed coefficients in the blanks.</p>
+            <div class="math-answer"><span id="outside-a"></span><span>(x² +</span><input class="coord" id="inside-b" inputmode="decimal" aria-label="Combined x coefficient inside parentheses"><span>x +</span><input class="coord" id="inside-c" inputmode="decimal" aria-label="Constant inside parentheses"><span>)</span></div>
+            <button id="check-combined">Check combined terms</button>
+            <p class="feedback" id="combined-feedback" aria-live="polite"></p>
+          </section>
+          <section class="stage" id="stage-7" hidden>
+            <h2>7. Write standard form</h2>
+            <p class="muted" id="distribution-instructions"></p>
+            <p class="result-equation" id="combined-equation"></p>
+            <div class="math-answer"><span>y =</span><input class="coord" id="standard-a" inputmode="decimal" aria-label="Standard form a"><span>x² +</span><input class="coord" id="standard-b" inputmode="decimal" aria-label="Standard form b"><span>x +</span><input class="coord" id="standard-c" inputmode="decimal" aria-label="Standard form c"></div>
+            <button id="check-standard">Check standard form</button>
+            <p class="feedback" id="standard-feedback" aria-live="polite"></p>
+          </section>
+          <section class="stage" id="complete" hidden>
+            <h2>Good Job</h2><p>You wrote the same quadratic in all three forms.</p>
+            <ul class="summary" id="equation-summary"></ul>
+            <button id="new-graph">New Graph</button>
+          </section>
+        </section>
+        <aside class="graph-card" aria-label="Provided quadratic graph">
+          <h2 id="graph-title">Graph 1</h2>
+          <p class="muted">Read the marked points from the grid. The vertex is highlighted in gold.</p>
+          <svg id="plane" viewBox="0 0 640 640" role="img" aria-labelledby="graph-title graph-description">
+            <desc id="graph-description"></desc>
+            <defs>
+              <marker id="graph-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#15213a" /></marker>
+              <marker id="movement-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b33c22" /></marker>
+            </defs>
+            <g id="grid"></g>
+            <path id="curve" fill="none" stroke="#15213a" stroke-width="3" marker-start="url(#graph-arrow)" marker-end="url(#graph-arrow)"></path>
+            <g id="marked-points"></g>
+            <g id="a-movement"></g>
+          </svg>
+          <p class="hint" id="a-hint" aria-live="polite" hidden></p>
+        </aside>
+      </div>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

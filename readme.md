@@ -8,6 +8,7 @@ This repository contains the SAT Math Prep site and a growing collection of math
 - `math-applets/domain-range-helper/` - first math applet, under development.
 - `math-applets/absolute-value-graphing/` - guided absolute-value graphing lab.
 - `math-applets/quadratic-graphing/` - quadratic graphing lab with standard, factored, and vertex form practice.
+- `math-applets/quadratic-from-graph/` - write all three quadratic forms from a marked graph, with box-method multiplication.
 - `main-site/` - Wernke's World of Math directory linking to the applets.
 
 ## Math applets
@@ -41,6 +42,26 @@ Run the quadratic model tests with:
 
 ```bash
 node --test math-applets/quadratic-graphing/model.test.mjs
+```
+
+The equation-from-a-graph lab uses eight integer-root graphs. Each marks the
+vertex, points one unit to either side, and both x- and y-intercepts. Coincident
+points share a marker. The larger graph has no visible point labels or coordinate
+list; students read the grid. A screen-reader description retains point details.
+Incorrect a-values reveal a vertical arrow from the vertex by signed a and a
+one-unit horizontal arrow to the neighboring point. Students enter vertex form, factored
+form, three box-method products, combined terms inside parentheses, and finally
+standard form after distributing a. Root order can be reversed; the box uses
+the student's accepted factor order, displayed with simplified plus/minus signs
+above the box. Linear box products accept terms such as
+`-2x`, `x`, `-x`, or `0`; equation blanks take signed numeric coefficients.
+Completing the lab shows confetti and a summary labeled Vertex Form, Factored
+Form, and Standard Form. Starting another graph clears the celebration.
+The lab reuses the quadratic grapher's model and base stylesheet, so both
+applets must be served together.
+
+```bash
+node --test math-applets/quadratic-from-graph/model.test.mjs
 ```
 
 ## SAT Math Prep
