@@ -8,7 +8,7 @@
   </head>
   <body>
     <main>
-      <div class="topbar"><a class="back" href="../../">← Wernke's World of Math</a><span class="eyebrow">Interactive math applet</span></div>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
       <h1>Quadratic Graphing Lab</h1>
       <p class="intro">Build a parabola one decision at a time. Practice each form, plot your points, and describe the graph.</p>
       <div class="form-picker" role="group" aria-label="Choose a quadratic form">
@@ -154,5 +154,11 @@
       </section>
     </main>
     <script type="module" src="./app.js"></script>
+    <script>
+      // When served from the repository, the main page lives in main-site/ instead of the root.
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
   </body>
 </html>

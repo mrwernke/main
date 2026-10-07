@@ -1,0 +1,35 @@
+.features-work { display: grid; grid-template-columns: minmax(300px, 480px) minmax(320px, 1fr); gap: 26px; align-items: start; margin-top: 26px; padding: 24px; border: 1px solid var(--line); background: var(--panel); box-shadow: 5px 5px 0 #d8dedb; }
+@media (max-width: 900px) { .features-work { grid-template-columns: 1fr; } }
+
+.pane-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.pane-head .picker-label { color: var(--muted); }
+#example-picker { padding: 7px 9px; font-size: .9rem; letter-spacing: normal; text-transform: none; }
+
+#plane { cursor: default; }
+.grid { fill: none; stroke: #dde4ea; stroke-width: 1; }
+.axes { fill: none; stroke: var(--ink); stroke-width: 2; }
+.curve { fill: none; stroke: #1677c8; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+body[data-family="quadratic"] .curve { stroke: #a45138; }
+
+.feature-questions { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.fq { display: none; padding: 5px 0; }
+.fq.active { display: block; animation: enter .3s ease-out; }
+.fq-label { font-weight: 700; }
+.fq.done .fq-label { color: var(--green); }
+.fq-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.math { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; }
+.fq .coord { width: 62px; padding: 6px 8px; }
+.fq select { padding: 6px 8px; }
+.fq select.invalid { border-color: var(--red); background: #fff0ee; }
+.fq button { padding: 7px 12px; }
+.fq .feedback { margin: 4px 0 0; min-height: 0; }
+.fq button.correct { background: var(--green); border-color: var(--green); opacity: 1; }
+
+.group { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+
+#q-ends .end-part span { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; }
+#left-end, #right-end { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; line-height: 1; padding: 5px 6px; }
+
+@keyframes enter { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+#complete { margin-top: 18px; padding-top: 18px; border-top: 1px solid #e2e4e1; text-align: center; }

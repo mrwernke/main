@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quadratic Transformations</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../function-transformations/styles.css" />
+  </head>
+  <body data-family="quadratic">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Quadratic Transformations</h1>
+
+      <section class="equation-card" aria-label="Function to analyze">
+        <div class="card-head"><span>Identify the transformations</span><label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label></div>
+        <p class="prompt">Identify the transformations of the parent function <span class="parent" id="parent"></span> to graph the function</p>
+        <div class="equation" id="equation"></div>
+      </section>
+
+      <section class="transform-work" aria-label="Transformation practice">
+        <form id="choose-step">
+          <h2>Choose all transformations of the parent function:</h2>
+          <div class="check-grid">
+            <label class="check-option"><input type="checkbox" value="reflectH" />Reflect Horizontally</label>
+            <label class="check-option"><input type="checkbox" value="dilateH" />Dilate Horizontally</label>
+            <label class="check-option"><input type="checkbox" value="shiftH" />Shift Horizontally</label>
+            <label class="check-option"><input type="checkbox" value="reflectV" />Reflect Vertically</label>
+            <label class="check-option"><input type="checkbox" value="dilateV" />Dilate Vertically</label>
+            <label class="check-option"><input type="checkbox" value="shiftV" />Shift Vertically</label>
+          </div>
+          <button type="submit">Check</button>
+          <p class="feedback" id="choose-feedback" aria-live="polite"></p>
+        </form>
+
+        <form id="detail-step" hidden>
+          <h2>Describe each transformation:</h2>
+          <div id="detail-lines"></div>
+          <button type="submit">Check</button>
+          <p class="feedback" id="detail-feedback" aria-live="polite"></p>
+        </form>
+
+        <section id="complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p>You identified every transformation.</p>
+          <button id="next-example" type="button">Next Example</button>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="../function-transformations/app.js"></script>
+    <script>
+      // When served from the repository, the main page lives in main-site/ instead of the root.
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
+  </body>
+</html>

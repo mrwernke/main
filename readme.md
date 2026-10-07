@@ -10,7 +10,13 @@ This repository contains the SAT Math Prep site and a growing collection of math
 - `math-applets/quadratic-graphing/` - quadratic graphing lab with standard, factored, and vertex form practice.
 - `math-applets/quadratic-from-graph/` - write all three quadratic forms from a marked graph, with box-method multiplication.
 - `math-applets/quadratic-factoring/` - factor monic quadratic expressions using a live multiplication box.
-- `main-site/` - Wernke's World of Math directory linking to the applets.
+- `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
+- `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
+- `math-applets/quadratic-features/` - the same characteristics lab for quadratic graphs.
+- `math-applets/function-transformations/` - identify transformations of a parent function f(x).
+- `math-applets/absolute-value-transformations/` - the same transformations lab for |x|.
+- `math-applets/quadratic-transformations/` - the same transformations lab for x².
+- `main-site/` - Wernke's Algebra II Resources homepage: four unit dropdowns listing skills (with applet links where available) above the applet directory cards.
 
 ## Math applets
 
@@ -24,7 +30,8 @@ roots. Vertex options 3 and 5 are swapped from the original order, and its
 appended options 6-8 have irrational x-intercepts through vertical shifts.
 Standard and factored forms preserve their first six options and append two.
 Switching form or function starts a fresh
-practice attempt. Standard and vertex forms use a five-row table; factored form
+practice attempt. The lab also accepts a `?form=standard|factored|vertex` query
+parameter to preselect a form on load (used by the skill links on the main site). Standard and vertex forms use a five-row table; factored form
 uses the vertex, roots, and the a-value to plot five points. When both roots
 are already one unit from the vertex (factored options 3 and 5), only those
 three distinct points are required; the extra a-value question is skipped.
@@ -96,6 +103,58 @@ switching problem type resets the example and all progress.
 
 ```bash
 node --test math-applets/quadratic-factoring/model.test.mjs
+```
+
+The absolute value equation solver walks through three guided problems of the
+form `a|bx + c| + d = e`; only the third uses a b-value other than 1, and every
+problem has two distinct integer solutions. Students pick the correct next step
+from multiple-choice questions (undo the constant, divide by a, then write two
+equations equal to +m and −m) and the matching algebra appears below the
+equation after each correct choice — the constant subtraction lines up under both
+sides and the division appears as stacked fractions. The lab finishes with an
+`x =` blank under each branch equation; both correct answers fire the shared
+confetti. A dropdown on the equation card jumps among Guided Problems 1–3 and
+Practice 1–3; the practice set gives no hints and accepts both solutions in
+either order, and finishing the third guided problem offers a
+try-on-your-own button. The applet reuses the quadratic grapher's stylesheet
+and confetti module, so both applets must be served together.
+
+```bash
+node --test math-applets/absolute-value-equations/model.test.mjs
+```
+
+The characteristics labs (absolute value and quadratic) share one codebase in
+`math-applets/absolute-value-features/`; the quadratic page sets
+`data-family="quadratic"` and reuses the stylesheet, app, and model from the
+absolute value folder. Each lab offers five graphs of `y = a·g(x − h) + k` with
+integer vertex and intercepts, including one example with the vertex on the
+x-axis and one with no x-intercepts. Eight questions appear one at a time as
+each is answered: domain true/false, range with a four-way inequality dropdown
+(>, ≥, <, ≤), line of symmetry, vertex, max/min extremum sentence,
+x-intercepts, y-intercept, and the graphers' end-behavior selects. A correct
+answer keeps the entered result visible but removes the check button and
+feedback. When a graph has fewer than two x-intercepts, the x-intercept
+question first asks for the count — zero ends with "Correct, there are none."
+and one reveals a single ordered-pair blank. Completing all eight questions
+fires the shared confetti.
+
+```bash
+node --test math-applets/absolute-value-features/model.test.mjs
+```
+
+The transformation labs (generic function, absolute value, and quadratic) share
+one codebase in `math-applets/function-transformations/`; the other two pages
+set `data-family` and reuse its stylesheet, app, and model. Each lab shows four
+examples of `a·g(x − h) + k` mixing positive and negative values, with and
+without reflections and dilations. Students first check all transformations
+that apply from six options (horizontal/vertical reflect, dilate, and shift),
+then describe each one: a vertical reflection is listed as a given, the
+vertical dilation factor is typed, and the shifts use right/left and up/down
+dropdowns with positive amounts. A correct description fires the shared
+confetti with a Next Example button.
+
+```bash
+node --test math-applets/function-transformations/model.test.mjs
 ```
 
 ## SAT Math Prep

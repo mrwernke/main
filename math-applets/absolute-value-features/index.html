@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Absolute Value Function Characteristics</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-family="absolute">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Absolute Value Function Characteristics</h1>
+
+      <section class="features-work" aria-label="Key characteristics practice">
+        <div class="graph-pane">
+          <div class="pane-head">
+            <h2>The graph</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <svg id="plane" viewBox="0 0 520 520" role="img" aria-label="Graph of the function on a coordinate plane from negative ten to ten"></svg>
+        </div>
+
+        <div class="question-pane">
+          <h2>Identify the key characteristics</h2>
+          <ol class="feature-questions">
+            <li class="fq" id="q-domain">
+              <div class="fq-row">
+                <span class="fq-label">Domain:</span>
+                <span>All real numbers</span>
+                <button type="button" id="domain-true">True</button>
+                <button type="button" id="domain-false">False</button>
+              </div>
+              <p class="feedback" id="domain-feedback" aria-live="polite"></p>
+            </li>
+
+            <li class="fq" id="q-range">
+              <form id="range-form">
+                <div class="fq-row">
+                  <span class="fq-label">Range:</span>
+                  <span class="math">y</span>
+                  <select id="range-symbol" aria-label="Inequality symbol">
+                    <option value="" selected>?</option>
+                    <option value="&gt;">&gt;</option>
+                    <option value="≥">≥</option>
+                    <option value="&lt;">&lt;</option>
+                    <option value="≤">≤</option>
+                  </select>
+                  <input class="coord" id="range-value" inputmode="numeric" autocomplete="off" aria-label="Range boundary value" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" id="range-feedback" aria-live="polite"></p>
+              </form>
+            </li>
+
+            <li class="fq" id="q-symmetry">
+              <form id="symmetry-form">
+                <div class="fq-row">
+                  <span class="fq-label">Line of Symmetry:</span>
+                  <span class="math">x =</span>
+                  <input class="coord" id="symmetry-value" inputmode="numeric" autocomplete="off" aria-label="Line of symmetry x value" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" id="symmetry-feedback" aria-live="polite"></p>
+              </form>
+            </li>
+
+            <li class="fq" id="q-vertex">
+              <form id="vertex-form">
+                <div class="fq-row">
+                  <span class="fq-label">Vertex:</span>
+                  <span class="math">(</span>
+                  <input class="coord" id="vertex-x" inputmode="numeric" autocomplete="off" aria-label="Vertex x-coordinate" />
+                  <span class="math">,</span>
+                  <input class="coord" id="vertex-y" inputmode="numeric" autocomplete="off" aria-label="Vertex y-coordinate" />
+                  <span class="math">)</span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" id="vertex-feedback" aria-live="polite"></p>
+              </form>
+            </li>
+
+            <li class="fq" id="q-extremum">
+              <form id="extremum-form">
+                <div class="fq-row">
+                  <span class="fq-label">Extrema:</span>
+                  <span>The vertex is a</span>
+                  <select id="extremum-type" aria-label="Maximum or minimum">
+                    <option value="" selected>?</option>
+                    <option value="maximum">maximum</option>
+                    <option value="minimum">minimum</option>
+                  </select>
+                  <span>of</span>
+                  <span class="group"><span class="math">y =</span><input class="coord" id="extremum-y" inputmode="numeric" autocomplete="off" aria-label="Extreme y value" /></span>
+                  <span>at</span>
+                  <span class="group"><span class="math">x =</span><input class="coord" id="extremum-x" inputmode="numeric" autocomplete="off" aria-label="x value of the extremum" /></span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" id="extremum-feedback" aria-live="polite"></p>
+              </form>
+            </li>
+
+            <li class="fq" id="q-xints">
+              <form id="xint-pair">
+                <div class="fq-row">
+                  <span class="fq-label">x-intercepts:</span>
+                  <span class="group"><span class="math">(</span><input class="coord" id="xint-first" inputmode="numeric" autocomplete="off" aria-label="First x-intercept" /><span class="math">, 0)</span></span>
+                  <span>and</span>
+                  <span class="group"><span class="math">(</span><input class="coord" id="xint-second" inputmode="numeric" autocomplete="off" aria-label="Second x-intercept" /><span class="math">, 0)</span></span>
+                  <button type="submit">Check</button>
+                </div>
+              </form>
+              <form id="xint-count-row" hidden>
+                <div class="fq-row">
+                  <span class="fq-label">x-intercepts:</span>
+                  <span>Enter number of x-intercepts:</span>
+                  <input class="coord" id="xint-count" inputmode="numeric" autocomplete="off" aria-label="Number of x-intercepts" />
+                  <button type="submit">Check</button>
+                </div>
+              </form>
+              <form id="xint-single" hidden>
+                <div class="fq-row">
+                  <span class="group"><span class="math">(</span><input class="coord" id="xint-only" inputmode="numeric" autocomplete="off" aria-label="The x-intercept" /><span class="math">, 0)</span></span>
+                  <button type="submit">Check</button>
+                </div>
+              </form>
+              <p class="feedback" id="xints-feedback" aria-live="polite"></p>
+            </li>
+
+            <li class="fq" id="q-yint">
+              <form id="yint-form">
+                <div class="fq-row">
+                  <span class="fq-label">y-intercept:</span>
+                  <span class="math">(0,</span>
+                  <input class="coord" id="yint-value" inputmode="numeric" autocomplete="off" aria-label="y-intercept value" />
+                  <span class="math">)</span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" id="yint-feedback" aria-live="polite"></p>
+              </form>
+            </li>
+
+            <li class="fq" id="q-ends">
+              <form id="ends-form">
+                <div class="fq-row">
+                  <span class="fq-label">End Behavior:</span>
+                  <span class="group end-part"><span>As x → −∞, y →</span><select id="left-end" aria-label="Left end behavior"><option value="" selected>choose</option><option value="positive">+∞</option><option value="negative">−∞</option></select></span>
+                  <span class="group end-part"><span>As x → +∞, y →</span><select id="right-end" aria-label="Right end behavior"><option value="" selected>choose</option><option value="positive">+∞</option><option value="negative">−∞</option></select></span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" id="ends-feedback" aria-live="polite"></p>
+              </form>
+            </li>
+          </ol>
+
+          <section id="complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <p>You identified every key characteristic of this graph.</p>
+            <button id="next-example" type="button">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script>
+      // When served from the repository, the main page lives in main-site/ instead of the root.
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
+  </body>
+</html>

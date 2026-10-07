@@ -47,13 +47,27 @@ jobs:
           mkdir -p dist/math-applets/quadratic-graphing
           mkdir -p dist/math-applets/quadratic-from-graph
           mkdir -p dist/math-applets/quadratic-factoring
+          mkdir -p dist/math-applets/absolute-value-equations
+          mkdir -p dist/math-applets/absolute-value-features
+          mkdir -p dist/math-applets/quadratic-features
+          mkdir -p dist/math-applets/function-transformations
+          mkdir -p dist/math-applets/absolute-value-transformations
+          mkdir -p dist/math-applets/quadratic-transformations
           cp -R sat-math-prep/dist/. dist/sat-math-prep/
           cp math-applets/domain-range-helper/index.html dist/math-applets/domain-range-helper/index.html
           cp math-applets/absolute-value-graphing/index.html dist/math-applets/absolute-value-graphing/index.html
           cp math-applets/quadratic-graphing/{index.html,styles.css,app.js,model.mjs,confetti.js} dist/math-applets/quadratic-graphing/
           cp math-applets/quadratic-from-graph/{index.html,styles.css,app.js,model.mjs} dist/math-applets/quadratic-from-graph/
           cp math-applets/quadratic-factoring/{index.html,styles.css,app.js,model.mjs} dist/math-applets/quadratic-factoring/
+          cp math-applets/absolute-value-equations/{index.html,styles.css,app.js,model.mjs} dist/math-applets/absolute-value-equations/
+          cp math-applets/absolute-value-features/{index.html,styles.css,app.js,model.mjs} dist/math-applets/absolute-value-features/
+          cp math-applets/quadratic-features/index.html dist/math-applets/quadratic-features/index.html
+          cp math-applets/function-transformations/{index.html,styles.css,app.js,model.mjs} dist/math-applets/function-transformations/
+          cp math-applets/absolute-value-transformations/index.html dist/math-applets/absolute-value-transformations/index.html
+          cp math-applets/quadratic-transformations/index.html dist/math-applets/quadratic-transformations/index.html
           cp main-site/index.html dist/index.html
+          mkdir -p dist/assets
+          cp main-site/assets/algebra2-chalkboard.png dist/assets/algebra2-chalkboard.png
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

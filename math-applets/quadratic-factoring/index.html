@@ -10,7 +10,7 @@
   <body>
     <main>
       <div class="topbar">
-        <a class="back" href="../../">Back to Wernke's World of Math</a>
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
         <span class="eyebrow">Interactive math applet</span>
       </div>
       <h1>Factoring Quadratics with the Box Method</h1>
@@ -79,5 +79,11 @@
       </section>
     </main>
     <script type="module" src="./app.js"></script>
+    <script>
+      // When served from the repository, the main page lives in main-site/ instead of the root.
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
   </body>
 </html>

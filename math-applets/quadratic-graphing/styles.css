@@ -81,7 +81,7 @@ svg { width:100%; height:auto; display:block; border:1px solid #d9e1e8; backgrou
 .option-row { display:flex; align-items:center; gap:8px; margin-top:12px; font-size:.88rem; color:var(--muted); cursor:pointer; }
 .option-row input { width:16px; height:16px; padding:0; accent-color:var(--green); }
 .domain-row strong { font-family:Georgia,serif; font-size:1.2rem; }
-.end-box { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:18px 0; padding:14px; border-left:4px solid var(--gold); background:#fff7de; font-family:Georgia,serif; font-size:1.08rem; }
+.end-box { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:18px 0; font-family:Georgia,serif; font-size:1.08rem; }
 #function-picker { max-width:100%; padding:7px 9px; font-size:.9rem; letter-spacing:normal; text-transform:none; }
 @media (max-width:850px) {
   .work,.table-work { grid-template-columns:1fr; }

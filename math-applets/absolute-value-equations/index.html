@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Absolute Value Equation Solver</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Absolute Value Equation Solver</h1>
+
+      <div class="form-picker mode-picker" role="group" aria-label="Choose a practice mode">
+        <button class="form-choice" id="guided-mode" aria-pressed="true">Guided practice <span>step-by-step questions</span></button>
+        <button class="form-choice" id="solo-mode" aria-pressed="false">On your own <span>no hints — enter both solutions</span></button>
+      </div>
+
+      <section class="equation-card" aria-label="Equation to solve">
+        <div class="card-head"><span>Solve this equation</span><label class="picker-label">Problem <select id="problem-picker" aria-label="Choose a problem"></select></label></div>
+        <div class="equation" id="equation"></div>
+      </section>
+
+      <section class="solve-work" aria-label="Solving practice">
+        <div class="work-lines" id="work-lines" aria-live="polite"></div>
+
+        <div class="question" id="question-area">
+          <h2 id="question-title"></h2>
+          <div class="choices" id="choices" role="group" aria-labelledby="question-title"></div>
+          <p class="feedback" id="choice-feedback" aria-live="polite"></p>
+        </div>
+
+        <form id="branch-area" hidden>
+          <h2>Solve each equation</h2>
+          <p class="muted">The expression inside the absolute value can equal the positive or the negative value. Solve both equations.</p>
+          <div class="branches">
+            <div class="branch">
+              <p class="branch-eq" id="branch-plus"></p>
+              <div class="answer-row"><span class="solve-x">x =</span><input class="coord" id="answer-plus" inputmode="numeric" autocomplete="off" aria-label="Solution to the positive equation" /></div>
+            </div>
+            <span class="branch-and">and</span>
+            <div class="branch">
+              <p class="branch-eq" id="branch-minus"></p>
+              <div class="answer-row"><span class="solve-x">x =</span><input class="coord" id="answer-minus" inputmode="numeric" autocomplete="off" aria-label="Solution to the negative equation" /></div>
+            </div>
+          </div>
+          <div class="answer-row"><button id="check-solutions" type="submit">Check solutions</button></div>
+          <p class="feedback" id="branch-feedback" aria-live="polite"></p>
+        </form>
+
+        <form id="solo-area" hidden>
+          <h2>Enter both solutions</h2>
+          <p class="muted">No hints this time. Isolate the absolute value, write both equations, and enter the two solutions in either order.</p>
+          <div class="solo-answers">
+            <span class="solve-x">x =</span><input class="coord" id="solo-first" inputmode="numeric" autocomplete="off" aria-label="First solution" />
+            <span>and</span>
+            <span class="solve-x">x =</span><input class="coord" id="solo-second" inputmode="numeric" autocomplete="off" aria-label="Second solution" />
+            <button id="check-solo" type="submit">Check solutions</button>
+          </div>
+          <p class="feedback" id="solo-feedback" aria-live="polite"></p>
+        </form>
+
+        <section id="complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-note"></p>
+          <div class="answer-row complete-actions">
+            <button id="next-problem" type="button" hidden>New Problem</button>
+            <button id="to-solo" type="button" hidden>Try on your own</button>
+            <button id="restart" type="button" hidden>Start over</button>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script>
+      // When served from the repository, the main page lives in main-site/ instead of the root.
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
+  </body>
+</html>

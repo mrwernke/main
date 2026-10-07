@@ -9,7 +9,7 @@
   </head>
   <body>
     <main>
-      <div class="topbar"><a class="back" href="../../">← Wernke's World of Math</a><span class="eyebrow">Interactive math applet</span></div>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
       <h1>Quadratic Equation from a Graph</h1>
       <p class="intro">Read the marked points, write the equation in vertex and factored forms, then use the box method to build standard form.</p>
       <section class="equation-card">
@@ -100,5 +100,11 @@
       </div>
     </main>
     <script type="module" src="./app.js"></script>
+    <script>
+      // When served from the repository, the main page lives in main-site/ instead of the root.
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
   </body>
 </html>

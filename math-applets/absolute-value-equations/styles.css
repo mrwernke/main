@@ -1,0 +1,36 @@
+.mode-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#problem-picker { max-width: 100%; padding: 7px 9px; font-size: .9rem; letter-spacing: normal; text-transform: none; }
+
+.solve-work { display: grid; gap: 24px; padding: 24px; border: 1px solid var(--line); background: var(--panel); box-shadow: 5px 5px 0 #d8dedb; }
+
+.work-lines { display: grid; grid-template-columns: auto auto auto; gap: 8px 12px; justify-content: start; align-items: baseline; font: 1.5rem Georgia, "Times New Roman", serif; }
+.work-lines:empty { display: none; }
+.work-line { display: contents; }
+.work-line > span { animation: enter .3s ease-out; }
+.work-line .lhs { justify-self: end; text-align: right; }
+.work-line .rhs { justify-self: start; }
+.work-line.op .lhs, .work-line.op .rhs { border-bottom: 2px solid var(--ink); padding: 0 4px 3px; }
+.work-line.op .eq { visibility: hidden; }
+.work-line.division > span { align-self: center; }
+.work-line .fraction .numerator { padding: 0 8px 6px; }
+.work-line .fraction .denominator { padding-top: 4px; }
+
+.choices { display: grid; gap: 10px; max-width: 480px; }
+.choice { text-align: left; background: var(--panel); color: var(--ink); font-size: .95rem; }
+.choice:hover:enabled { background: #eef6f2; }
+.choice.correct, .choice.correct:disabled { background: var(--green); border-color: var(--green); color: #fff; opacity: 1; }
+.choice:disabled { cursor: default; }
+
+.branches { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 28px; }
+.branch { text-align: center; }
+.branch .answer-row { justify-content: center; margin-top: 12px; }
+.branch-eq { margin: 0; font: 1.45rem Georgia, "Times New Roman", serif; }
+.branch-and { font: 1.2rem Georgia, "Times New Roman", serif; padding-top: 8px; }
+.solve-x { font: 1.3rem Georgia, "Times New Roman", serif; }
+
+.solo-answers { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+
+#complete { border-top: 1px solid #e2e4e1; padding-top: 20px; text-align: center; }
+.complete-actions { justify-content: center; }
+
+@keyframes enter { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
