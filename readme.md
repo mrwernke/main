@@ -1,10 +1,12 @@
-# Math Projects
+# Wernke's Math Resources
 
-This repository contains the SAT Math Prep site and a growing collection of math applets.
+This repository is the home for the whole site: the main homepage, a growing
+collection of math applets, and the SAT Math Prep app (development currently
+paused) as subdirectories.
 
 ## Projects
 
-- `sat-math-prep/` - SAT Math Prep application and its standalone Vite project.
+- `main-site/` - Wernke's Math Resources homepage: four unit dropdowns listing skills (with applet links where available) above the applet directory cards.
 - `math-applets/domain-range-helper/` - first math applet, under development.
 - `math-applets/absolute-value-graphing/` - guided absolute-value graphing lab.
 - `math-applets/quadratic-graphing/` - quadratic graphing lab with standard, factored, and vertex form practice.
@@ -16,7 +18,7 @@ This repository contains the SAT Math Prep site and a growing collection of math
 - `math-applets/function-transformations/` - identify transformations of a parent function f(x).
 - `math-applets/absolute-value-transformations/` - the same transformations lab for |x|.
 - `math-applets/quadratic-transformations/` - the same transformations lab for x².
-- `main-site/` - Wernke's Algebra II Resources homepage: four unit dropdowns listing skills (with applet links where available) above the applet directory cards.
+- `sat-math-prep/` - SAT Math Prep application and its standalone Vite project (development paused).
 
 ## Math applets
 
@@ -159,7 +161,8 @@ node --test math-applets/function-transformations/model.test.mjs
 
 ## SAT Math Prep
 
-Run the SAT Math Prep project locally from its directory:
+Development of the SAT Math Prep app is currently paused. It lives in
+`sat-math-prep/` as a standalone subproject; run it locally from its directory:
 
 ```bash
 cd sat-math-prep
@@ -167,6 +170,8 @@ npm install
 npm run dev
 ```
 
-GitHub Pages assembles the directory, math applets, and SAT Math Prep project
-using `.github/workflows/deploy-pages.yml`. The quadratic lab's HTML, CSS, and
-JavaScript files are included in that deployment.
+GitHub Pages assembles the main site, math applets, and SAT Math Prep project
+using `.github/workflows/deploy-pages.yml`. The site deploys from the
+`mrwernke/main` repository, so everything is served under the `/main/` base
+path with `main-site/index.html` at the root. The quadratic lab's HTML, CSS,
+and JavaScript files are included in that deployment.
