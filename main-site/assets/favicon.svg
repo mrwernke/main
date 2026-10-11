@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Deep Navy Rounded Canvas -->
+  <rect width="64" height="64" rx="15" fill="#17233d"/>
+  
+  <!-- Subtle Blueprint Accent Frame -->
+  <rect x="2.5" y="2.5" width="59" height="59" rx="12.5" stroke="#7fd9e8" stroke-width="1.5" stroke-opacity="0.35"/>
+  
+  <!-- Coordinate Axis Guidelines -->
+  <path d="M10 47.5H54" stroke="#7fd9e8" stroke-width="1.5" stroke-dasharray="3 3" stroke-opacity="0.3"/>
+  <path d="M32 10V54" stroke="#7fd9e8" stroke-width="1.5" stroke-dasharray="3 3" stroke-opacity="0.3"/>
+  
+  <!-- Stylized Mathematical Monogram 'W' -->
+  <path d="M13 18L23 47.5L32 25.5L41 47.5L51 18" stroke="#fffdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Coral Plotted Vertex Point -->
+  <circle cx="32" cy="25.5" r="4.25" fill="#ee735b"/>
+</svg>
