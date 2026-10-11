@@ -1,4 +1,4 @@
-﻿import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   FileText,
@@ -18,7 +18,7 @@ import {
   Mail,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { useSession } from "@/lib/session";
 import { getSettings } from "@/lib/settings";
 import { TEST_LABELS } from "@/lib/config";
@@ -38,7 +38,7 @@ export default function Sidebar({ onClose }) {
 
   useEffect(() => {
     if (user?.role === "student") {
-      base44.entities.TestResult.filter({ student_id: user.id }, "-created_date", 50)
+      apiClient.entities.TestResult.filter({ student_id: user.id }, "-created_date", 50)
         .then((r) => setTakenTests(r.map((x) => x.test_number)))
         .catch(() => setTakenTests([]));
     } else {

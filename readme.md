@@ -22,7 +22,7 @@ paused) as subdirectories.
 
 ## Math applets
 
-The applets are standalone static sites; no Base44 backend or build is required.
+The applets are standalone static sites; no build step is required.
 To preview the directory and applets together, serve the repository root with a
 static HTTP server and open `main-site/` or `math-applets/quadratic-graphing/`.
 

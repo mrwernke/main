@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { useSession } from "@/lib/session";
 import { SAT_DOMAINS } from "@/lib/config";
 import QuestionDisplay from "@/components/QuestionDisplay";
@@ -36,7 +36,7 @@ export default function PracticeQuestions() {
     setStats({ correct: 0, total: 0 });
     const filter = { usage: "practice" };
     if (chosenTopic !== "all") filter.topic = chosenTopic;
-    const qs = await base44.entities.Question.filter(filter);
+    const qs = await apiClient.entities.Question.filter(filter);
     const diffRank = { Easy: 1, Medium: 2, Hard: 3 };
     qs.sort((a, b) => {
       const t = (a.topic || "").localeCompare(b.topic || "");
@@ -50,7 +50,7 @@ export default function PracticeQuestions() {
     let savedCorrect = 0;
     let savedTotal = 0;
     try {
-      const attempts = await base44.entities.PracticeAttempt.filter({ student_id: user.id }, "-created_date", 500);
+      const attempts = await apiClient.entities.PracticeAttempt.filter({ student_id: user.id }, "-created_date", 500);
       const byQuestion = {};
       attempts.forEach((a) => {
         if (!a.question_id) return;
@@ -100,7 +100,7 @@ export default function PracticeQuestions() {
     });
     setStats((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }));
     try {
-      await base44.entities.PracticeAttempt.create({
+      await apiClient.entities.PracticeAttempt.create({
         student_id: user.id,
         student_name: `${user.first_name} ${user.last_name}`,
         question_id: q.id,

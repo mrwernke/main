@@ -1,6 +1,6 @@
 # SAT Math Prep
 
-This project is a standalone SAT Math Prep application that can run locally without the original Base44 backend. In development it uses a browser-based local storage fallback for students, questions, settings, and other data.
+This project is a standalone SAT Math Prep application. It includes a built-in browser-based local storage data store for students, questions, settings, test results, and calendar scheduling.
 
 ## Prerequisites
 
@@ -25,14 +25,10 @@ Then open the local URL printed by Vite, usually:
 http://localhost:5173/
 ```
 
-## Optional remote backend
+## Build for Production
 
-If you later connect this app to a hosted database or authentication provider, you can add a local env file with:
+Build the production bundle:
 
 ```bash
-VITE_USE_BASE44=true
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=https://your-app.example.com
+npm run build
 ```
-
-The app will only use the remote client when that flag is enabled.

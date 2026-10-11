@@ -1,9 +1,9 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createLocalBase44Client } from './localDataStore.js';
+import { createLocalApiClient } from './localDataStore.js';
 
-test('local base44 client stores and filters student records', async () => {
-  const client = createLocalBase44Client();
+test('local api client stores and filters student records', async () => {
+  const client = createLocalApiClient();
 
   const student = await client.entities.Student.create({
     username: 'demo',
@@ -45,7 +45,7 @@ test('local base44 client stores and filters student records', async () => {
 });
 
 test('local seed data replaces the question bank with topic-based practice questions', async () => {
-  const client = createLocalBase44Client();
+  const client = createLocalApiClient();
   const questions = await client.entities.Question.filter({ usage: 'practice' });
 
   assert.equal(questions.length, 180);
@@ -55,7 +55,7 @@ test('local seed data replaces the question bank with topic-based practice quest
 });
 
 test('local seed data adds practice questions for the three practice tests', async () => {
-  const client = createLocalBase44Client();
+  const client = createLocalApiClient();
   const test1 = await client.entities.Question.filter({ usage: 'test_1' });
   const test2 = await client.entities.Question.filter({ usage: 'test_2' });
   const test3 = await client.entities.Question.filter({ usage: 'test_3' });
@@ -69,7 +69,7 @@ test('local seed data adds practice questions for the three practice tests', asy
 });
 
 test('local upload fallback turns image files into data URLs', async () => {
-  const client = createLocalBase44Client();
+  const client = createLocalApiClient();
   const image = {
     type: 'image/png',
     arrayBuffer: async () => new Uint8Array([1, 2, 3, 4]).buffer,
@@ -81,7 +81,7 @@ test('local upload fallback turns image files into data URLs', async () => {
 });
 
 test('new practice questions persist after being created', async () => {
-  const client = createLocalBase44Client();
+  const client = createLocalApiClient();
 
   const created = await client.entities.Question.create({
     question_text: 'Persist me',

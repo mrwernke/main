@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { Users, FileText, ClipboardList, CalendarDays, UserCheck, Settings, ArrowRight, Loader2 } from "lucide-react";
 
 const sections = [
@@ -22,10 +22,10 @@ export default function AdminDashboard() {
     (async () => {
       try {
         const [students, pending, questions, slots] = await Promise.all([
-          base44.entities.Student.filter({ approval_status: "approved" }, undefined, 500),
-          base44.entities.Student.filter({ approval_status: "pending" }, undefined, 500),
-          base44.entities.Question.list(undefined, 500),
-          base44.entities.CalendarSlot.filter({ status: "booked" }, undefined, 500),
+          apiClient.entities.Student.filter({ approval_status: "approved" }, undefined, 500),
+          apiClient.entities.Student.filter({ approval_status: "pending" }, undefined, 500),
+          apiClient.entities.Question.list(undefined, 500),
+          apiClient.entities.CalendarSlot.filter({ status: "booked" }, undefined, 500),
         ]);
         setStats({
           students: students.length,

@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { getSettings } from "@/lib/settings";
 import CalendarGrid, { formatTime } from "@/components/CalendarGrid";
 import Modal from "@/components/Modal";
@@ -34,8 +34,8 @@ export default function AdminCalendar() {
   const fetchAll = async () => {
     setLoading(true);
     const [sl, st] = await Promise.all([
-      base44.entities.CalendarSlot.list(undefined, 1000),
-      base44.entities.Student.filter({ approval_status: "approved" }, undefined, 500),
+      apiClient.entities.CalendarSlot.list(undefined, 1000),
+      apiClient.entities.Student.filter({ approval_status: "approved" }, undefined, 500),
     ]);
     setSlots(sl);
     setStudents(st);
@@ -59,7 +59,7 @@ export default function AdminCalendar() {
         start = end;
       }
       for (const slot of creates) {
-        await base44.entities.CalendarSlot.create(slot);
+        await apiClient.entities.CalendarSlot.create(slot);
       }
       setDayModal(null);
       fetchAll();
@@ -70,7 +70,7 @@ export default function AdminCalendar() {
 
   const removeSlot = async (slot) => {
     if (!confirm("Remove this time slot? Any booking will be cancelled.")) return;
-    await base44.entities.CalendarSlot.delete(slot.id);
+    await apiClient.entities.CalendarSlot.delete(slot.id);
     setSlotModal(null);
     fetchAll();
   };
@@ -79,7 +79,7 @@ export default function AdminCalendar() {
     if (!studentId) return;
     const settings = await getSettings();
     const stu = students.find((s) => s.id === studentId);
-    await base44.entities.CalendarSlot.update(slot.id, {
+    await apiClient.entities.CalendarSlot.update(slot.id, {
       status: "booked",
       student_id: studentId,
       student_name: stu ? `${stu.first_name} ${stu.last_name}` : null,
@@ -90,7 +90,7 @@ export default function AdminCalendar() {
   };
 
   const unassign = async (slot) => {
-    await base44.entities.CalendarSlot.update(slot.id, {
+    await apiClient.entities.CalendarSlot.update(slot.id, {
       status: "open",
       student_id: null,
       student_name: null,
@@ -102,7 +102,7 @@ export default function AdminCalendar() {
 
   const approve = async (slot) => {
     const settings = await getSettings();
-    await base44.entities.CalendarSlot.update(slot.id, {
+    await apiClient.entities.CalendarSlot.update(slot.id, {
       status: "booked",
       zoom_link: settings.zoom_link,
     });
@@ -111,7 +111,7 @@ export default function AdminCalendar() {
   };
 
   const decline = async (slot) => {
-    await base44.entities.CalendarSlot.update(slot.id, {
+    await apiClient.entities.CalendarSlot.update(slot.id, {
       status: "open",
       student_id: null,
       student_name: null,

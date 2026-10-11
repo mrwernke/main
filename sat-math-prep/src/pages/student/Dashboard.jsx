@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { useSession } from "@/lib/session";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { TEST_LABELS } from "@/lib/config";
 import TopicBars from "@/components/TopicBars";
 import { TrendingUp, CalendarDays, Award, Clock, Video } from "lucide-react";
@@ -16,8 +16,8 @@ export default function Dashboard() {
     (async () => {
       try {
         const [r, s] = await Promise.all([
-          base44.entities.TestResult.filter({ student_id: user.id }, "-created_date", 100),
-          base44.entities.CalendarSlot.filter({ student_id: user.id, status: "booked" }, "slot_date", 100),
+          apiClient.entities.TestResult.filter({ student_id: user.id }, "-created_date", 100),
+          apiClient.entities.CalendarSlot.filter({ student_id: user.id, status: "booked" }, "slot_date", 100),
         ]);
         setResults(r);
         setSlots(s);

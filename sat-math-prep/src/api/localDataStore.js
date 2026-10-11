@@ -1,4 +1,4 @@
-﻿const STORAGE_PREFIX = 'satmathprep_local';
+const STORAGE_PREFIX = 'satmathprep_local';
 let memoryStore = {};
 
 const PRACTICE_TOPICS = [
@@ -887,7 +887,7 @@ const createEntityCollection = (entityName) => {
   };
 };
 
-export const createLocalBase44Client = () => ({
+export const createLocalApiClient = () => ({
   entities: {
     Student: createEntityCollection('Student'),
     Question: createEntityCollection('Question'),
@@ -912,6 +912,7 @@ export const createLocalBase44Client = () => ({
   },
 });
 
-export const localBase44 = createLocalBase44Client();
+export const localApiClient = createLocalApiClient();
+
 
 

@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { useSession } from "@/lib/session";
 import CalendarGrid, { formatDate, formatTime } from "@/components/CalendarGrid";
 import { NOTIFY_EMAIL } from "@/lib/config";
@@ -17,7 +17,7 @@ export default function StudentCalendar() {
 
   const fetchSlots = async () => {
     setLoading(true);
-    const all = await base44.entities.CalendarSlot.list(undefined, 500);
+    const all = await apiClient.entities.CalendarSlot.list(undefined, 500);
     setSlots(all);
     setLoading(false);
   };
@@ -44,7 +44,7 @@ export default function StudentCalendar() {
       const requested = slots.filter((s) => selection.has(s.id));
       await Promise.all(
         ids.map((id) =>
-          base44.entities.CalendarSlot.update(id, {
+          apiClient.entities.CalendarSlot.update(id, {
             status: "pending",
             student_id: user.id,
             student_name: `${user.first_name} ${user.last_name}`,
@@ -60,7 +60,7 @@ export default function StudentCalendar() {
               `${formatDate(new Date(s.slot_date + "T00:00"))} at ${formatTime(s.start_time)}${s.end_time ? ` â€“ ${formatTime(s.end_time)}` : ""}`
           )
           .join("\n");
-        await base44.integrations.Core.SendEmail({
+        await apiClient.integrations.Core.SendEmail({
           from_name: "Math SAT Prep",
           to: NOTIFY_EMAIL,
           subject: "New Session Request",

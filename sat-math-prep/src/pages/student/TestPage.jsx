@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { useSession } from "@/lib/session";
 import { TEST_LABELS } from "@/lib/config";
 import QuestionDisplay from "@/components/QuestionDisplay";
@@ -28,9 +28,9 @@ export default function TestPage() {
       setStudent(fresh);
       const unlockedKey = `test${tn}_unlocked`;
       const unlocked = fresh[unlockedKey];
-      const qs = await base44.entities.Question.filter({ usage: `test_${tn}` }, undefined, 200);
+      const qs = await apiClient.entities.Question.filter({ usage: `test_${tn}` }, undefined, 200);
       setQuestions(qs);
-      const existing = await base44.entities.TestResult.filter(
+      const existing = await apiClient.entities.TestResult.filter(
         { student_id: user.id, test_number: tn },
         "-created_date",
         1
@@ -84,7 +84,7 @@ export default function TestPage() {
       answerLog.push({ question_id: q.id, selected: sel, correct: isCorrect, topic });
     });
     const score = Math.round(200 + (correct / questions.length) * 600);
-    const res = await base44.entities.TestResult.create({
+    const res = await apiClient.entities.TestResult.create({
       student_id: user.id,
       student_name: `${user.first_name} ${user.last_name}`,
       test_number: tn,

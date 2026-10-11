@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { TEST_LABELS } from "@/lib/config";
 import Modal from "@/components/Modal";
 import QuestionForm from "@/components/QuestionForm";
@@ -16,7 +16,7 @@ export default function PracticeTestsAdmin() {
 
   const fetchQs = async () => {
     setLoading(true);
-    const qs = await base44.entities.Question.filter({ usage: `test_${testNum}` }, undefined, 500);
+    const qs = await apiClient.entities.Question.filter({ usage: `test_${testNum}` }, undefined, 500);
     setQuestions(qs.map((q) => ({ ...q, difficulty: q.difficulty === "Challenge" ? "Hard" : q.difficulty })));
     setLoading(false);
   };
@@ -42,9 +42,9 @@ export default function PracticeTestsAdmin() {
 
     try {
       if (modal.mode === "add") {
-        await base44.entities.Question.create(cleanForm);
+        await apiClient.entities.Question.create(cleanForm);
       } else if (modal.mode === "edit" && modal.data?.id) {
-        await base44.entities.Question.update(modal.data.id, cleanForm);
+        await apiClient.entities.Question.update(modal.data.id, cleanForm);
       }
     } catch (err) {
       console.error("Failed to save test question:", err);
@@ -56,7 +56,7 @@ export default function PracticeTestsAdmin() {
 
   const remove = async (q) => {
     if (!confirm("Remove this question from the database?")) return;
-    await base44.entities.Question.delete(q.id);
+    await apiClient.entities.Question.delete(q.id);
     fetchQs();
   };
 

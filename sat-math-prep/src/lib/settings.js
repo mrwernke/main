@@ -1,11 +1,11 @@
-﻿import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 
 let cached = null;
 
 export async function getSettings() {
   if (cached) return cached;
   try {
-    const list = await base44.entities.Settings.list();
+    const list = await apiClient.entities.Settings.list();
     cached = list[0] || {
       tutor_email: "tutor@example.com",
       zoom_link: "https://zoom.us/j/0000000000",

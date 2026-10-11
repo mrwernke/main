@@ -1,5 +1,5 @@
-﻿import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { useState } from "react";
+import { apiClient } from "@/api/apiClient";
 import { Button } from "@/components/ui/button";
 import { SAT_DOMAINS, SAT_TOPICS, DIFFICULTIES, QUESTION_USAGES } from "@/lib/config";
 import LatexText from "@/components/LatexText";
@@ -47,7 +47,7 @@ export default function QuestionForm({ initial, onSubmit, onCancel, hideDifficul
     setUploadError("");
     try {
       const payload = file instanceof File ? file : { file };
-      const { file_url } = await base44.integrations.Core.UploadFile(payload);
+      const { file_url } = await apiClient.integrations.Core.UploadFile(payload);
       if (!file_url) {
         setUploadError("Image upload was not available. Please try again.");
         return;

@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { SAT_DOMAINS } from "@/lib/config";
 import Modal from "@/components/Modal";
 import QuestionForm from "@/components/QuestionForm";
@@ -23,7 +23,7 @@ export default function PracticeQuestionsAdmin() {
 
   const fetchQs = async () => {
     setLoading(true);
-    const qs = await base44.entities.Question.list(undefined, 1000);
+    const qs = await apiClient.entities.Question.list(undefined, 1000);
     setQuestions(qs.map((q) => ({ ...q, difficulty: q.difficulty === "Challenge" ? "Hard" : q.difficulty })));
     setLoading(false);
   };
@@ -48,9 +48,9 @@ export default function PracticeQuestionsAdmin() {
     };
     
     if (modal.mode === "add" || modal.mode === "import") {
-      await base44.entities.Question.create(payload);
+      await apiClient.entities.Question.create(payload);
     } else {
-      await base44.entities.Question.update(modal.data.id, payload);
+      await apiClient.entities.Question.update(modal.data.id, payload);
     }
     setModal(null);
     fetchQs();
@@ -58,7 +58,7 @@ export default function PracticeQuestionsAdmin() {
 
   const remove = async (q) => {
     if (!confirm("Delete this question?")) return;
-    await base44.entities.Question.delete(q.id);
+    await apiClient.entities.Question.delete(q.id);
     fetchQs();
   };
 
@@ -68,7 +68,7 @@ export default function PracticeQuestionsAdmin() {
     setImportError("");
     try {
       const payload = file instanceof File ? file : { file };
-      const { file_url } = await base44.integrations.Core.UploadFile(payload);
+      const { file_url } = await apiClient.integrations.Core.UploadFile(payload);
       if (!file_url) {
         setImportError("Image import failed.");
         return;
