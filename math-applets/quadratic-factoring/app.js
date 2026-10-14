@@ -2,7 +2,7 @@ import { exercises, nonMonicExercises, parseInteger, parseCompleteFactor, linear
 import { clearConfetti, fireConfetti } from '../quadratic-graphing/confetti.js';
 
 const $ = selector => document.querySelector(selector);
-let index = 0, submitted = false, nonMonic = false;
+let index = 0, submitted = false, nonMonic = false, confirmedFactors = null, repeated = false;
 const bank = () => nonMonic ? nonMonicExercises : exercises;
 const item = () => bank()[index];
 const boxValues = () => [
@@ -20,18 +20,30 @@ function state(element, correct, ready) {
 function clearAnswer() {
   clearConfetti();
   submitted = false;
+  confirmedFactors = null;
+  repeated = false;
   $('#complete').hidden = true;
+  $('#zero-product').hidden = true;
+  $('#solutions').hidden = true;
   $('#next').hidden = true;
   $('#factored-result').textContent = '';
   $('#factor-feedback').textContent = '';
   $('#factor-feedback').className = 'feedback';
+  $('#factor-feedback').hidden = false;
   $('#submit-factors').disabled = false;
-  ['#first-factor', '#second-factor'].forEach(id => {
+  $('#submit-factors').hidden = false;
+  ['#first-factor', '#second-factor', '#zero-first', '#zero-second', '#solution-first', '#solution-second'].forEach(id => {
     $(id).value = '';
     $(id).readOnly = false;
     $(id).classList.remove('invalid');
     $(id).setAttribute('aria-invalid', 'false');
   });
+  ['#zero-feedback', '#solution-feedback'].forEach(id => { $(id).textContent = ''; $(id).className = 'feedback'; $(id).hidden = false; });
+  $('#zero-submit').hidden = false;
+  $('#first-factor').hidden = false; $('#second-factor').hidden = false;
+  $('#factor-middle').hidden = false; $('#factor-close').hidden = false; $('#factor-square').hidden = true;
+  $('#zero-second').hidden = false; $('#zero-middle').hidden = false; $('#zero-close').hidden = false;
+  $('#solution-second').hidden = false; $('#solution-divider').hidden = false;
 }
 
 function update() {
@@ -45,6 +57,16 @@ function update() {
     input.setAttribute('aria-invalid', String(invalid[i]));
   });
   const result = assess(item(), ...values);
+  $('#checks-heading').hidden = result.complete;
+  const boxRepeated = result.complete && values[0] === values[1] && values[2] === values[3];
+  if (result.complete) $('#factor-instructions').textContent = boxRepeated
+    ? 'The box shows a repeated factor. Type it once inside the parentheses; the squared factor equals zero.'
+    : nonMonic
+      ? 'All three conditions match. Type each complete factor inside its parentheses, such as 2x+3 or x-4. Include each x-coefficient.'
+      : 'Both conditions match. Type each complete factor inside its parentheses, such as x+3 or x-4.';
+  $('#second-factor').hidden = boxRepeated;
+  $('#factor-middle').hidden = boxRepeated;
+  $('#factor-square').hidden = !boxRepeated;
   $('#top-product').textContent = Number.isSafeInteger(result.topRight) ? linearTerm(result.topRight) : '?';
   $('#side-product').textContent = Number.isSafeInteger(result.bottomLeft) ? linearTerm(result.bottomLeft) : '?';
   const tooLarge = values.every(Number.isSafeInteger) && !result.ready;
@@ -54,12 +76,15 @@ function update() {
   $('#input-feedback').className = `feedback${invalid.some(Boolean) || tooLarge ? ' no' : ''}`;
   state($('#constant-cell'), result.productCorrect, result.ready);
   state($('#product-check'), result.productCorrect, result.ready);
+  $('#product-check').hidden = result.ready && result.productCorrect;
   state($('#middle-circle'), result.sumCorrect, result.ready);
   state($('#sum-check'), result.sumCorrect, result.ready);
+  $('#sum-check').hidden = result.ready && result.sumCorrect;
   const leadingReady = values.slice(2).every(value => Number.isSafeInteger(value) && value > 0)
     && Number.isSafeInteger(result.leading);
   state($('#leading-cell'), result.leadingCorrect, nonMonic && leadingReady);
   state($('#leading-check'), result.leadingCorrect, leadingReady);
+  $('#leading-check').hidden = !nonMonic || (leadingReady && result.leadingCorrect);
   $('#leading-mark').textContent = nonMonic && leadingReady ? result.leadingCorrect ? '✓' : '✗' : '';
   $('#leading-feedback').textContent = leadingReady
     ? `${values[2]} × ${values[3]} = ${result.leading}. ${result.leadingCorrect ? 'Correct!' : `Not yet: the target is ${item().a}.`}`
@@ -77,7 +102,7 @@ function update() {
 
 function reset() {
   $('#example-picker').value = String(index);
-  $('#expression').textContent = expressionText(item());
+  $('#expression').textContent = `${expressionText(item())} = 0`;
   $('#constant').textContent = String(item().c);
   $('#middle-term').textContent = linearTerm(item().b);
   $('#leading-term').textContent = `${nonMonic ? item().a : ''}x²`;
@@ -86,6 +111,8 @@ function reset() {
   $('#top-coefficient').value = '';
   $('#side-coefficient').value = '';
   $('#leading-check').hidden = !nonMonic;
+  $('#product-check').hidden = false;
+  $('#sum-check').hidden = false;
   $('#checks-heading').textContent = nonMonic ? 'Check all three conditions' : 'Check both conditions';
   $('#box-instructions').textContent = nonMonic
     ? 'Enter positive whole-number x-coefficients and signed integer constants. Each row label multiplies each column label. Match the leading term, constant, and middle term.'
@@ -101,8 +128,10 @@ function reset() {
 $('#factor-entry').onsubmit = event => {
   event.preventDefault();
   if (submitted || !boxResult().complete) return;
-  const inputs = [$('#first-factor'), $('#second-factor')];
-  const factors = inputs.map(input => parseCompleteFactor(input.value));
+  const anticipatedRepeated = boxValues()[0] === boxValues()[1] && boxValues()[2] === boxValues()[3];
+  const inputs = anticipatedRepeated ? [$('#first-factor')] : [$('#first-factor'), $('#second-factor')];
+  let factors = inputs.map(input => parseCompleteFactor(input.value));
+  if (anticipatedRepeated && factors[0]) factors.push(factors[0]);
   const result = factors.every(Boolean)
     ? assess(item(), factors[0].constant, factors[1].constant, factors[0].coefficient, factors[1].coefficient)
     : null;
@@ -117,13 +146,64 @@ $('#factor-entry').onsubmit = event => {
     return;
   }
   submitted = true;
+  confirmedFactors = factors;
+  repeated = factors[0].coefficient === factors[1].coefficient && factors[0].constant === factors[1].constant;
   inputs.forEach(input => { input.readOnly = true; });
+  if (repeated) {
+    $('#second-factor').hidden = true; $('#factor-middle').hidden = true; $('#factor-square').hidden = false;
+  }
   $('#submit-factors').disabled = true;
   $('#factor-feedback').textContent = 'Correct! Both complete factors match the expression.';
   $('#factor-feedback').className = 'feedback ok';
-  $('#factored-result').textContent = `${expressionText(item())} = ${factoredText(factors[0].constant, factors[1].constant, factors[0].coefficient, factors[1].coefficient)}`;
-  $('#complete').hidden = false;
-  $('#next').hidden = false;
+  $('#submit-factors').hidden = true;
+  $('#factor-feedback').hidden = true;
+  $('#zero-product').hidden = false;
+  $('#zero-first').focus();
+};
+
+function factorMatch(a, b) { return a && b && a.coefficient === b.coefficient && a.constant === b.constant; }
+$('#zero-product').onsubmit = event => {
+  event.preventDefault();
+  if (!confirmedFactors || $('#solutions').hidden === false) return;
+  const entries = [parseCompleteFactor($('#zero-first').value)];
+  if (!repeated) entries.push(parseCompleteFactor($('#zero-second').value));
+  const expected = repeated ? [confirmedFactors[0]] : confirmedFactors;
+  const matches = repeated ? factorMatch(entries[0], expected[0])
+    : (factorMatch(entries[0], expected[0]) && factorMatch(entries[1], expected[1])) || (factorMatch(entries[0], expected[1]) && factorMatch(entries[1], expected[0]));
+  if (!matches) {
+    $('#zero-feedback').textContent = 'Not yet. Enter the factor or factors from above, in either order.';
+    $('#zero-feedback').className = 'feedback no'; return;
+  }
+  $('#zero-feedback').textContent = 'Correct! Now solve each equation for x.';
+  $('#zero-feedback').className = 'feedback ok';
+  $('#zero-submit').hidden = true;
+  $('#zero-feedback').hidden = true;
+  if (repeated) { $('#zero-second').hidden = true; $('#zero-middle').hidden = true; }
+  $('#solutions').hidden = false; $('#solution-second').hidden = repeated; $('#solution-divider').hidden = repeated;
+  $('#zero-first').readOnly = true; $('#zero-second').readOnly = true;
+  $('#solution-first').focus();
+};
+function parseSolution(value) {
+  const text = String(value).trim().replace('−', '-');
+  if (/^[+-]?\d+\s*\/\s*\d+$/.test(text)) { const [a,b] = text.split('/').map(Number); return b === 0 ? NaN : a / b; }
+  return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(text) ? Number(text) : NaN;
+}
+$('#solutions').onsubmit = event => {
+  event.preventDefault();
+  if (!confirmedFactors) return;
+  const roots = confirmedFactors.map(factor => -factor.constant / factor.coefficient);
+  const values = [parseSolution($('#solution-first').value)];
+  if (!repeated) values.push(parseSolution($('#solution-second').value));
+  const close = (a,b) => Number.isFinite(a) && Math.abs(a-b) < 1e-9;
+  const correct = repeated ? close(values[0], roots[0])
+    : (close(values[0], roots[0]) && close(values[1], roots[1])) || (close(values[0], roots[1]) && close(values[1], roots[0]));
+  if (!correct) { $('#solution-feedback').textContent = 'Not yet. Solve each factor equation for x.'; $('#solution-feedback').className = 'feedback no'; return; }
+  $('#solution-feedback').textContent = 'Correct! You solved the quadratic by factoring.';
+  $('#solution-feedback').className = 'feedback ok';
+  const factored = repeated ? `${factoredText(confirmedFactors[0].constant, confirmedFactors[0].constant, confirmedFactors[0].coefficient, confirmedFactors[0].coefficient).replace(/\([^)]*\)$/, '')}²` : factoredText(confirmedFactors[0].constant, confirmedFactors[1].constant, confirmedFactors[0].coefficient, confirmedFactors[1].coefficient);
+  $('#factored-result').textContent = `${expressionText(item())} = 0\n${factored} = 0\n${repeated ? `x = ${roots[0]}` : `x = ${roots[0]} or x = ${roots[1]}`}`;
+  $('#complete').hidden = false; $('#next').hidden = false;
+  $('#solution-first').readOnly = true; $('#solution-second').readOnly = true;
   fireConfetti(180);
 };
 
@@ -134,7 +214,7 @@ function selectMode(value) {
   $('#non-monic-mode').setAttribute('aria-pressed', String(nonMonic));
   $('#example-picker').replaceChildren();
   bank().forEach((exercise, i) => {
-    $('#example-picker').add(new Option(`${i + 1}. ${expressionText(exercise)}`, i));
+    $('#example-picker').add(new Option(`${i + 1}. ${expressionText(exercise)} = 0`, i));
   });
   reset();
 }

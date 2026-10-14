@@ -23,10 +23,12 @@ main { max-width:1120px; }
 .correct { background:#e1f3e9; border-color:var(--green); color:#195b43; }
 .incorrect { background:#ffebe8; border-color:var(--red); color:#a22e2e; }
 #complete { border-top:1px solid var(--line); padding-top:20px; margin-top:20px; text-align:left; }
-.factored-result { font:1.5rem/1.5 Georgia,serif; overflow-wrap:anywhere; }
+.factored-result { font:1.5rem/1.5 Georgia,serif; overflow-wrap:anywhere; white-space:pre-line; }
 #factor-entry { border-top:1px solid var(--line); padding-top:20px; margin-top:20px; }
+#zero-product,#solutions { border-top:1px solid var(--line); padding-top:20px; margin-top:20px; }
 .factor-answer { display:flex; align-items:center; gap:5px; margin:18px 0; font:1.6rem Georgia,serif; }
 .factor-answer input { width:100px; min-width:0; text-align:center; font:1rem "Trebuchet MS",sans-serif; }
+.factor-answer sup { align-self:flex-start; margin-left:-5px; }
 @media (max-width:560px) { .factor-answer input { width:80px; } }
 #example-picker { max-width:100%; font-size:.95rem; letter-spacing:normal; text-transform:none; }
 @media (max-width:850px) { .factoring-work { grid-template-columns:1fr; gap:20px; } }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Factoring Quadratics with the Box Method</title>
+    <title>Solve by Factoring</title>
     <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -13,22 +13,22 @@
         <a class="back" href="../../">Back to Wernke's Math Resources</a>
         <span class="eyebrow">Interactive math applet</span>
       </div>
-      <h1>Factoring Quadratics with the Box Method</h1>
-      <p class="intro">Choose a problem type, complete the row and column factors, and check that their products give every term of the quadratic.</p>
+      <h1>Solve by Factoring</h1>
+      <p class="intro">Complete the box, write the factors equal to zero, and solve for x.</p>
       <div class="form-picker type-picker" role="group" aria-label="Problem type">
         <button class="form-choice" id="monic-mode" aria-pressed="true">Factor when a=1 <span>x² + bx + c</span></button>
         <button class="form-choice" id="non-monic-mode" aria-pressed="false">Factor when a&gt;1 <span>ax² + bx + c</span></button>
       </div>
       <section class="equation-card" aria-label="Expression to factor">
         <div class="card-head">
-          <span>Factor this expression</span>
+          <span>Solve by Factoring</span>
           <label class="picker-label">Example <select id="example-picker" aria-label="Choose an expression"></select></label>
         </div>
         <div class="equation" id="expression"></div>
       </section>
       <section class="factoring-work" aria-label="Box method practice">
         <div>
-          <h2>Complete the box</h2>
+          <h2>Complete the box to factor</h2>
           <p class="muted" id="box-instructions"></p>
           <div class="factor-box" role="group" aria-label="Multiplication box">
             <span class="column-x"><input id="top-coefficient" inputmode="numeric" autocomplete="off" aria-label="First column x coefficient" aria-describedby="input-feedback" hidden /><span>x</span></span>
@@ -61,10 +61,23 @@
             <h2>Write the complete factors</h2>
             <p id="factor-instructions"></p>
             <div class="factor-answer">
-              <span>(</span><input id="first-factor" aria-label="First complete factor" aria-describedby="factor-instructions factor-feedback" autocomplete="off" spellcheck="false" /><span>)(</span><input id="second-factor" aria-label="Second complete factor" aria-describedby="factor-instructions factor-feedback" autocomplete="off" spellcheck="false" /><span>)</span>
+              <span>(</span><input id="first-factor" aria-label="First complete factor" aria-describedby="factor-instructions factor-feedback" autocomplete="off" spellcheck="false" /><span id="factor-middle">)(</span><input id="second-factor" aria-label="Second complete factor" aria-describedby="factor-instructions factor-feedback" autocomplete="off" spellcheck="false" /><sup id="factor-square" hidden>2</sup><span id="factor-close">)</span><span>= 0</span>
             </div>
-            <button id="submit-factors" type="submit">Submit</button>
+            <button id="submit-factors" type="submit">Check</button>
             <p class="feedback" id="factor-feedback" aria-live="polite"></p>
+          </form>
+          <form id="zero-product" hidden>
+            <h2>Solve each factor for 0</h2>
+            <p>Write each factor from the equation above, with each one set equal to 0.</p>
+            <div class="factor-answer"><input id="zero-first" aria-label="First factor equation" autocomplete="off" spellcheck="false" /><span id="zero-middle"> = 0 &nbsp;&nbsp; </span><input id="zero-second" aria-label="Second factor equation" autocomplete="off" spellcheck="false" /><span id="zero-close"> = 0</span></div>
+            <button id="zero-submit" type="submit">Check</button>
+            <p class="feedback" id="zero-feedback" aria-live="polite"></p>
+          </form>
+          <form id="solutions" hidden>
+            <h2>Solve for x</h2>
+            <div class="factor-answer"><span>x = </span><input id="solution-first" aria-label="First solution for x" inputmode="decimal" autocomplete="off" /><span id="solution-divider">&nbsp;&nbsp;&nbsp;&nbsp; x = </span><input id="solution-second" aria-label="Second solution for x" inputmode="decimal" autocomplete="off" /></div>
+            <button type="submit">Submit</button>
+            <p class="feedback" id="solution-feedback" aria-live="polite"></p>
           </form>
           <section id="complete" hidden aria-live="polite">
             <h2>Good Job</h2>
