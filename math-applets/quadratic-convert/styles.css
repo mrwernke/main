@@ -1,0 +1,21 @@
+.conversion-picker { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.method-picker { grid-template-columns:repeat(2,minmax(0,1fr)); margin-bottom:22px; }
+.conversion-work { margin-top:24px; }
+.conversion-work > section { padding:26px; border:1px solid var(--line); background:var(--panel); box-shadow:5px 5px 0 #d8dedb; }
+.conversion-work .factoring-work { padding:0; border:0; box-shadow:none; background:transparent; }
+.vertex-work-card { max-width:780px; padding:26px; border:1px solid var(--line); background:var(--panel); box-shadow:5px 5px 0 #d8dedb; }
+.vertex-work-card h2 { margin-top:0; }
+.vertex-work-card .answer-row { margin:18px 0 8px; }
+.vertex-work-card input { width:115px; min-width:0; text-align:center; }
+.vertex-form-equation { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:18px 0; font:1.35rem/1.6 Georgia,serif; }
+.vertex-form-equation input { width:88px; font:1rem/1.4 system-ui,sans-serif; }
+.vertex-form-equation select { min-width:52px; padding:8px; font:1rem/1.4 system-ui,sans-serif; }
+.result-equation { font:1.5rem/1.5 Georgia,serif; overflow-wrap:anywhere; }
+#factored-complete,#vertex-complete { border-top:1px solid var(--line); padding-top:20px; margin-top:20px; }
+#factored-complete h2,#vertex-complete h2 { margin-top:0; }
+#vertex-y-work { border-top:1px solid var(--line); margin-top:22px; padding-top:18px; }
+.conversion-work .answer-row { flex-wrap:wrap; }
+@media (max-width:560px) {
+  .conversion-picker,.method-picker { grid-template-columns:1fr; }
+  .conversion-work > section,.vertex-work-card { padding:18px; }
+}

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Convert Quadratics to Factored or Vertex Form</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-factoring/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q7</span>
+      </div>
+      <h1>Convert Quadratics to Factored or Vertex Form</h1>
+      <p class="intro">Choose a form, then convert the quadratic from standard form.</p>
+
+      <section class="equation-card" aria-label="Choose a form">
+        <div class="card-head"><span>Choose a form</span></div>
+        <div class="form-picker conversion-picker" role="group" aria-label="Choose a form to convert to">
+          <button class="form-choice" id="factored-mode" aria-pressed="true">Factored form <span>f(x) = a(x − r₁)(x − r₂)</span></button>
+          <button class="form-choice" id="vertex-mode" aria-pressed="false">Vertex form <span>f(x) = a(x − h)² + k</span></button>
+        </div>
+      </section>
+
+      <section class="equation-card" aria-label="Standard form problem">
+        <div class="card-head">
+          <span>Convert this quadratic</span>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose a quadratic"></select></label>
+        </div>
+        <div class="equation" id="expression"></div>
+      </section>
+
+      <section class="conversion-work">
+        <section id="factored-work" aria-label="Convert to factored form">
+          <div class="factoring-work">
+            <div>
+              <h2>Complete the box to factor</h2>
+              <p class="muted" id="box-instructions"></p>
+              <div class="factor-box" role="group" aria-label="Multiplication box">
+                <span class="column-x"><input id="top-coefficient" inputmode="numeric" autocomplete="off" aria-label="First column x coefficient" hidden /><span>x</span></span>
+                <input id="top-factor" class="top-factor" inputmode="text" autocomplete="off" aria-label="Second column integer" />
+                <span class="row-x"><input id="side-coefficient" inputmode="numeric" autocomplete="off" aria-label="First row x coefficient" hidden /><span>x</span></span>
+                <input id="side-factor" class="side-factor" inputmode="text" autocomplete="off" aria-label="Second row integer" />
+                <div class="cell upper-left"><span class="sr-only">Target leading term: </span><span id="leading-term">x²</span><span id="leading-mark" class="status-mark" aria-hidden="true"></span></div>
+                <div class="cell upper-right"><span class="sr-only">Upper right product: </span><span id="top-product">?</span></div>
+                <div class="cell lower-left"><span class="sr-only">Bottom left product: </span><span id="side-product">?</span></div>
+                <div class="cell lower-right"><span class="sr-only">Target constant: </span><span id="constant"></span><span id="product-mark" class="status-mark" aria-hidden="true"></span></div>
+                <div class="middle-target"><span class="sr-only">Target middle term: </span><span id="middle-term"></span><span id="sum-mark" class="status-mark" aria-hidden="true"></span></div>
+              </div>
+              <p class="feedback" id="input-feedback" aria-live="polite"></p>
+            </div>
+            <div class="checks">
+              <h2 id="checks-heading">Check both conditions</h2>
+              <div class="condition" id="leading-check" hidden><h3>Multiply to the leading coefficient</h3><p id="leading-feedback"></p></div>
+              <div class="condition" id="product-check"><h3>Multiply to the constant</h3><p id="product-feedback"></p></div>
+              <div class="condition" id="sum-check"><h3>Add to the middle term</h3><p id="sum-feedback"></p></div>
+              <form id="factor-entry" hidden>
+                <h2>Write the complete factors</h2>
+                <p id="factor-instructions"></p>
+                <div class="factor-answer"><span>f(x) = </span><span>(</span><input id="first-factor" aria-label="First complete factor" autocomplete="off" spellcheck="false" /><span id="factor-middle">)(</span><input id="second-factor" aria-label="Second complete factor" autocomplete="off" spellcheck="false" /><sup id="factor-square" hidden>2</sup><span>)</span></div>
+                <button id="submit-factors" type="submit">Check</button>
+                <p class="feedback" id="factor-feedback" aria-live="polite"></p>
+              </form>
+              <form id="normalization" hidden>
+                <h2>Factor the x-coefficient out</h2>
+                <p>Rewrite this factor by dividing both terms by its x-coefficient.</p>
+                <div class="factor-answer"><span id="scaled-original"></span><span> = </span><strong id="scale-value"></strong><span>(</span><input id="normalized-factor" aria-label="Factor with x coefficient 1" autocomplete="off" spellcheck="false" /><span>)</span></div>
+                <button id="check-normalization" type="submit">Check</button>
+                <p class="feedback" id="normalization-feedback" aria-live="polite"></p>
+              </form>
+              <section id="factored-complete" hidden aria-live="polite">
+                <h2>Good Job</h2>
+                <p>Your quadratic in factored form:</p>
+                <p id="factored-result" class="result-equation"></p>
+              </section>
+              <div class="answer-row"><button id="reset">Try Again</button><button id="next" hidden>Next Example</button></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="vertex-work" hidden aria-label="Convert to vertex form">
+          <div class="form-picker method-picker" role="group" aria-label="Choose a vertex method">
+            <button class="form-choice" id="manual-method" aria-pressed="true">Find the vertex manually <span>x = −b/(2a)</span></button>
+            <button class="form-choice" id="square-method" aria-pressed="false">Complete the square <span>Use algebra to rewrite the quadratic</span></button>
+          </div>
+          <div id="square-not-ready" class="condition" hidden><h2>Not ready yet</h2><p>The completing-the-square method is not ready yet.</p></div>
+          <div id="manual-work" class="vertex-work-card">
+            <h2>Find the vertex manually</h2>
+            <p class="muted">First find the x-coordinate of the vertex using <strong>x = −b/(2a)</strong>.</p>
+            <div class="answer-row">x = <input id="vertex-x" class="coord" inputmode="decimal" aria-label="Vertex x-coordinate" /><button id="check-vertex-x">Check</button></div>
+            <p class="feedback" id="vertex-x-feedback" aria-live="polite"></p>
+            <div id="vertex-y-work" hidden>
+              <p class="muted">Substitute this x-value into the standard form to find k = f(h).</p>
+              <div class="answer-row"><span id="vertex-substitution"></span><input id="vertex-y" class="coord" inputmode="decimal" aria-label="Vertex y-coordinate" /><button id="check-vertex-y">Check</button></div>
+              <p class="feedback" id="vertex-y-feedback" aria-live="polite"></p>
+            </div>
+            <form id="vertex-form-entry" hidden>
+              <h2>Write the quadratic in vertex form</h2>
+              <p class="muted">Enter a, then choose the signs and enter the magnitudes of h and k. Be sure each sign is correct. If you see “subtract a negative,” change it to plus.</p>
+              <div class="vertex-form-equation"><span>f(x) = </span><input id="form-a" class="coord" inputmode="decimal" aria-label="a value in vertex form" /><span>(x </span><select id="form-h-sign" aria-label="Sign before h"><option value="" selected>±</option><option value="+">+</option><option value="−">−</option></select><input id="form-h" class="coord" inputmode="decimal" aria-label="Magnitude of h in vertex form" /><span>)² </span><select id="form-k-sign" aria-label="Sign before k"><option value="" selected>±</option><option value="+">+</option><option value="−">−</option></select><input id="form-k" class="coord" inputmode="decimal" aria-label="Magnitude of k in vertex form" /></div>
+              <button id="check-vertex-form" type="submit">Check</button>
+              <p class="feedback" id="vertex-form-feedback" aria-live="polite"></p>
+            </form>
+            <section id="vertex-complete" hidden aria-live="polite">
+              <h2>Good Job</h2>
+              <p>Substitute a, h, and k into vertex form:</p>
+              <p id="vertex-result" class="result-equation"></p>
+            </section>
+          </div>
+          <div class="answer-row"><button id="vertex-reset">Try Again</button></div>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

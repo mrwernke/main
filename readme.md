@@ -12,6 +12,7 @@ paused) as subdirectories.
 - `math-applets/quadratic-graphing/` - quadratic graphing lab with standard, factored, and vertex form practice.
 - `math-applets/quadratic-from-graph/` - write all three quadratic forms from a marked graph, with box-method multiplication.
 - `math-applets/quadratic-factoring/` - factor monic quadratic expressions using a live multiplication box.
+- `math-applets/quadratic-convert/` - convert standard-form quadratics to factored or vertex form.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
 - `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
 - `math-applets/quadratic-features/` - the same characteristics lab for quadratic graphs.
@@ -106,6 +107,16 @@ switching problem type resets the example and all progress.
 ```bash
 node --test math-applets/quadratic-factoring/model.test.mjs
 ```
+
+The Q7 conversion applet lets students choose factored form or vertex form.
+Factored-form practice uses its own set of twenty problems: fifteen monic
+quadratics and five non-monic quadratics. The first ten have integer roots and
+integer vertices, including three with a zero middle term. Students use the
+Q15 box method, write complete factors after `f(x) =`, and for a non-monic
+factor divide out its x-coefficient in a separate step. Vertex-form practice
+offers a manual vertex calculation using `x = -b/(2a)`, followed by
+substitution to find the y-coordinate and the resulting vertex form.
+Completing the square is listed as not ready yet.
 
 The absolute value equation solver walks through three guided problems of the
 form `a|bx + c| + d = e`; only the third uses a b-value other than 1, and every
