@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solve Quadratics Using the Square Root Method</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q16</span>
+      </div>
+      <h1>Solve by the Square Root Method</h1>
+      <p class="intro">Move the constant, isolate the squared binomial, and solve using square roots.</p>
+
+      <section class="equation-card" aria-label="Quadratic equation">
+        <div class="card-head">
+          <span>Solve this equation</span>
+          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <div id="equation" class="equation"></div>
+      </section>
+
+      <section id="square-root-work" class="vertex-work-card q16-work" aria-label="Solve by the square root method">
+        <section id="solve-step" class="q16-solve-step">
+          <h3 id="solve-step-title">1. Move the constant to the right side</h3>
+          <div class="q16-solve-layout">
+            <div class="q16-solve-work-column">
+              <div id="solve-work-lines" class="q16-work-lines" aria-live="polite"></div>
+              <form id="solve-entry" class="q16-solve-entry" hidden>
+                <button type="submit">Check</button><p id="solve-entry-feedback" class="feedback" aria-live="polite"></p>
+              </form>
+            </div>
+            <div class="q16-step-question">
+              <h4 id="solve-question-title">Choose the next step.</h4>
+              <div id="solve-choices" class="q16-choices" role="group" aria-labelledby="solve-question-title"></div>
+              <p id="solve-feedback" class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </section>
+
+        <form id="solution-type-step" class="square-step" hidden>
+          <h3>3. Choose the solution type</h3>
+          <p class="muted">Choose how many solutions there are and whether they are real or complex.</p>
+          <label class="q16-solution-type-label" for="solution-type-select">Number and type of solutions
+            <select id="solution-type-select" aria-label="Choose the number and type of solutions">
+              <option value="" selected>Choose one</option>
+              <option value="one">1 real solution</option>
+              <option value="real">2 real solutions</option>
+              <option value="complex">2 complex solutions</option>
+            </select>
+          </label>
+          <button type="submit">Check</button><p id="solution-type-feedback" class="feedback" aria-live="polite"></p>
+        </form>
+
+        <section id="branches" class="q16-branches" hidden>
+          <h3>Solve both equations</h3>
+          <div class="q16-final-branches">
+            <div class="q16-branch">
+              <p id="branch-positive" class="q16-branch-equation"></p>
+              <label class="answer-row">x = <input id="solution-one" inputmode="text" aria-label="Solution from the positive branch" /></label>
+            </div>
+            <div class="q16-branch">
+              <p id="branch-negative" class="q16-branch-equation"></p>
+              <label class="answer-row">x = <input id="solution-two" inputmode="text" aria-label="Solution from the negative branch" /></label>
+            </div>
+          </div>
+          <form id="solutions-step">
+            <button type="submit">Check both solutions</button><p id="solutions-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="single-answer" class="q16-answer-section" hidden>
+          <h3>Write the final answer</h3>
+          <p class="muted">Enter the single real solution.</p>
+          <form id="single-answer-step">
+            <label class="answer-row">x = <input id="single-answer-value" inputmode="text" aria-label="Single real solution" /></label>
+            <button type="submit">Check final answer</button><p id="single-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="radical-answer" class="q16-answer-section" hidden>
+          <h3>Write the final answer</h3>
+          <p class="muted">Simplify the radical, then write both solutions together.</p>
+          <form id="radical-answer-step">
+            <div class="q16-answer-formula" aria-label="x equals a number plus or minus a coefficient times the square root of a number">
+              <span>x =</span>
+              <input id="radical-answer-shift" inputmode="text" aria-label="Number outside the square root" />
+              <span>±</span>
+              <input id="radical-answer-coefficient" inputmode="text" aria-label="Coefficient multiplying the square root" />
+              <span class="q16-radical">
+                <span class="q16-radical-symbol">√</span>
+                <span class="q16-radicand"><input id="radical-answer-radicand" inputmode="text" aria-label="Number under the square root" /></span>
+              </span>
+            </div>
+            <button type="submit">Check final answer</button><p id="radical-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complex-answer" class="q16-answer-section" hidden>
+          <h3>Write the final answer</h3>
+          <p class="muted">Write both complex solutions using the real part ± the imaginary part. Keep i after the radical when the imaginary part contains a radical.</p>
+          <form id="complex-answer-step">
+            <div class="q16-answer-formula" aria-label="x equals a number plus or minus a complex part ending in i">
+              <span>x =</span>
+              <input id="complex-answer-shift" inputmode="text" aria-label="Real part of the complex solutions" />
+              <span>±</span>
+              <input id="complex-answer-coefficient" inputmode="text" aria-label="Coefficient of the imaginary part" />
+              <span id="complex-radical-part" class="q16-radical">
+                <span class="q16-radical-symbol">√</span>
+                <span class="q16-radicand"><input id="complex-answer-radicand" inputmode="text" aria-label="Number under the square root" /></span>
+              </span>
+              <span>i</span>
+            </div>
+            <button type="submit">Check final answer</button><p id="complex-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complete" class="q16-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-problem" type="button">Next Example</button>
+        </section>
+        <div class="answer-row q16-actions"><button id="reset" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script>
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

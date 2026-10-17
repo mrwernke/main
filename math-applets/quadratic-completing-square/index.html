@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solve Quadratics by Completing the Square</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-factoring/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q17</span>
+      </div>
+      <h1>Solve by Completing the Square</h1>
+      <p class="intro">Complete the square, take the square root of both sides, and solve for x.</p>
+
+      <section class="equation-card" aria-label="Quadratic equation">
+        <div class="card-head">
+          <span>Solve this equation</span>
+          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <div id="equation" class="equation"></div>
+      </section>
+
+      <section id="square-work" class="vertex-work-card q17-work" aria-label="Solve by completing the square">
+        <p id="extended-note" class="muted" hidden></p>
+        <div class="square-work-layout">
+          <div class="square-step-column">
+            <form id="move-step" class="square-step">
+              <h3>1. Move the c-term to the right side</h3>
+              <div class="square-equation"><span id="move-left"></span><span class="square-complete-gap" aria-hidden="true"></span><span>=</span><input id="move-right" inputmode="text" aria-label="Right side after moving the c-term" /></div>
+              <button type="submit">Check</button><p id="move-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+
+            <form id="factor-step" class="square-step" hidden>
+              <h3>Factor out <span id="factor-a"></span></h3>
+              <p id="factor-instructions" class="muted">Enter the x-term coefficient after factoring out a.</p>
+              <div class="square-equation"><span id="factor-left"></span><input id="factor-coefficient" inputmode="text" aria-label="Coefficient of x inside the parentheses" /><span id="factor-middle"></span><span class="q17-gap" aria-hidden="true"></span><span id="factor-right"></span></div>
+              <button type="submit">Check</button><p id="factor-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+
+            <section id="box-work" class="square-step" hidden>
+              <h3>2. Complete the missing boxes.</h3>
+              <p class="muted">Split the bx term in half between the two boxes. Include x with each term.</p>
+              <form id="halves-step"><button type="submit">Check</button><p id="halves-feedback" class="feedback" aria-live="polite"></p></form>
+              <form id="outside-step" class="square-step" hidden>
+                <h3>3. Fill in the outside values</h3>
+                <p class="muted">Write the matching values above and to the left of the box.</p>
+                <button type="submit">Check</button><p id="outside-feedback" class="feedback" aria-live="polite"></p>
+              </form>
+              <form id="corner-step" class="square-step" hidden>
+                <h3>4. Complete the square</h3>
+                <p class="muted">Multiply the outside values to fill the bottom-right box.</p>
+                <button type="submit">Check</button><p id="corner-feedback" class="feedback" aria-live="polite"></p>
+              </form>
+            </section>
+
+            <form id="add-step" class="square-step" hidden>
+              <h3>5. Add the square value to both sides</h3>
+              <div class="square-equation"><span id="add-left"></span><input id="add-left-value" inputmode="text" aria-label="Square value added inside the parentheses" /><span id="add-left-close"></span><span>=</span><span id="add-right"></span><input id="add-right-value" inputmode="text" aria-label="Square value added to the right side" /></div>
+              <button type="submit">Check</button><p id="add-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+
+            <form id="simplify-step" class="square-step" hidden>
+              <h3>6. Simplify both sides</h3>
+              <div class="square-equation"><span id="simplify-a"></span><span>(x </span><select id="simplify-sign" aria-label="Sign inside the squared binomial"><option value="" selected>±</option><option value="+">+</option><option value="-">−</option></select><input id="simplify-binomial" inputmode="text" aria-label="Magnitude inside the squared binomial" /><span>)<sup>2</sup> = </span><input id="simplify-right" inputmode="text" aria-label="Simplified right side" /></div>
+              <button type="submit">Check</button><p id="simplify-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+          </div>
+
+          <div id="box-area" class="square-box-area" hidden>
+            <div class="factor-box" role="group" aria-label="Completing the square box">
+              <span class="column-x"><span>x</span></span>
+              <input id="outside-top" class="top-factor" form="outside-step" inputmode="text" aria-label="Top outside value" hidden disabled />
+              <span class="row-x"><span>x</span></span>
+              <div class="cell upper-left">x&sup2;</div>
+              <div class="cell upper-right"><input id="half-top" form="halves-step" inputmode="text" aria-label="Upper-right half-bx term, including x" /></div>
+              <input id="outside-left" class="side-factor" form="outside-step" inputmode="text" aria-label="Left outside value" hidden disabled />
+              <div class="cell lower-left"><input id="half-left" form="halves-step" inputmode="text" aria-label="Lower-left half-bx term, including x" /></div>
+              <div id="corner-cell" class="cell lower-right" hidden><input id="corner-value" form="corner-step" inputmode="text" aria-label="Bottom-right square value" disabled /></div>
+              <span id="middle-target" class="middle-target"></span>
+            </div>
+
+          </div>
+        </div>
+
+        <section id="solve-step" class="q17-next-step" hidden>
+          <h3>7. Solve for x using square root method</h3>
+          <div class="q17-step-seven-layout">
+            <div class="q17-solve-work-column">
+              <div id="solve-work-lines" class="q17-work-lines" aria-live="polite"></div>
+              <form id="solve-entry" class="q17-solve-entry" hidden>
+                <button type="submit">Check</button><p id="solve-entry-feedback" class="feedback" aria-live="polite"></p>
+              </form>
+            </div>
+            <div class="q17-step-question">
+              <h4 id="solve-question-title">Choose the next step.</h4>
+              <div id="solve-choices" class="q17-choices" role="group" aria-labelledby="solve-question-title"></div>
+              <p id="solve-feedback" class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </section>
+
+        <form id="solution-type-step" class="square-step" hidden>
+          <h3>8. Choose the solution type</h3>
+          <p class="muted">Choose how many solutions there are and whether they are real or complex.</p>
+          <label class="q17-solution-type-label" for="solution-type-select">Number and type of solutions
+            <select id="solution-type-select" aria-label="Choose the number and type of solutions">
+              <option value="" selected>Choose one</option>
+              <option value="one">1 real solution</option>
+              <option value="real">2 real solutions</option>
+              <option value="complex">2 complex solutions</option>
+            </select>
+          </label>
+          <button type="submit">Check</button><p id="solution-type-feedback" class="feedback" aria-live="polite"></p>
+        </form>
+
+        <section id="branches" class="q17-branches" hidden>
+          <h3>Solve both equations</h3>
+          <div class="q17-final-branches">
+            <div class="q17-branch">
+              <p id="branch-positive" class="q17-branch-equation"></p>
+              <label class="answer-row">x = <input id="solution-one" inputmode="text" aria-label="Solution from the positive branch" /></label>
+            </div>
+            <div class="q17-branch">
+              <p id="branch-negative" class="q17-branch-equation"></p>
+              <label class="answer-row">x = <input id="solution-two" inputmode="text" aria-label="Solution from the negative branch" /></label>
+            </div>
+          </div>
+          <form id="solutions-step">
+            <button type="submit">Check both solutions</button><p id="solutions-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+        <section id="single-answer" class="q17-radical-answer" hidden>
+          <h3>Write the final answer</h3>
+          <p class="muted">Enter the single real solution.</p>
+          <form id="single-answer-step">
+            <label class="answer-row">x = <input id="single-answer-value" inputmode="text" aria-label="Single real solution" /></label>
+            <button type="submit">Check final answer</button><p id="single-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+        <section id="radical-answer" class="q17-radical-answer" hidden>
+          <h3>Write the final answer</h3>
+          <p class="muted">Simplify the radical, then keep the solutions together.</p>
+          <form id="radical-answer-step">
+            <div class="q17-radical-final-formula" aria-label="x equals a number plus or minus a coefficient times the square root of a number">
+              <span>x =</span>
+              <input id="radical-answer-shift" inputmode="text" aria-label="Number outside the square root" />
+              <span>&plusmn;</span>
+              <input id="radical-answer-coefficient" inputmode="text" aria-label="Coefficient multiplying the square root" />
+              <span class="q17-radical">
+                <span class="q17-radical-symbol">&radic;</span>
+                <span class="q17-radicand"><input id="radical-answer-radicand" inputmode="text" aria-label="Number under the square root" /></span>
+              </span>
+            </div>
+            <button type="submit">Check final answer</button><p id="radical-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+        <section id="complex-answer" class="q17-radical-answer" hidden>
+          <h3>Write the final answer</h3>
+          <p class="muted">Write the two complex solutions as a ± bi. Keep i after the radical when b contains a radical.</p>
+          <form id="complex-answer-step">
+            <div class="q17-radical-final-formula" aria-label="x equals a number plus or minus a complex part ending in i">
+              <span>x =</span>
+              <input id="complex-answer-shift" inputmode="text" aria-label="Real part of the complex solutions" />
+              <span>&plusmn;</span>
+              <input id="complex-answer-coefficient" inputmode="text" aria-label="Coefficient of the imaginary part" />
+              <span id="complex-radical-part" class="q17-radical">
+                <span class="q17-radical-symbol">&radic;</span>
+                <span class="q17-radicand"><input id="complex-answer-radicand" inputmode="text" aria-label="Number under the square root" /></span>
+              </span>
+              <span>i</span>
+            </div>
+            <button type="submit">Check final answer</button><p id="complex-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+        <section id="complete" class="q17-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-problem" type="button">Next Example</button>
+        </section>
+        <div class="answer-row q17-actions"><button id="reset" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script>
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+.q13-work { max-width:900px; }
+.q13-reminders { padding:14px 16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); }
+.q13-reminders summary { color:var(--ink); cursor:pointer; font-weight:700; }
+.q13-reminders ul { margin:12px 0 0; padding-left:22px; color:var(--muted); }
+.q13-reminders li + li { margin-top:7px; }
+.q13-step { margin:22px 0 0; padding-top:18px; border-top:1px solid var(--line); }
+.q13-step:first-child { margin-top:0; padding-top:0; border-top:0; }
+.q13-step h2 { margin:0 0 14px; }
+.q13-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.q13-method-choice { min-height:64px; display:flex; align-items:center; justify-content:center; background:var(--panel); color:var(--ink); font:inherit; }
+.q13-method-choice:hover:enabled { background:#eef6f2; }
+.q13-method-choice.invalid { border-color:var(--red); color:var(--red); }
+.q13-method-choice.correct { border-color:var(--green); background:#e9f5ed; color:var(--green); }
+.q13-feedback { min-height:1.5em; margin:14px 0 0; }
+.q13-complete { margin-top:24px; padding-top:20px; border-top:1px solid var(--line); }
+.q13-complete h2 { margin-top:0; }
+.q13-actions { margin-top:20px; }
+@media (max-width:560px) {
+  .q13-options { grid-template-columns:minmax(0,1fr); }
+}

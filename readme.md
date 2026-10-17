@@ -13,6 +13,12 @@ paused) as subdirectories.
 - `math-applets/quadratic-from-graph/` - write all three quadratic forms from a marked graph, with box-method multiplication.
 - `math-applets/quadratic-factoring/` - factor monic quadratic expressions using a live multiplication box.
 - `math-applets/quadratic-convert/` - convert standard-form quadratics to factored or vertex form.
+- `math-applets/quadratic-discriminant/` - identify the number and type of quadratic solutions using the discriminant.
+- `math-applets/quadratic-formula/` - solve quadratic equations with the quadratic formula, simplifying radicals and fractions step by step.
+- `math-applets/quadratic-graph-solutions/` - identify x-intercepts and the number of real and complex solutions from a quadratic graph.
+- `math-applets/quadratic-method-choice/` - choose an efficient method for solving a quadratic equation.
+- `math-applets/quadratic-completing-square/` - solve quadratic equations by completing the square.
+- `math-applets/quadratic-square-root/` - solve vertex-form quadratic equations using the square root method.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
 - `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
 - `math-applets/quadratic-features/` - the same characteristics lab for quadratic graphs.
@@ -26,6 +32,19 @@ paused) as subdirectories.
 The applets are standalone static sites; no build step is required.
 To preview the directory and applets together, serve the repository root with a
 static HTTP server and open `main-site/` or `math-applets/quadratic-graphing/`.
+
+The Q17 completing-the-square solver starts with three monic equations and one
+extended equation with a leading coefficient of 2. Students move the constant,
+complete the box, add the square to both sides, simplify, take both square
+roots, and solve for both values of x. The initial examples all have real,
+rational solutions.
+
+The Q16 square-root solver starts with equations in vertex form. Students choose
+whether to add or subtract the k-value, then divide by an integer leading
+coefficient or multiply by its reciprocal when it is fractional. The set has
+five examples with integer solutions, three examples each with unsimplified real
+radicals, simplified real radicals, unsimplified complex radicals, simplified
+complex radicals, and one real solution. Its six fractional-a examples come last.
 
 The quadratic lab uses eight functions in each form. All have integer
 coefficients, vertices, and plotted table points; factored form keeps integer
@@ -110,13 +129,15 @@ node --test math-applets/quadratic-factoring/model.test.mjs
 
 The Q7 conversion applet lets students choose factored form or vertex form.
 Factored-form practice uses its own set of twenty problems: fifteen monic
-quadratics and five non-monic quadratics. The first ten have integer roots and
-integer vertices, including three with a zero middle term. Students use the
-Q15 box method, write complete factors after `f(x) =`, and for a non-monic
-factor divide out its x-coefficient in a separate step. Vertex-form practice
+quadratics followed by five non-monic extended problems. The first ten have
+integer roots and integer vertices, including three with a zero middle term.
+Students use the Q15 box method, write complete factors after `f(x) =`, and for
+a non-monic factor divide out its x-coefficient in a separate step, using a
+simplified fraction when the result does not terminate. Vertex-form practice
 offers a manual vertex calculation using `x = -b/(2a)`, followed by
-substitution to find the y-coordinate and the resulting vertex form.
-Completing the square is listed as not ready yet.
+substitution to find the y-coordinate and the resulting vertex form. It also
+guides students through completing the square with a box, adding the corner
+value to both sides, simplifying, and entering the final vertex form.
 
 The absolute value equation solver walks through three guided problems of the
 form `a|bx + c| + d = e`; only the third uses a b-value other than 1, and every

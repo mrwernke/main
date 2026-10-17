@@ -1,0 +1,55 @@
+.q14-work { max-width:900px; }
+.q14-step { margin:22px 0 0; padding-top:18px; border-top:1px solid var(--line); }
+.q14-step:first-child { margin-top:0; padding-top:0; border-top:0; }
+.q14-standard-case #formula-choice-step { margin-top:0; padding-top:0; border-top:0; }
+.q14-step h2 { margin:0 0 12px; }
+.q14-step > .muted { margin:0 0 14px; }
+.q14-expression { display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin:16px 0; font:1.45rem Georgia,"Times New Roman",serif; }
+.q14-expression input { width:72px; padding:8px 6px; text-align:center; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
+.q14-expression sup { align-self:flex-start; margin-left:-6px; font-size:.65em; }
+.q14-fraction { display:inline-flex; min-width:50px; flex-direction:column; align-items:stretch; text-align:center; vertical-align:middle; }
+.q14-numerator { display:flex; align-items:center; justify-content:center; gap:5px; min-height:40px; padding:0 4px 6px; border-bottom:2px solid var(--ink); }
+.q14-denominator { min-height:34px; padding:5px 4px 0; }
+.q14-radical { display:inline-flex; align-items:stretch; white-space:nowrap; vertical-align:middle; line-height:1; }
+.q14-root-symbol { display:flex; align-items:center; margin-right:-.08em; font:1.45em/1 Georgia,"Times New Roman",serif; }
+.q14-radicand { display:inline-flex; align-items:center; min-height:1.1em; margin-top:.14em; padding:0 .08em; border-top:2px solid currentColor; }
+.q14-formula { font-size:1.65rem; }
+.q14-formula-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:16px 0; }
+.q14-formula-choice { display:flex; align-items:center; justify-content:center; min-height:76px; padding:12px; background:var(--panel); color:var(--ink); font:1.35rem Georgia,"Times New Roman",serif; }
+.q14-formula-choice:hover:enabled { background:#eef6f2; }
+.q14-formula-choice.invalid { border-color:var(--red); color:var(--red); background:#fff0ee; }
+.q14-formula-choice.correct { border-color:var(--green); color:var(--green); background:#e9f5ed; }
+.q14-standard-entry { justify-content:flex-start; }
+.q14-standard-entry input { width:76px; }
+.q14-radical-entry { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:14px 0 18px; }
+.q14-radical-entry label { font-weight:700; }
+.q14-radical-entry select { min-width:150px; padding:8px; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
+.q14-radical-fields { display:flex; align-items:center; gap:6px; font:1.3rem Georgia,"Times New Roman",serif; }
+.q14-radical-part { display:inline-flex; align-items:center; gap:5px; }
+.q14-parenthesized-fraction { display:inline-flex; align-items:center; gap:0; }
+.q14-answer-line { display:block; }
+.q14-solution-columns { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:start; gap:18px; width:100%; }
+.q14-solution-column { min-width:0; padding:16px 12px; text-align:center; }
+.q14-solution-equation { min-height:42px; margin:0; font:1.35rem Georgia,"Times New Roman",serif; }
+.q14-solution-entry { display:flex; justify-content:center; align-items:center; gap:8px; margin-top:12px; font:1.25rem Georgia,"Times New Roman",serif; }
+.q14-solution-entry input { width:100px; text-align:center; }
+.q14-solution-and { align-self:center; font:1.2rem Georgia,"Times New Roman",serif; }
+.q14-single-solution { grid-template-columns:minmax(0,1fr); max-width:390px; margin:0 auto; }
+.q14-radical-fields input { width:76px; text-align:center; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
+.q14-work-lines { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); align-items:center; gap:8px 12px; max-width:650px; margin:20px auto; text-align:center; font:1.22rem Georgia,"Times New Roman",serif; }
+.q14-work-lines .q14-op { padding-bottom:7px; border-bottom:2px solid var(--ink); }
+.q14-work-lines .q14-result { padding-top:3px; }
+.q14-move-expression { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:16px 0; font:1.25rem Georgia,"Times New Roman",serif; }
+.q14-move-expression input { width:66px; text-align:center; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
+.q14-complete { margin-top:24px; padding-top:20px; border-top:1px solid var(--line); }
+.q14-complete h2 { margin-top:0; }
+.q14-actions { margin-top:20px; }
+@media (max-width:600px) {
+  .q14-formula-options { grid-template-columns:minmax(0,1fr); }
+  .q14-solution-columns { grid-template-columns:minmax(0,1fr); }
+  .q14-solution-and { display:none; }
+  .q14-expression { font-size:1.2rem; gap:5px; }
+  .q14-formula { font-size:1.28rem; }
+  .q14-expression input { width:58px; }
+  .q14-work-lines { grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr); gap:8px 5px; font-size:1rem; }
+}

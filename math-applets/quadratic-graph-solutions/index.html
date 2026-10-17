@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Read Quadratic Solutions from a Graph</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q11</span>
+      </div>
+      <h1>Identify Solutions from a Graph</h1>
+      <p class="intro">Use each quadratic function and graph to identify the number and type of solutions.</p>
+
+      <section class="equation-card q11-top-card" aria-label="Quadratic function and example selector">
+        <div class="card-head">
+          <span id="progress">Guided Example 1 of 7</span>
+          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <div id="equation" class="equation q11-equation" aria-live="polite"></div>
+      </section>
+
+      <div class="q11-layout">
+        <section class="q11-graph-card" aria-label="Quadratic graph">
+          <div class="q11-graph-wrap">
+            <svg id="graph" class="q11-graph" viewBox="0 0 280 430" role="img" aria-label="Coordinate graph of the quadratic function"></svg>
+          </div>
+        </section>
+        <section class="vertex-work-card q11-work" aria-label="Solution questions">
+          <div id="guided-work">
+            <section id="intercepts-step" class="q11-step">
+              <h2>1. How many times does the graph cross or touch the x-axis?</h2>
+              <form id="intercepts-form">
+                <label class="q11-select-row">Number of x-intercepts
+                  <select id="intercepts-select" aria-label="Choose the number of x-intercepts">
+                    <option value="" selected>Choose one</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                </label>
+                <button type="submit">Check</button>
+                <p id="intercepts-feedback" class="feedback" aria-live="polite"></p>
+              </form>
+            </section>
+
+            <section id="solutions-step" class="q11-step" hidden>
+              <h2>2. How many real and complex solutions are there?</h2>
+              <form id="solutions-form">
+                <label class="q11-select-row">Number of real solutions
+                  <select id="real-select" aria-label="Choose the number of real solutions">
+                    <option value="" selected>Choose one</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                </label>
+                <label class="q11-select-row">Number of complex solutions
+                  <select id="complex-select" aria-label="Choose the number of complex solutions">
+                    <option value="" selected>Choose one</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                </label>
+                <button type="submit">Check answers</button>
+                <p id="solutions-feedback" class="feedback" aria-live="polite"></p>
+              </form>
+            </section>
+          </div>
+
+          <section id="independent-work" hidden>
+            <h2>Try on your own</h2>
+            <form id="independent-form">
+              <label class="q11-select-row">Choose the solution type
+                <select id="result-select" aria-label="Choose the number and type of solutions">
+                  <option value="" selected>Choose one</option>
+                  <option value="2 real">2 real</option>
+                  <option value="1 real">1 real</option>
+                  <option value="2 complex">2 complex</option>
+                </select>
+              </label>
+              <button type="submit">Check</button>
+              <p id="independent-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section id="complete" class="q11-complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <p id="complete-text"></p>
+            <button id="next-problem" type="button">Next Example</button>
+          </section>
+          <div class="answer-row q11-actions"><button id="reset" type="button">Try Again</button></div>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

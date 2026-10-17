@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Identify Solutions Using the Discriminant</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q12</span>
+      </div>
+      <h1>Use the Discriminant</h1>
+      <p class="intro">Choose the discriminant formula, substitute the values, and identify the number and type of solutions.</p>
+
+      <section class="equation-card" aria-label="Quadratic function">
+        <div class="card-head">
+          <span id="equation-label">Quadratic function</span>
+          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <div id="equation" class="equation"></div>
+      </section>
+
+      <section class="vertex-work-card q12-work" aria-label="Discriminant practice">
+        <section id="guided-work">
+          <section id="formula-step" class="q12-step">
+            <h2>1. Choose the discriminant formula</h2>
+            <div id="formula-options" class="q12-formula-options" role="group" aria-label="Discriminant formula choices"></div>
+            <p id="formula-feedback" class="feedback" aria-live="polite"></p>
+          </section>
+
+          <section id="substitution-step" class="q12-step" hidden>
+            <h2>2. Substitute the values</h2>
+            <p class="muted">Enter the values of b, a, and c in the matching blanks.</p>
+            <form id="substitution-form">
+              <div class="q12-expression" aria-label="b squared minus 4 times a times c">
+                <span>(</span><input id="sub-b" inputmode="numeric" aria-label="Value of b" /><span>)<sup>2</sup> − 4(</span><input id="sub-a" inputmode="numeric" aria-label="Value of a" /><span>)(</span><input id="sub-c" inputmode="numeric" aria-label="Value of c" /><span>)</span>
+              </div>
+              <button type="submit">Check substitution</button>
+              <p id="substitution-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section id="discriminant-step" class="q12-step" hidden>
+            <h2>3. Evaluate the discriminant</h2>
+            <form id="discriminant-form">
+              <div id="evaluated-expression" class="q12-expression"></div>
+              <button type="submit">Check discriminant</button>
+              <p id="discriminant-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section id="sign-step" class="q12-step" hidden>
+            <h2>4. Is the discriminant positive, zero, or negative?</h2>
+            <form id="sign-form">
+              <label class="q12-select-row">The discriminant is
+                <select id="sign-select" aria-label="Choose whether the discriminant is positive, zero, or negative">
+                  <option value="" selected>Choose one</option>
+                  <option value="positive">positive</option>
+                  <option value="zero">zero</option>
+                  <option value="negative">negative</option>
+                </select>
+              </label>
+              <button type="submit">Check</button>
+              <p id="sign-feedback" class="feedback" aria-live="polite"></p>
+              <p id="sign-result" class="q12-result" hidden></p>
+            </form>
+          </section>
+
+          <section id="perfect-square-step" class="q12-step" hidden>
+            <h2>5. Is the positive discriminant a perfect square?</h2>
+            <form id="perfect-square-form">
+              <label class="q12-select-row">Is it a perfect square?
+                <select id="perfect-square-select" aria-label="Choose whether the positive discriminant is a perfect square">
+                  <option value="" selected>Choose one</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+              <button type="submit">Check</button>
+              <p id="perfect-square-feedback" class="feedback" aria-live="polite"></p>
+              <p id="perfect-square-result" class="q12-result" hidden></p>
+            </form>
+          </section>
+
+          <section id="intercepts-step" class="q12-step" hidden>
+            <h2 id="intercepts-title">How many x-intercepts does the graph have?</h2>
+            <p class="muted">A graph with one x-intercept touches the axis at its vertex.</p>
+            <form id="intercepts-form">
+              <label class="q12-select-row">Number of x-intercepts
+                <select id="intercepts-select" aria-label="Choose the number of x-intercepts">
+                  <option value="" selected>Choose one</option>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+              </label>
+              <button type="submit">Check</button>
+              <p id="intercepts-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+          </section>
+        </section>
+
+        <section id="independent-work" hidden>
+          <h2>Try it on your own</h2>
+          <p class="muted">Find the discriminant. Then choose the number and type of solutions.</p>
+          <form id="independent-discriminant-form" class="q12-step">
+            <h3>1. Find the discriminant</h3>
+            <div class="q12-expression"><span>Discriminant = </span><input id="independent-discriminant" inputmode="numeric" aria-label="Discriminant value" /></div>
+            <button type="submit">Check discriminant</button>
+            <p id="independent-discriminant-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+          <form id="independent-answer-form" class="q12-step" hidden>
+            <h3>2. Choose the number and type of solutions</h3>
+            <label class="q12-select-row">Number of solutions
+              <select id="solution-count-select" aria-label="Choose the number of solutions">
+                <option value="" selected>Choose one</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </label>
+            <label class="q12-select-row">Type of solutions
+              <select id="solution-type-select" aria-label="Choose the type of solutions">
+                <option value="" selected>Choose one</option>
+                <option value="real rational">Real rational</option>
+                <option value="real irrational">Real irrational</option>
+                <option value="complex">Complex</option>
+              </select>
+            </label>
+            <button type="submit">Check answers</button>
+            <p id="independent-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complete" class="q12-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-problem" type="button">Next Example</button>
+        </section>
+        <div class="answer-row q12-actions"><button id="reset" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

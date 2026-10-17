@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Choose a Method to Solve a Quadratic</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q13</span>
+      </div>
+      <h1>Choose a Method to Solve a Quadratic</h1>
+      <p class="intro">For each quadratic function, choose an efficient method to solve f(x) = 0. Use the clues in the function to decide which method fits best.</p>
+
+      <section class="equation-card" aria-label="Quadratic equation">
+        <div class="card-head">
+          <span id="progress">Example 1 of 12</span>
+          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <div id="equation" class="equation" aria-live="polite"></div>
+      </section>
+
+      <section class="vertex-work-card q13-work" aria-label="Choose a solving method">
+        <details class="q13-reminders">
+          <summary>Method reminders</summary>
+          <ul>
+            <li><strong>Square Root:</strong> use when <em>b</em> = 0.</li>
+            <li><strong>Factor:</strong> use when <em>c</em> = 0 or when <em>a</em> and <em>c</em> are perfect squares. A positive perfect-square discriminant also makes factoring an option; when <em>a</em> &gt; 0, the quadratic formula is accepted too.</li>
+            <li><strong>Complete the Square:</strong> use when <em>a</em> = 1 and <em>b</em> is even.</li>
+            <li><strong>Quadratic Formula:</strong> use when <em>a</em>, <em>b</em>, and <em>c</em> are nonzero and the discriminant is not a perfect square, unless an earlier clue gives a more direct method.</li>
+            <li><strong>Graph:</strong> this is not the most efficient method unless you have a graphing calculator or Desmos.</li>
+          </ul>
+        </details>
+
+        <section id="choice-step" class="q13-step">
+          <h2>Which method is most efficient?</h2>
+          <div id="method-options" class="q13-options" role="group" aria-label="Solving method options"></div>
+          <p id="method-feedback" class="feedback" aria-live="polite"></p>
+        </section>
+
+        <section id="complete" class="q13-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-problem" type="button">Next Example</button>
+        </section>
+
+        <div class="answer-row q13-actions">
+          <button id="reset" type="button">Try Again</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

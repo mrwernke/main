@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solve Using the Quadratic Formula</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q14</span>
+      </div>
+      <h1>Solve with the Quadratic Formula</h1>
+      <p class="intro">Write the equation in standard form, substitute into the formula, and simplify each part to find the solutions.</p>
+
+      <section class="equation-card" aria-label="Quadratic equation">
+        <div class="card-head">
+          <span id="equation-label">Solve this equation</span>
+          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <div id="equation" class="equation" aria-live="polite"></div>
+      </section>
+
+      <section class="vertex-work-card q14-work" aria-label="Quadratic formula work">
+        <section id="standardize-step" class="q14-step" hidden>
+          <h2>1. Write the equation in standard form</h2>
+          <form id="move-form">
+            <p class="muted">Subtract the right-side terms from both sides. Enter the signed coefficients to subtract.</p>
+            <div class="q14-move-expression" id="move-expression"></div>
+            <button type="submit">Check terms to move</button>
+            <p id="move-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+          <div id="move-work" class="q14-work-lines" hidden aria-label="Subtract the right-side terms from both sides"></div>
+          <form id="standard-form" hidden>
+            <p>Combine like terms and write the equation in standard form.</p>
+            <div class="q14-expression q14-standard-entry" id="standard-expression"></div>
+            <button type="submit">Check standard form</button>
+            <p id="standard-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="formula-choice-step" class="q14-step" hidden>
+          <h2 id="formula-choice-title">Choose the quadratic formula</h2>
+          <p class="muted">Select the formula that solves ax² + bx + c = 0.</p>
+          <div id="formula-options" class="q14-formula-options" role="group" aria-label="Quadratic formula choices"></div>
+          <p id="formula-choice-feedback" class="feedback" aria-live="polite"></p>
+        </section>
+
+        <section id="formula-step" class="q14-step" hidden>
+          <h2 id="formula-title">1. Substitute into the quadratic formula</h2>
+          <p class="muted">Enter the values of a, b, and c in the matching blanks.</p>
+          <form id="formula-form">
+            <div class="q14-expression q14-formula" id="formula-expression" aria-label="Quadratic formula with blanks"></div>
+            <button type="submit">Check substitution</button>
+            <p id="formula-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="simplify-step" class="q14-step" hidden>
+          <h2 id="simplify-title">2. Simplify the discriminant and denominator</h2>
+          <form id="simplify-form">
+            <div class="q14-expression" id="simplify-expression"></div>
+            <button type="submit">Check</button>
+            <p id="simplify-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="radical-step" class="q14-step" hidden>
+          <h2 id="radical-title">3. Simplify the radical</h2>
+          <p class="muted">Choose and enter the simplified form of the displayed radical. When it is negative, include i outside the radical.</p>
+          <form id="radical-form">
+            <div class="q14-radical-entry">
+              <label for="radical-type">Choose the simplified form</label>
+              <select id="radical-type" aria-label="Choose the simplified radical form">
+                <option value="">Choose one</option>
+                <option value="integer">#</option>
+                <option value="integer-i">#i</option>
+                <option value="radical">√#</option>
+                <option value="radical-i">√#i</option>
+                <option value="coefficient-radical">#√#</option>
+                <option value="coefficient-radical-i">#√#i</option>
+              </select>
+            </div>
+            <div class="q14-expression q14-radical-line" id="radical-expression"></div>
+            <button type="submit">Check radical</button>
+            <p id="radical-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="split-step" class="q14-step" hidden>
+          <h2 id="split-title">4. Split the numerator into two fractions</h2>
+          <p class="muted">Keep the same denominator in both fractions, and enter the value inside the radical.</p>
+          <form id="split-form">
+            <div class="q14-expression q14-split-line" id="split-expression"></div>
+            <button type="submit">Check</button>
+            <p id="split-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="final-step" class="q14-step" hidden>
+          <h2 id="final-title">5. Simplify each part</h2>
+          <form id="final-form">
+            <div class="q14-expression q14-final-line" id="final-expression"></div>
+            <button type="submit">Check solutions</button>
+            <p id="final-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="answer-step" class="q14-step" hidden>
+          <h2 id="answer-title">6. Calculate the final solution values</h2>
+          <form id="answer-form">
+            <div class="q14-expression q14-answer-line" id="answer-expression"></div>
+            <button type="submit">Check answers</button>
+            <p id="answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complete" class="q14-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-problem" type="button">Next Example</button>
+        </section>
+        <div class="answer-row q14-actions"><button id="reset" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

@@ -86,34 +86,85 @@
             <button class="form-choice" id="manual-method" aria-pressed="true">Find the vertex manually <span>x = −b/(2a)</span></button>
             <button class="form-choice" id="square-method" aria-pressed="false">Complete the square <span>Use algebra to rewrite the quadratic</span></button>
           </div>
-          <div id="square-not-ready" class="condition" hidden><h2>Not ready yet</h2><p>The completing-the-square method is not ready yet.</p></div>
+          <section id="square-work" class="vertex-work-card" hidden aria-label="Complete the square">
+            <h2>Complete the square</h2>
+            <p id="square-normalization-note" class="muted" hidden></p>
+            <div class="square-work-layout">
+              <div class="square-step-column">
+                <form id="square-move-step" class="square-step">
+                  <h3>1. Move the constant to the other side</h3>
+                  <p class="muted">Move the c-term to right side of equal sign.</p>
+                  <div class="square-equation"><span id="square-move-left"></span><span id="square-complete-gap" class="square-complete-gap" aria-hidden="true"></span><span>=</span><input id="square-move-right" inputmode="decimal" aria-label="Right side after moving the constant" /></div>
+                  <button type="submit">Check</button><p class="feedback" id="square-move-feedback" aria-live="polite"></p>
+                </form>
+                <form id="square-factor-step" class="square-step" hidden>
+                  <h3>Factor out <span id="square-factor-a"></span></h3>
+                  <p id="square-factor-instructions" class="muted">Write the x-term coefficient after factoring out a.</p>
+                  <div class="square-equation"><span id="square-factor-left"></span><input id="square-factor-coefficient" inputmode="decimal" aria-label="Coefficient of x inside parentheses after factoring out a" /><span id="square-factor-right"></span><span class="square-complete-gap" aria-hidden="true"></span><span id="square-factor-close"></span></div>
+                  <button type="submit">Check</button><p class="feedback" id="square-factor-feedback" aria-live="polite"></p>
+                </form>
+                <section id="square-box-work" class="square-step" hidden>
+                  <h3>2. Complete the missing boxes.</h3>
+                  <p class="muted">Split the bx term in half between the two boxes.</p>
+                  <form id="square-halves-step"><button type="submit">Check</button><p class="feedback" id="square-halves-feedback" aria-live="polite"></p></form>
+                  <form id="square-outside-step" hidden class="square-step"><h3>3. Fill in the outside values</h3><p>Write the matching values above and to the left of the box.</p><button type="submit">Check</button><p class="feedback" id="square-outside-feedback" aria-live="polite"></p></form>
+                  <form id="square-corner-step" hidden class="square-step"><h3>4. Complete the square</h3><p>Multiply the two outside values to fill the bottom-right square.</p><button type="submit">Check</button><p class="feedback" id="square-corner-feedback" aria-live="polite"></p></form>
+                </section>
+              </div>
+              <div id="square-box-area" class="square-box-area" hidden>
+                <div class="factor-box" role="group" aria-label="Completing the square box">
+                  <span class="column-x"><span>x</span></span>
+                  <input id="square-out-top" class="top-factor" form="square-outside-step" inputmode="decimal" aria-label="Top outside value" hidden disabled />
+                  <span class="row-x"><span>x</span></span>
+                  <div class="cell upper-left">x²</div>
+                  <div class="cell upper-right"><input id="square-upper-right" form="square-halves-step" inputmode="text" aria-label="Upper-right half-bx term, including x" /></div>
+                  <input id="square-out-left" class="side-factor" form="square-outside-step" inputmode="decimal" aria-label="Left outside value" hidden disabled />
+                  <div class="cell lower-left"><input id="square-lower-left" form="square-halves-step" inputmode="text" aria-label="Lower-left half-bx term, including x" /></div>
+                  <div id="square-bottom-right-cell" class="cell lower-right" hidden><input id="square-bottom-right" form="square-corner-step" inputmode="decimal" aria-label="Bottom-right square value" disabled /></div>
+                  <span id="square-middle-target" class="middle-target"></span>
+                </div>
+              </div>
+            </div>
+            <form id="square-both-sides-step" class="square-step" hidden>
+              <h3>5. Add that value to both sides</h3>
+              <div class="square-equation"><span id="square-both-left"></span><input id="square-add-left" inputmode="decimal" aria-label="Value added inside the square parentheses" /><span id="square-both-left-close"></span><span>=</span><span id="square-both-right"></span><input id="square-add-right" inputmode="decimal" aria-label="Value added to the right side" /></div>
+              <button type="submit">Check</button><p class="feedback" id="square-both-feedback" aria-live="polite"></p>
+            </form>
+            <form id="square-simplify-step" class="square-step" hidden>
+              <h3>6. Simplify both sides</h3>
+              <div class="square-equation"><span id="square-simplified-leading"></span><span>(x </span><select id="square-binomial-sign" aria-label="Sign inside the squared binomial"><option value="">±</option><option value="+">+</option><option value="-">−</option></select><input id="square-binomial-value" inputmode="decimal" aria-label="Binomial value" /><span>)² = </span><input id="square-simplified-right" inputmode="decimal" aria-label="Simplified right side" /></div>
+              <button type="submit">Check</button><p class="feedback" id="square-simplify-feedback" aria-live="polite"></p>
+            </form>
+          </section>
           <div id="manual-work" class="vertex-work-card">
             <h2>Find the vertex manually</h2>
-            <p class="muted">First find the x-coordinate of the vertex using <strong>x = −b/(2a)</strong>.</p>
-            <div class="answer-row">x = <input id="vertex-x" class="coord" inputmode="decimal" aria-label="Vertex x-coordinate" /><button id="check-vertex-x">Check</button></div>
+            <p class="muted">First find the x-coordinate of the vertex using <strong>x = −b/(2a)</strong>. If its decimal does not terminate, enter a fraction. If it terminates, you may use a fraction or decimal.</p>
+            <div class="answer-row">x = <input id="vertex-x" class="coord" inputmode="text" aria-label="Vertex x-coordinate; fractions and decimals are allowed" /><button id="check-vertex-x">Check</button></div>
             <p class="feedback" id="vertex-x-feedback" aria-live="polite"></p>
             <div id="vertex-y-work" hidden>
               <p class="muted">Substitute this x-value into the standard form to find k = f(h).</p>
-              <div class="answer-row"><span id="vertex-substitution"></span><input id="vertex-y" class="coord" inputmode="decimal" aria-label="Vertex y-coordinate" /><button id="check-vertex-y">Check</button></div>
+              <div class="answer-row"><span id="vertex-substitution"></span><input id="vertex-y" class="coord" inputmode="text" aria-label="Vertex y-coordinate; fractions and decimals are allowed" /><button id="check-vertex-y">Check</button></div>
               <p class="feedback" id="vertex-y-feedback" aria-live="polite"></p>
             </div>
-            <form id="vertex-form-entry" hidden>
+          </div>
+            <form id="vertex-form-entry" class="vertex-work-card" hidden>
               <h2>Write the quadratic in vertex form</h2>
               <p class="muted">Enter a, then choose the signs and enter the magnitudes of h and k. Be sure each sign is correct. If you see “subtract a negative,” change it to plus.</p>
-              <div class="vertex-form-equation"><span>f(x) = </span><input id="form-a" class="coord" inputmode="decimal" aria-label="a value in vertex form" /><span>(x </span><select id="form-h-sign" aria-label="Sign before h"><option value="" selected>±</option><option value="+">+</option><option value="−">−</option></select><input id="form-h" class="coord" inputmode="decimal" aria-label="Magnitude of h in vertex form" /><span>)² </span><select id="form-k-sign" aria-label="Sign before k"><option value="" selected>±</option><option value="+">+</option><option value="−">−</option></select><input id="form-k" class="coord" inputmode="decimal" aria-label="Magnitude of k in vertex form" /></div>
+              <div class="vertex-form-equation"><span>f(x) = </span><input id="form-a" class="coord" inputmode="text" aria-label="a value in vertex form" /><span>(x </span><select id="form-h-sign" aria-label="Sign before h"><option value="" selected>±</option><option value="+">+</option><option value="−">−</option></select><input id="form-h" class="coord" inputmode="text" aria-label="Magnitude of h in vertex form; fractions and decimals are allowed" /><span>)² </span><select id="form-k-sign" aria-label="Sign before k"><option value="" selected>±</option><option value="+">+</option><option value="−">−</option></select><input id="form-k" class="coord" inputmode="text" aria-label="Magnitude of k in vertex form; fractions and decimals are allowed" /></div>
               <button id="check-vertex-form" type="submit">Check</button>
               <p class="feedback" id="vertex-form-feedback" aria-live="polite"></p>
             </form>
-            <section id="vertex-complete" hidden aria-live="polite">
+            <section id="vertex-complete" class="vertex-work-card" hidden aria-live="polite">
               <h2>Good Job</h2>
               <p>Substitute a, h, and k into vertex form:</p>
               <p id="vertex-result" class="result-equation"></p>
+              <button id="vertex-next">Next Example</button>
             </section>
-          </div>
           <div class="answer-row"><button id="vertex-reset">Try Again</button></div>
         </section>
       </section>
     </main>
     <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
   </body>
 </html>

@@ -1,0 +1,24 @@
+.q12-work { max-width:900px; }
+.q12-step { margin:22px 0 0; padding-top:18px; border-top:1px solid var(--line); }
+.q12-step:first-child { margin-top:0; padding-top:0; border-top:0; }
+.q12-step h2,.q12-step h3 { margin:0 0 12px; }
+.q12-step > .muted { margin:0 0 14px; }
+.q12-formula-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.q12-formula-choice { min-height:76px; display:flex; align-items:center; justify-content:center; background:var(--panel); color:var(--ink); font:inherit; }
+.q12-formula-choice:hover:enabled { background:#eef6f2; }
+.q12-formula-choice.invalid { border-color:var(--red); color:var(--red); }
+.q12-formula-choice.correct { border-color:var(--green); background:#e9f5ed; color:var(--green); }
+.q12-formula-choice math { font-size:1.3rem; }
+.q12-expression { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px; margin:16px 0; font:1.5rem Georgia,"Times New Roman",serif; }
+.q12-expression input { width:76px; text-align:center; font:1rem system-ui,sans-serif; }
+.q12-expression sup { font-size:.68em; align-self:flex-start; margin-left:-4px; }
+.q12-select-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:14px 0; }
+.q12-select-row select { min-width:130px; padding:8px; font:1rem system-ui,sans-serif; }
+.q12-result { margin:12px 0; color:var(--green); font-weight:700; }
+.q12-complete { margin-top:24px; padding-top:20px; border-top:1px solid var(--line); }
+.q12-complete h2 { margin-top:0; }
+.q12-actions { margin-top:20px; }
+@media (max-width:560px) {
+  .q12-formula-options { grid-template-columns:minmax(0,1fr); }
+  .q12-expression { font-size:1.25rem; }
+}

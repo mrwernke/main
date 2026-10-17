@@ -10,6 +10,30 @@
 .vertex-form-equation { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:18px 0; font:1.35rem/1.6 Georgia,serif; }
 .vertex-form-equation input { width:88px; font:1rem/1.4 system-ui,sans-serif; }
 .vertex-form-equation select { min-width:52px; padding:8px; font:1rem/1.4 system-ui,sans-serif; }
+.square-step { margin-top:22px; padding-top:18px; border-top:1px solid var(--line); }
+.square-step h3 { margin:0 0 10px; }
+.square-equation { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:16px 0; font:1.25rem/1.6 Georgia,serif; }
+.square-equation input { width:96px; min-width:0; text-align:center; font:1rem/1.4 system-ui,sans-serif; }
+.square-equation select { min-width:52px; padding:8px; font:1rem/1.4 system-ui,sans-serif; }
+.square-box-row { display:grid; grid-template-columns:70px 150px; gap:8px; margin-left:52px; text-align:center; }
+.square-box-layout { display:flex; align-items:stretch; gap:8px; }
+.square-outside { display:flex; align-items:center; justify-content:center; width:70px; min-height:70px; font:1.2rem Georgia,serif; }
+.square-outside input { width:88px; min-width:0; text-align:center; }
+.square-box { position:relative; display:grid; grid-template-columns:repeat(2,minmax(92px,1fr)); grid-template-rows:repeat(2,86px); width:min(100%,310px); border:2px solid var(--ink); }
+.square-cell { display:flex; align-items:center; justify-content:center; border:1px solid var(--line); font:1.2rem Georgia,serif; }
+.square-cell input { width:90px; min-width:0; text-align:center; }
+.square-middle-target { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:4px 12px; border:1px solid var(--ink); border-radius:999px; background:var(--panel); font:1.05rem Georgia,serif; white-space:nowrap; }
+#square-work { margin:24px 0; }
+.square-work-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,1fr); align-items:start; gap:28px; }
+.square-step-column { min-width:0; }
+.square-work-layout .square-step { margin-top:0; padding-top:0; border-top:0; }
+#square-box-work { margin-top:22px; padding-top:18px; border-top:1px solid var(--line); }
+#square-box-work h3 { margin:0 0 10px; }
+#square-halves-step { margin-top:14px; }
+.square-equation .square-complete-gap { display:inline-block; width:75px; min-height:1.6em; border:0; }
+.square-box-area { min-width:0; }
+.square-box-area .factor-box { width:100%; margin:0 auto; }
+@media (max-width:680px) { .square-work-layout { grid-template-columns:1fr; gap:18px; } }
 .result-equation { font:1.5rem/1.5 Georgia,serif; overflow-wrap:anywhere; }
 #factored-complete,#vertex-complete { border-top:1px solid var(--line); padding-top:20px; margin-top:20px; }
 #factored-complete h2,#vertex-complete h2 { margin-top:0; }
