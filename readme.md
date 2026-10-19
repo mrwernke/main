@@ -6,7 +6,7 @@ paused) as subdirectories.
 
 ## Projects
 
-- `main-site/` - Wernke's Math Resources homepage: four unit dropdowns listing skills (with applet links where available) above the applet directory cards.
+- `main-site/` - Wernke's Math Resources homepage: four unit dropdowns listing skills (with applet links where available) above topic-grouped applet collection cards.
 - `math-applets/domain-range-helper/` - first math applet, under development.
 - `math-applets/absolute-value-graphing/` - guided absolute-value graphing lab.
 - `math-applets/quadratic-graphing/` - quadratic graphing lab with standard, factored, and vertex form practice.

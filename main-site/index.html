@@ -178,50 +178,38 @@
       }
 
       .directory { padding: 70px 0 0; }
-      .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+      .directory-title { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
+      .directory-intro { max-width: 660px; margin: 14px 0 0; color: var(--muted); line-height: 1.6; }
+      .topic-group { --topic-color: #267a5e; margin-top: 38px; }
+      .topic-group-absolute { --topic-color: #1677c8; }
+      .topic-group-quadratic { --topic-color: #a45138; }
+      .topic-group-solving { --topic-color: #8056a5; }
+      .topic-heading { display:flex; align-items:center; gap:16px; margin:0 0 16px; font-size:1.45rem; }
+      .topic-heading::after { content:""; height:2px; flex:1; background:var(--topic-color); opacity:.45; }
+      .projects { display:grid; grid-template-columns:repeat(auto-fit, minmax(235px, 1fr)); gap:18px; }
       .project {
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        display: flex;
-        min-height: 250px;
-        flex-direction: column;
-        justify-content: center;
-        padding: 28px;
-        border: 1px solid var(--line);
-        background: var(--card);
-        box-shadow: 5px 5px 0 var(--line);
-        color: var(--ink);
-        text-align: center;
-        text-decoration: none;
+        display:flex;
+        min-height:190px;
+        flex-direction:column;
+        align-items:flex-start;
+        padding:21px;
+        border:1px solid var(--line);
+        border-top:6px solid var(--topic-color);
+        background:var(--card);
+        box-shadow:5px 5px 0 var(--line);
+        color:var(--ink);
+        text-align:left;
+        text-decoration:none;
+        transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
       }
-      .project h2 {
-        position: relative;
-        margin: 0;
-        padding: 14px 8px;
-        font-size: 1.65rem;
-        line-height: 1.2;
-        background: rgba(255, 253, 248, 0.9);
-        border-radius: 6px;
-      }
-      .topic-graphic { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-      .topic-grid { stroke: var(--line); stroke-width: 1; opacity: 0.55; }
-      .topic-axes { stroke: var(--ink); stroke-width: 1.5; opacity: 0.25; }
-      .topic-curve { fill: none; stroke: var(--topic-color); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; opacity: 0.6; }
-      .topic-points { fill: var(--card); stroke: var(--topic-color); stroke-width: 3; opacity: 0.8; }
-      .topic-projection { fill: none; stroke: var(--topic-color); stroke-width: 2; stroke-dasharray: 5 5; opacity: 0.4; }
-      .topic-interval { stroke: var(--topic-color); stroke-width: 8; stroke-linecap: round; opacity: 0.45; }
-      .project-domain { --topic-color: #267a5e; }
-      .project-absolute { --topic-color: #1677c8; }
-      .project-quadratic { --topic-color: #a45138; }
-      .project-equation { --topic-color: #8056a5; }
-      .project-factoring { --topic-color: #267a5e; }
-      .project-abs-equation { --topic-color: #2a7f8f; }
-      .project-completing-square { --topic-color: #96632e; }
-      .project-square-root { --topic-color: #526d91; }
-      .project:hover { border-color: var(--topic-color); }
-      .project:hover h2 { text-decoration: underline; text-decoration-color: var(--topic-color); text-underline-offset: 5px; }
-      .project:focus-visible { outline: 3px solid var(--ink); outline-offset: 5px; }
+      .project-code { color:var(--topic-color); font-size:.73rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+      .project h4 { margin:10px 0 8px; font-family:Georgia,"Times New Roman",serif; font-size:1.22rem; line-height:1.2; }
+      .project p { margin:0 0 18px; color:var(--muted); font-size:.9rem; line-height:1.5; }
+      .project-action { margin-top:auto; color:#b9432d; font-size:.84rem; font-weight:800; }
+      .project:hover { transform:translateY(-3px); border-color:var(--topic-color); box-shadow:7px 8px 0 var(--line); }
+      .project:hover h4 { text-decoration:underline; text-decoration-color:var(--topic-color); text-underline-offset:4px; }
+      .project:focus-visible { outline:3px solid var(--ink); outline-offset:5px; }
+      @media (prefers-reduced-motion: reduce) { .project { transition:none; } }
 
       footer { margin-top: 70px; color: var(--muted); font-size: 0.9rem; }
 
@@ -326,102 +314,148 @@
         </details>
       </section>
 
-      <section class="directory" aria-label="Math applets">
-        <div class="projects">
-          <a class="project project-domain" href="./math-applets/domain-range-helper/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-grid" d="M 40 0 V 250 M 80 0 V 250 M 120 0 V 250 M 160 0 V 250 M 200 0 V 250 M 240 0 V 250 M 280 0 V 250 M 0 45 H 320 M 0 85 H 320 M 0 125 H 320 M 0 165 H 320 M 0 205 H 320" />
-              <path class="topic-axes" d="M 20 205 H 300 M 60 230 V 20" />
-              <path class="topic-projection" d="M 100 170 V 205 M 100 170 H 60 M 270 45 V 205 M 270 45 H 60" />
-              <path class="topic-interval" d="M 100 205 H 270 M 60 45 V 170" />
-              <path class="topic-curve" d="M 100 170 C 155 170 180 45 270 45" />
-              <g class="topic-points"><circle cx="100" cy="170" r="6" /><circle cx="270" cy="45" r="6" /></g>
-            </svg>
-            <h2>Domain &amp; Range Illustrator</h2>
-          </a>
+      <section class="directory" aria-labelledby="applet-collection-title">
+        <h2 class="directory-title" id="applet-collection-title">Applet Collection Cards</h2>
+        <p class="directory-intro">Browse the interactive applets by topic. Each card opens a guided practice activity for that skill.</p>
 
-          <a class="project project-absolute" href="./math-applets/absolute-value-graphing/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-grid" d="M 40 0 V 250 M 80 0 V 250 M 120 0 V 250 M 160 0 V 250 M 200 0 V 250 M 240 0 V 250 M 280 0 V 250 M 0 45 H 320 M 0 85 H 320 M 0 125 H 320 M 0 165 H 320 M 0 205 H 320" />
-              <path class="topic-axes" d="M 20 165 H 300 M 120 230 V 20" />
-              <path class="topic-curve" d="M 45 30 L 165 210 L 285 30 M 43 43 L 45 30 L 57 36 M 273 36 L 285 30 L 287 43" />
-              <g class="topic-points"><circle cx="85" cy="90" r="5" /><circle cx="165" cy="210" r="6" /><circle cx="245" cy="90" r="5" /></g>
-            </svg>
-            <h2>Absolute Value Graphing</h2>
-          </a>
+        <section class="topic-group" aria-labelledby="topic-functions">
+          <h3 class="topic-heading" id="topic-functions">Functions &amp; Graphing</h3>
+          <div class="projects">
+            <a class="project" href="./math-applets/domain-range-helper/">
+              <span class="project-code">FT3</span>
+              <h4>Domain &amp; Range Explorer</h4>
+              <p>Explore the domain and range by moving along different graphs.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/function-transformations/">
+              <span class="project-code">FT4A</span>
+              <h4>Function Transformations</h4>
+              <p>Identify shifts, reflections, and dilations of parent functions.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-graphing/">
+              <span class="project-code">Q1&ndash;Q3</span>
+              <h4>Quadratic Graphing Lab</h4>
+              <p>Graph quadratic functions in standard, factored, and vertex form.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-features/">
+              <span class="project-code">Q4</span>
+              <h4>Quadratic Function Characteristics</h4>
+              <p>Identify key features from the graph of a quadratic function.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-transformations/">
+              <span class="project-code">Q5</span>
+              <h4>Quadratic Transformations</h4>
+              <p>Describe how a quadratic graph changes from its parent function.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+          </div>
+        </section>
 
-          <a class="project project-abs-equation" href="./math-applets/absolute-value-equations/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-grid" d="M 40 0 V 250 M 80 0 V 250 M 120 0 V 250 M 160 0 V 250 M 200 0 V 250 M 240 0 V 250 M 280 0 V 250 M 0 45 H 320 M 0 85 H 320 M 0 125 H 320 M 0 165 H 320 M 0 205 H 320" />
-              <path class="topic-axes" d="M 20 165 H 300 M 165 230 V 20" />
-              <path class="topic-curve" d="M 45 30 L 165 210 L 285 30" />
-              <path class="topic-projection" d="M 30 90 H 290" />
-              <g class="topic-points"><circle cx="85" cy="90" r="6" /><circle cx="245" cy="90" r="6" /></g>
-              <text x="162" y="60" text-anchor="middle" fill="#2a7f8f" font-family="Georgia, serif" font-size="24" opacity="0.65">|x − 2| = 5</text>
-            </svg>
-            <h2>Absolute Value Equation Solver</h2>
-          </a>
+        <section class="topic-group topic-group-absolute" aria-labelledby="topic-absolute">
+          <h3 class="topic-heading" id="topic-absolute">Absolute Value</h3>
+          <div class="projects">
+            <a class="project" href="./math-applets/absolute-value-graphing/">
+              <span class="project-code">FT9</span>
+              <h4>Absolute Value Graphing Lab</h4>
+              <p>Graph absolute value functions and explore their features.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/absolute-value-features/">
+              <span class="project-code">FT10</span>
+              <h4>Absolute Value Characteristics</h4>
+              <p>Identify key characteristics of absolute value graphs.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/absolute-value-transformations/">
+              <span class="project-code">FT12</span>
+              <h4>Absolute Value Transformations</h4>
+              <p>Describe transformations of the parent absolute value function.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/absolute-value-equations/">
+              <span class="project-code">FT13</span>
+              <h4>Absolute Value Equation Solver</h4>
+              <p>Solve absolute value equations one step at a time.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+          </div>
+        </section>
 
-          <a class="project project-quadratic" href="./math-applets/quadratic-graphing/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-grid" d="M 40 0 V 250 M 80 0 V 250 M 120 0 V 250 M 160 0 V 250 M 200 0 V 250 M 240 0 V 250 M 280 0 V 250 M 0 45 H 320 M 0 85 H 320 M 0 125 H 320 M 0 165 H 320 M 0 205 H 320" />
-              <path class="topic-axes" d="M 20 165 H 300 M 160 230 V 20" />
-              <path class="topic-curve" d="M 45 25 Q 160 395 275 25 M 40 37 L 45 25 L 56 32 M 264 32 L 275 25 L 280 37" />
-              <g class="topic-points"><circle cx="102.5" cy="163.75" r="5" /><circle cx="160" cy="210" r="6" /><circle cx="217.5" cy="163.75" r="5" /></g>
-            </svg>
-            <h2>Quadratic Equation Graphing</h2>
-          </a>
+        <section class="topic-group topic-group-quadratic" aria-labelledby="topic-quadratic-forms">
+          <h3 class="topic-heading" id="topic-quadratic-forms">Quadratic Forms &amp; Modeling</h3>
+          <div class="projects">
+            <a class="project" href="./math-applets/quadratic-from-graph/">
+              <span class="project-code">Q6</span>
+              <h4>Quadratic Equation from a Graph</h4>
+              <p>Write a quadratic equation in three forms using its graph.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-convert/">
+              <span class="project-code">Q7</span>
+              <h4>Convert Quadratic Forms</h4>
+              <p>Convert standard form to factored form or vertex form.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-modeling/?v=20261019a">
+              <span class="project-code">Q18</span>
+              <h4>Build a Quadratic Model</h4>
+              <p>Use vertices, intercepts, and points to model a real situation.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+          </div>
+        </section>
 
-          <a class="project project-equation" href="./math-applets/quadratic-from-graph/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-grid" d="M 40 0 V 250 M 80 0 V 250 M 120 0 V 250 M 160 0 V 250 M 200 0 V 250 M 240 0 V 250 M 280 0 V 250 M 0 45 H 320 M 0 85 H 320 M 0 125 H 320 M 0 165 H 320 M 0 205 H 320" />
-              <path class="topic-curve" d="M 45 25 Q 160 395 275 25" />
-              <g class="topic-points"><circle cx="102.5" cy="163.75" r="5" /><circle cx="160" cy="210" r="6" /><circle cx="217.5" cy="163.75" r="5" /></g>
-              <text x="160" y="45" text-anchor="middle" fill="#8056a5" font-family="Georgia, serif" font-size="24" opacity="0.6">y = a(x − h)² + k</text>
-            </svg>
-            <h2>Writing Quadratic Equation from Graph</h2>
-          </a>
-
-          <a class="project project-factoring" href="./math-applets/quadratic-factoring/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-curve" d="M 65 45 H 285 V 225 H 65 Z M 175 45 V 225 M 65 135 H 285" />
-              <g fill="#267a5e" font-family="Georgia, serif" font-size="26" text-anchor="middle" opacity="0.65">
-                <text x="120" y="30">x</text><text x="230" y="30">+2</text>
-                <text x="30" y="100">x</text><text x="30" y="200">−7</text>
-                <text x="120" y="100">x²</text><text x="230" y="200">−14</text>
-              </g>
-              <circle cx="175" cy="135" r="30" fill="#fffdf8" stroke="#267a5e" stroke-width="3" />
-            </svg>
-            <h2>Factoring Quadratics with the Box Method</h2>
-          </a>
-
-          <a class="project project-completing-square" href="./math-applets/quadratic-completing-square/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-grid" d="M 40 0 V 250 M 80 0 V 250 M 120 0 V 250 M 160 0 V 250 M 200 0 V 250 M 240 0 V 250 M 280 0 V 250 M 0 45 H 320 M 0 85 H 320 M 0 125 H 320 M 0 165 H 320 M 0 205 H 320" />
-              <path class="topic-curve" d="M 55 40 Q 160 300 265 40" />
-              <g fill="#96632e" font-family="Georgia, serif" font-size="25" text-anchor="middle" opacity="0.7">
-                <text x="160" y="54">x² + 6x + 5 = 0</text>
-                <text x="160" y="205">(x + 3)² = 4</text>
-              </g>
-            </svg>
-            <h2>Solving by Completing the Square</h2>
-          </a>
-
-          <a class="project project-square-root" href="./math-applets/quadratic-square-root/">
-            <svg class="topic-graphic" viewBox="0 0 320 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <path class="topic-grid" d="M 40 0 V 250 M 80 0 V 250 M 120 0 V 250 M 160 0 V 250 M 200 0 V 250 M 240 0 V 250 M 280 0 V 250 M 0 45 H 320 M 0 85 H 320 M 0 125 H 320 M 0 165 H 320 M 0 205 H 320" />
-              <path class="topic-curve" d="M 65 45 Q 160 260 255 45" />
-              <g fill="#526d91" font-family="Georgia, serif" font-size="24" text-anchor="middle" opacity="0.75">
-                <text x="160" y="72">2(x − 3)² + 5 = 23</text>
-                <text x="160" y="190">x = 3 ± 3</text>
-              </g>
-            </svg>
-            <h2>Solving by the Square Root Method</h2>
-          </a>
-
-        </div>
+        <section class="topic-group topic-group-solving" aria-labelledby="topic-solving">
+          <h3 class="topic-heading" id="topic-solving">Solving Quadratics</h3>
+          <div class="projects">
+            <a class="project" href="./math-applets/quadratic-graph-solutions/">
+              <span class="project-code">Q11</span>
+              <h4>Quadratic Solutions from a Graph</h4>
+              <p>Read a graph to determine how many real or complex solutions exist.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-discriminant/">
+              <span class="project-code">Q12</span>
+              <h4>Quadratic Discriminant</h4>
+              <p>Use the discriminant to identify the number and type of solutions.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-method-choice/">
+              <span class="project-code">Q13</span>
+              <h4>Choose a Solving Method</h4>
+              <p>Choose an efficient method for solving each quadratic equation.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-formula/">
+              <span class="project-code">Q14</span>
+              <h4>Quadratic Formula Solver</h4>
+              <p>Apply the quadratic formula and simplify the solutions.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-factoring/">
+              <span class="project-code">Q15</span>
+              <h4>Factoring Solver</h4>
+              <p>Factor quadratic expressions and solve each factor.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-square-root/">
+              <span class="project-code">Q16</span>
+              <h4>Square Root Method Solver</h4>
+              <p>Solve vertex-form quadratic equations using square roots.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+            <a class="project" href="./math-applets/quadratic-completing-square/">
+              <span class="project-code">Q17</span>
+              <h4>Completing the Square Solver</h4>
+              <p>Complete the square, then solve using the square root method.</p>
+              <span class="project-action">Open applet &rarr;</span>
+            </a>
+          </div>
+        </section>
       </section>
-
       <footer>An applet for every skill is the long-term goal — more are on the way.</footer>
     </main>
     <script>
