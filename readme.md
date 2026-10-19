@@ -19,6 +19,7 @@ paused) as subdirectories.
 - `math-applets/quadratic-method-choice/` - choose an efficient method for solving a quadratic equation.
 - `math-applets/quadratic-completing-square/` - solve quadratic equations by completing the square.
 - `math-applets/quadratic-square-root/` - solve vertex-form quadratic equations using the square root method.
+- `math-applets/quadratic-extrema/` - find real-world quadratic maximum and minimum values from standard, vertex, and factored forms.
 - `math-applets/quadratic-modeling/` - build real-world quadratic models from vertices, intercepts, and points.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
 - `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
@@ -33,6 +34,10 @@ paused) as subdirectories.
 The applets are standalone static sites; no build step is required.
 To preview the directory and applets together, serve the repository root with a
 static HTTP server and open `main-site/` or `math-applets/quadratic-graphing/`.
+Every applet page loads `math-applets/back-navigation.js` for its nearby-applet
+header links. When adding an applet, register its code, title, path, and position
+in the appropriate unit list in that file; the shared header then shows up to
+two previous and two next applets on every page.
 
 The Q17 completing-the-square solver starts with three monic equations and one
 extended equation with a leading coefficient of 2. Students move the constant,
@@ -55,6 +60,13 @@ identify whether the key information is a vertex or both x-intercepts, then
 choose vertex or factored form. They enter the key coordinates, substitute them
 into the form, identify and substitute the remaining information to solve for
 a, and write the finished function.
+
+The Q9 extrema applet has ten real-world scenarios, including four vertical-
+motion models. Across the set, there are six standard-form functions, two
+vertex-form functions, and two factored-form functions. Students identify a
+maximum or minimum from the sign of a, then find the vertex using -b/(2a), the
+average of the x-intercepts, or the (h, k) values in vertex form. They finish
+by stating the extremum value and its x-coordinate.
 
 The quadratic lab uses eight functions in each form. All have integer
 coefficients, vertices, and plotted table points; factored form keeps integer

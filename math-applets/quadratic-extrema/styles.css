@@ -1,0 +1,32 @@
+.q9-prompt { margin:26px 0 24px; }
+.q9-scenario { margin:14px 0 18px; color:#fffdf8; font:1.08rem/1.6 Georgia,"Times New Roman",serif; }
+.q9-context { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 22px; padding:12px 0; border-top:1px solid rgba(255,255,255,.28); border-bottom:1px solid rgba(255,255,255,.28); color:#e5eee9; font-size:.9rem; line-height:1.45; }
+.q9-context p { margin:0; }
+.q9-context strong { color:#c7ead8; }
+.q9-prompt .equation { margin:14px 0 0; }
+.q9-work { display:grid; gap:0; padding:24px; border:1px solid var(--line); background:var(--panel); box-shadow:5px 5px 0 #d8dedb; }
+.q9-step { padding:22px 0; border-top:1px solid #e2e4e1; }
+.q9-step:first-child { padding-top:0; border-top:0; }
+.q9-step h2 { margin:0 0 8px; }
+.q9-step > .muted { margin:0 0 16px; }
+.q9-step.complete { border-left:4px solid var(--green); padding-left:16px; }
+.math { font:1.15em Georgia,"Times New Roman",serif; }
+.q9-form { margin-top:10px; }
+.q9-field { display:flex; align-items:center; flex-wrap:wrap; gap:9px; margin:0 0 12px; font-weight:700; }
+.q9-field select { min-width:150px; }
+.q9-answer-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:14px 0 8px; }
+.q9-roots-row label { display:grid; gap:6px; color:var(--muted); font-size:.82rem; font-weight:700; }
+.q9-number { width:88px; text-align:center; }
+.q9-number.invalid,.q9-field select.invalid { border-color:var(--red); background:#fff0ee; color:#a22e2e; box-shadow:0 0 0 2px rgba(212,74,74,.16); }
+.q9-final-sentence { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:14px 0 18px; font:1.18rem/1.7 Georgia,"Times New Roman",serif; }
+.q9-final-sentence strong { color:#34725f; }
+.q9-complete { margin-top:10px; padding:22px 0 0; border-top:1px solid #e2e4e1; text-align:center; }
+.q9-complete h2 { margin:0 0 8px; }
+.q9-complete-statement { color:var(--green); font:1.25rem/1.6 Georgia,"Times New Roman",serif; }
+.q9-complete button { margin-top:8px; }
+@media (max-width:650px) {
+  .q9-context { grid-template-columns:1fr; gap:5px; }
+  .q9-work { padding:18px; }
+  .q9-answer-row { align-items:flex-start; }
+  .q9-final-sentence { font-size:1.06rem; }
+}

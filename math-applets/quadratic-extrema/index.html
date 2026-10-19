@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quadratic Extrema in Context</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar"><a class="back" href="../../">&larr; Wernke's Math Resources</a><span class="eyebrow">Interactive math applet &middot; Q9</span></div>
+      <h1>Quadratic Extrema in Context</h1>
+      <p class="intro">Use the sign of the leading coefficient to identify a maximum or minimum, then find the vertex from the form of the function.</p>
+
+      <section class="equation-card q9-prompt" aria-label="Real-world scenario and function">
+        <div class="card-head">
+          <span>Find the maximum or minimum</span>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose a real-world example"></select></label>
+        </div>
+        <p id="scenario" class="q9-scenario"></p>
+        <div class="q9-context">
+          <p><strong>x</strong> represents <span id="x-meaning"></span>.</p>
+          <p><strong>f(x)</strong> represents <span id="y-meaning"></span>.</p>
+        </div>
+        <p id="equation" class="equation" aria-live="polite"></p>
+      </section>
+
+      <section class="q9-work" aria-label="Find and describe the vertex">
+        <section class="q9-step" id="step-type">
+          <h2>1. Is the vertex a maximum or a minimum?</h2>
+          <p class="muted">Look at the sign of <span class="math">a</span>. If <span class="math">a &gt; 0</span>, the parabola opens up. If <span class="math">a &lt; 0</span>, it opens down.</p>
+          <form id="type-form" class="q9-form">
+            <label class="q9-field" for="extremum-type">The vertex is a
+              <select id="extremum-type">
+                <option value="">Choose one</option>
+                <option value="maximum">Maximum</option>
+                <option value="minimum">Minimum</option>
+              </select>
+            </label>
+            <button type="submit">Check</button>
+            <p class="feedback" id="type-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step" id="step-standard-x" hidden>
+          <h2>2. Find the x-coordinate of the vertex</h2>
+          <p class="muted">For standard form, use <span class="math">x = &minus;b/(2a)</span>.</p>
+          <form id="standard-x-form" class="q9-form">
+            <div class="q9-answer-row"><span class="math">x =</span><span class="math" id="standard-axis-work"></span><span class="math">=</span><input class="q9-number" id="standard-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate from negative b over 2a" /><button type="submit">Check x-value</button></div>
+            <p class="feedback" id="standard-x-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step" id="step-factored-roots" hidden>
+          <h2>2. Find the x-intercepts</h2>
+          <p class="muted">Set each factor equal to zero. Enter both x-values.</p>
+          <form id="roots-form" class="q9-form">
+            <div class="q9-answer-row q9-roots-row"><label>x-intercept 1 <input class="q9-number" id="root-one" inputmode="decimal" autocomplete="off" /></label><label>x-intercept 2 <input class="q9-number" id="root-two" inputmode="decimal" autocomplete="off" /></label><button type="submit">Check intercepts</button></div>
+            <p class="feedback" id="roots-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step" id="step-factored-x" hidden>
+          <h2>3. Find the x-coordinate of the vertex</h2>
+          <p class="muted">The vertex is halfway between the x-intercepts. Average them using <span class="math">x = (r<sub>1</sub> + r<sub>2</sub>)/2</span>.</p>
+          <form id="factored-x-form" class="q9-form">
+            <div class="q9-answer-row"><span class="math">x =</span><span class="math" id="factored-average-work"></span><span class="math">=</span><input class="q9-number" id="factored-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate from the average of the intercepts" /><button type="submit">Check x-value</button></div>
+            <p class="feedback" id="factored-x-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step" id="step-standard-y" hidden>
+          <h2 id="substitution-heading">3. Find the y-coordinate of the vertex</h2>
+          <p class="muted">Substitute the x-coordinate into the function and simplify.</p>
+          <form id="standard-y-form" class="q9-form">
+            <div class="q9-answer-row"><span class="math" id="substitution-work"></span><span class="math">=</span><input class="q9-number" id="vertex-y" inputmode="decimal" autocomplete="off" aria-label="y-coordinate after substitution" /><button type="submit">Check y-value</button></div>
+            <p class="feedback" id="vertex-y-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step" id="step-vertex" hidden>
+          <h2>2. Read the vertex from vertex form</h2>
+          <p class="muted">In <span class="math">f(x) = a(x &minus; h)<sup>2</sup> + k</span>, the vertex is <span class="math">(h, k)</span>. Enter the x- and y-coordinates.</p>
+          <form id="vertex-form" class="q9-form">
+            <div class="q9-answer-row"><label>Vertex x-coordinate <input class="q9-number" id="vertex-x" inputmode="decimal" autocomplete="off" /></label><label>Vertex y-coordinate <input class="q9-number" id="vertex-form-y" inputmode="decimal" autocomplete="off" /></label><button type="submit">Check vertex</button></div>
+            <p class="feedback" id="vertex-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step q9-final-step" id="step-final" hidden>
+          <h2 id="final-step-heading">4. State the extremum</h2>
+          <p class="muted">Use the point you found to complete the statement.</p>
+          <form id="final-form" class="q9-form">
+            <div class="q9-final-sentence">The vertex is a <strong id="final-type"></strong> of <span class="math">y =</span> <input class="q9-number" id="final-y" inputmode="decimal" autocomplete="off" aria-label="Extreme y-value" /> <span>at</span> <span class="math">x =</span> <input class="q9-number" id="final-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the extremum" />.</div>
+            <button type="submit">Check statement</button>
+            <p class="feedback" id="final-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complete" class="q9-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-statement" class="q9-complete-statement"></p>
+          <button id="next-example" type="button">Next Example</button>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script>
+      fetch('../../main-site/', { method: 'HEAD' })
+        .then((response) => { if (response.ok) document.querySelector('.back').href = '../../main-site/'; })
+        .catch(() => {});
+    </script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

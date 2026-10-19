@@ -1,3 +1,5 @@
+// Source of truth for the nearby-applet links in every applet header.
+// Register new applets here in unit order; each applet page loads this module.
 const unitApplets = [
   {
     name: 'Unit 2: Functions & Transformations',
@@ -20,6 +22,7 @@ const unitApplets = [
       { code: 'Q5', title: 'Quadratic Transformations', path: '/math-applets/quadratic-transformations/' },
       { code: 'Q6', title: 'Quadratic from a Graph', path: '/math-applets/quadratic-from-graph/' },
       { code: 'Q7', title: 'Quadratic Conversion', path: '/math-applets/quadratic-convert/' },
+      { code: 'Q9', title: 'Quadratic Extrema', path: '/math-applets/quadratic-extrema/' },
       { code: 'Q11', title: 'Solutions from a Graph', path: '/math-applets/quadratic-graph-solutions/' },
       { code: 'Q12', title: 'Discriminant', path: '/math-applets/quadratic-discriminant/' },
       { code: 'Q13', title: 'Choose a Solving Method', path: '/math-applets/quadratic-method-choice/' },
