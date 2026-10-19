@@ -19,6 +19,7 @@ paused) as subdirectories.
 - `math-applets/quadratic-method-choice/` - choose an efficient method for solving a quadratic equation.
 - `math-applets/quadratic-completing-square/` - solve quadratic equations by completing the square.
 - `math-applets/quadratic-square-root/` - solve vertex-form quadratic equations using the square root method.
+- `math-applets/quadratic-modeling/` - build real-world quadratic models from vertices, intercepts, and points.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
 - `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
 - `math-applets/quadratic-features/` - the same characteristics lab for quadratic graphs.
@@ -45,6 +46,15 @@ coefficient or multiply by its reciprocal when it is fractional. The set has
 five examples with integer solutions, three examples each with unsimplified real
 radicals, simplified real radicals, unsimplified complex radicals, simplified
 complex radicals, and one real solution. Its six fractional-a examples come last.
+
+The Q18 modeling applet has ten mixed-order scenarios covering five information
+combinations: a vertex and another point, a vertex and an x-intercept, a vertex
+and a y-intercept, two x-intercepts and a y-intercept, or two x-intercepts and
+another point. The example list does not label the combinations. Students first
+identify whether the key information is a vertex or both x-intercepts, then
+choose vertex or factored form. They enter the key coordinates, substitute them
+into the form, identify and substitute the remaining information to solve for
+a, and write the finished function.
 
 The quadratic lab uses eight functions in each form. All have integer
 coefficients, vertices, and plotted table points; factored form keeps integer

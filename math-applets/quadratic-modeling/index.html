@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Write Quadratic Models from Real-World Information</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20261019a" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet · Q18</span>
+      </div>
+      <h1>Build a Quadratic Model</h1>
+      <p class="intro">Identify the key information, choose a matching form, and use another point to find a.</p>
+
+      <div id="prompt-slot" class="q18-prompt-slot">
+        <section id="prompt-card" class="equation-card q18-prompt-card" aria-label="Real-world scenario">
+          <div class="card-head">
+            <span>Write a quadratic function for this situation</span>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose a modeling example"></select></label>
+          </div>
+          <p id="scenario" class="q18-scenario"></p>
+          <div class="q18-context" aria-label="Function and units">
+            <span><strong>Function:</strong> <span id="function-info"></span></span>
+            <span><strong>Input:</strong> <span id="input-info"></span></span>
+            <span><strong>Output:</strong> <span id="output-info"></span></span>
+          </div>
+          <p id="unit-note" class="q18-unit-note"></p>
+        </section>
+      </div>
+
+      <section class="vertex-work-card q18-work" aria-label="Write a quadratic model">
+        <section id="primary-step" class="q18-step">
+          <h2>1. Identify the key information</h2>
+          <p class="muted">Are you given a vertex or all x-intercepts?</p>
+          <form id="primary-kind-form">
+            <label class="q18-select-label">The key information is
+              <select id="primary-kind" aria-label="Choose whether the key information is a vertex or all x-intercepts">
+                <option value="">Choose one</option>
+                <option value="vertex">A vertex</option>
+                <option value="roots">All x-intercepts</option>
+              </select>
+            </label>
+            <button type="submit">Check choice</button>
+            <p id="primary-kind-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="form-step" class="q18-step" hidden>
+          <h2>2. Choose a form</h2>
+          <p class="muted">Choose the form that matches the key information.</p>
+          <form id="form-choice-form">
+            <div id="form-choices" class="q18-form-choices" role="group" aria-label="Choose vertex or factored form"></div>
+            <button type="submit">Check form</button>
+            <p id="form-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="primary-values-step" class="q18-step" hidden>
+          <h2>3. Identify the given point or x-intercepts</h2>
+          <p class="muted">Enter the coordinates for the vertex or both x-intercepts.</p>
+          <form id="primary-values-form">
+            <h3 id="primary-values-title"></h3>
+            <div id="primary-values" class="q18-value-row"></div>
+            <button type="submit">Check values</button>
+            <p id="primary-values-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="structure-step" class="q18-step" hidden>
+          <h2>4. Plug that information into the form</h2>
+          <p id="structure-directions" class="muted"></p>
+          <form id="structure-form">
+            <div id="structure-equation" class="q18-math-equation"></div>
+            <button type="submit">Check form values</button>
+            <p id="structure-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="other-info-step" class="q18-step" hidden>
+          <h2>5. What other information are you given?</h2>
+          <p class="muted">Identify the additional point and enter its ordered pair (x, y).</p>
+          <form id="other-info-form">
+            <div class="q18-point-inputs">
+              <label>Information type
+                <select id="other-kind" aria-label="Choose whether the additional information is a point, x-intercept, or y-intercept">
+                  <option value="">Choose one</option>
+                  <option value="point">A point</option>
+                  <option value="x-intercept">An x-intercept</option>
+                  <option value="y-intercept">A y-intercept</option>
+                </select>
+              </label>
+              <label>x-coordinate <input id="other-x" inputmode="text" autocomplete="off" aria-label="x-coordinate of the additional point" /></label>
+              <label>y-coordinate <input id="other-y" inputmode="text" autocomplete="off" aria-label="y-coordinate of the additional point" /></label>
+            </div>
+            <button type="submit">Check information</button>
+            <p id="other-info-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="point-substitution-step" class="q18-step" hidden>
+          <h2>6. Use the other information to substitute</h2>
+          <p id="point-substitution-directions" class="muted"></p>
+          <form id="point-substitution-form">
+            <div id="point-substitution-equation" class="q18-math-equation"></div>
+            <button type="submit">Check substitution</button>
+            <p id="point-substitution-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+          <p id="substitution-work" class="q18-work-equation" hidden></p>
+        </section>
+
+        <section id="a-step" class="q18-step" hidden>
+          <h2>7. Solve for a</h2>
+          <p class="muted">Use the substituted equation to isolate a.</p>
+          <form id="a-form">
+            <label class="q18-a-entry"><span>a =</span><input id="a-value" inputmode="text" autocomplete="off" aria-label="Value of a; enter a fraction or decimal" /></label>
+            <button type="submit">Check a-value</button>
+            <p id="a-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="final-step" class="q18-step" hidden>
+          <h2>8. Write the quadratic function</h2>
+          <p id="final-directions" class="muted"></p>
+          <form id="final-form">
+            <div id="final-equation" class="q18-math-equation q18-final-equation"></div>
+            <button type="submit">Check function</button>
+            <p id="final-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complete" class="q18-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p>You used the given information to write the model:</p>
+          <p id="final-result" class="result-equation"></p>
+          <button id="next-example" type="button">Next Example</button>
+        </section>
+        <div class="q18-reset-row"><button id="reset-example" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261019a"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

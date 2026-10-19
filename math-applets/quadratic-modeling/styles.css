@@ -1,0 +1,55 @@
+.q18-prompt-slot { position:relative; margin:26px 0 24px; }
+.q18-prompt-card { margin:0; z-index:20; }
+.q18-prompt-card.is-pinned { position:fixed; top:10px; margin:0; }
+.q18-scenario { max-width:880px; margin:12px 0 16px; color:var(--panel); font:1.08rem/1.6 Georgia,"Times New Roman",serif; }
+.q18-context { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 18px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,.28); color:#fffdf8; font-size:.9rem; line-height:1.45; }
+.q18-context strong { color:#c7ead8; }
+.q18-unit-note { margin:10px 0 0; color:#ffdf96; font-size:.87rem; font-weight:700; }
+.q18-work { max-width:980px; }
+.q18-step { margin:22px 0 0; padding-top:20px; border-top:1px solid var(--line); }
+.q18-step:first-child { margin-top:0; padding-top:0; border-top:0; }
+.q18-step h2 { margin:0 0 10px; }
+.q18-step h3 { margin:18px 0 10px; }
+.q18-step > .muted { margin:0 0 16px; }
+.q18-select-label,.q18-step label:not(.q18-a-entry) { display:grid; gap:6px; max-width:360px; margin:12px 0; color:var(--muted); font-size:.85rem; font-weight:700; }
+.q18-select-label select,.q18-step label select { width:100%; }
+.q18-value-row,.q18-point-inputs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; max-width:730px; margin:14px 0; }
+.q18-point-inputs { grid-template-columns:minmax(180px,1.2fr) repeat(2,minmax(120px,.7fr)); }
+.q18-value-row label,.q18-point-inputs label { display:grid; gap:6px; color:var(--muted); font-size:.82rem; font-weight:700; }
+.q18-value-row input,.q18-point-inputs input,.q18-point-inputs select { width:100%; min-width:0; }
+.q18-form-choices { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:18px 0; max-width:780px; }
+.q18-choice { min-height:94px; display:flex; flex-direction:column; justify-content:center; gap:8px; color:var(--ink); background:var(--panel); text-align:center; }
+.q18-choice strong { font-size:1rem; }
+.q18-choice span { font:1.12rem Georgia,"Times New Roman",serif; }
+.q18-choice:hover:enabled { background:#eef6f2; }
+.q18-choice[aria-pressed="true"] { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold); }
+.q18-choice.invalid,.q18-work .invalid { border-color:var(--red); color:#a22e2e; background:#fff0ee; }
+.q18-choice.valid,.q18-work .valid { border-color:var(--green); background:#e9f5ed; }
+.q18-math-equation { display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin:16px 0; font:1.3rem/1.7 Georgia,"Times New Roman",serif; }
+.q18-math-equation input,.q18-math-equation select { font:1rem/1.4 "Trebuchet MS","Segoe UI",sans-serif; text-align:center; }
+.q18-math-input { width:84px; min-width:0; }
+.q18-math-input.short { width:74px; }
+.q18-math-input.tiny { width:46px; padding-inline:5px; }
+.q18-final-equation { font-size:1.35rem; }
+.q18-final-equation input { width:86px; }
+.q18-final-equation select { min-width:52px; padding:8px; }
+.q18-work-equation { margin:18px 0 0; padding:14px 16px; border-left:4px solid var(--gold); background:#fff7de; font:1.2rem/1.5 Georgia,"Times New Roman",serif; }
+.q18-a-entry { display:inline-flex; align-items:center; gap:9px; margin:8px 16px 8px 0; font:1.3rem Georgia,"Times New Roman",serif; }
+.q18-a-entry input { width:100px; text-align:center; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
+.q18-complete { margin-top:24px; padding-top:20px; border-top:1px solid var(--line); text-align:center; }
+.q18-complete h2 { margin-top:0; }
+.q18-reset-row { margin-top:22px; text-align:right; }
+@media (max-width:700px) {
+  .q18-context { grid-template-columns:1fr; gap:5px; }
+  .q18-value-row,.q18-form-choices { grid-template-columns:1fr; }
+  .q18-form-choices { max-width:none; }
+  .q18-choice { min-height:74px; }
+}
+@media (max-width:470px) {
+  .q18-point-inputs { grid-template-columns:1fr 1fr; }
+  .q18-point-inputs label:first-child { grid-column:1 / -1; }
+  .q18-math-equation { gap:4px; font-size:1.08rem; }
+  .q18-math-input { width:64px; padding:8px 6px; }
+  .q18-math-input.short { width:58px; }
+  .q18-final-equation input { width:68px; }
+}

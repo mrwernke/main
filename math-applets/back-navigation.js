@@ -27,6 +27,7 @@ const unitApplets = [
       { code: 'Q15', title: 'Factoring', path: '/math-applets/quadratic-factoring/' },
       { code: 'Q16', title: 'Square Root Method', path: '/math-applets/quadratic-square-root/' },
       { code: 'Q17', title: 'Complete the Square', path: '/math-applets/quadratic-completing-square/' },
+      { code: 'Q18', title: 'Quadratic Modeling', path: '/math-applets/quadratic-modeling/?v=20261019a' },
     ],
   },
 ];
