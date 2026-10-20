@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sketch a Quadratic from a Story</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet &middot; Q8</span>
+      </div>
+      <h1>Sketch a Quadratic from a Story</h1>
+      <p class="intro">Use the context and function to identify three key features, then choose the sketch that matches.</p>
+
+      <section class="equation-card q8-prompt" aria-label="Real-world story">
+        <div class="card-head">
+          <span id="progress">Example 1 of 12</span>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <p id="story" class="q8-story"></p>
+        <p class="q8-function-line"><strong>Function:</strong> <span id="function" class="q8-function"></span></p>
+        <div class="q8-context">
+          <p><strong>x</strong> represents <span id="x-meaning"></span>.</p>
+          <p><strong>y</strong> represents <span id="y-meaning"></span>.</p>
+          <p><strong>On the graph, y = 0 means</strong> <span id="zero-meaning"></span>.</p>
+        </div>
+      </section>
+
+      <section class="vertex-work-card q8-work" aria-label="Sketch the quadratic function">
+        <section class="q8-step" id="step-intercept">
+          <h2>1. What kind of y-intercept does the story describe?</h2>
+          <p class="muted">The y-intercept is the value of y when x = 0. Choose its sign.</p>
+          <div id="intercept-options" class="q8-choice-row" role="group" aria-label="Y-intercept sign"></div>
+          <p id="intercept-feedback" class="feedback q8-feedback" aria-live="polite"></p>
+        </section>
+
+        <section class="q8-step" id="step-opening" hidden>
+          <h2>2. Does the parabola open up or down?</h2>
+          <p class="muted">Use whether the story describes a minimum or a maximum.</p>
+          <div id="opening-options" class="q8-choice-row" role="group" aria-label="Parabola opening direction"></div>
+          <p id="opening-feedback" class="feedback q8-feedback" aria-live="polite"></p>
+        </section>
+
+        <section class="q8-step" id="step-vertex" hidden>
+          <h2>3. Where is the vertex compared with the x-axis?</h2>
+          <p class="muted">Compare the minimum or maximum value in the story with the y = 0 baseline.</p>
+          <div id="vertex-options" class="q8-choice-row" role="group" aria-label="Vertex position"></div>
+          <p id="vertex-feedback" class="feedback q8-feedback" aria-live="polite"></p>
+        </section>
+
+        <section class="q8-step" id="step-sketch" hidden>
+          <h2>4. Which sketch matches the story?</h2>
+          <p class="muted">Compare the y-intercept, opening direction, and vertex position.</p>
+          <div id="sketch-options" class="q8-sketch-grid" role="group" aria-label="Choose the matching parabola sketch"></div>
+          <p id="sketch-feedback" class="feedback q8-feedback" aria-live="polite"></p>
+        </section>
+
+        <section id="complete" class="q8-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-example" type="button">Next Example</button>
+        </section>
+
+        <div class="answer-row q8-actions"><button id="reset" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

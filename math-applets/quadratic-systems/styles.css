@@ -1,0 +1,107 @@
+main { max-width: 1120px; }
+.method-picker { margin: 24px 0; }
+.method-picker h2 { margin-bottom: 12px; }
+.method-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; max-width:760px; }
+.method-options .form-choice { min-height:84px; }
+.equation-card { margin: 26px 0; }
+.picker-label select { max-width:min(70vw,700px); padding:7px 9px; font-size:.88rem; letter-spacing:normal; text-transform:none; }
+.system-display { display:flex; align-items:center; gap:8px; margin-top:12px; }
+.system-brace { display:flex; align-items:center; color:var(--panel); font:clamp(5rem,11vw,7rem)/.8 Georgia,"Times New Roman",serif; transform:scaleX(.75); transform-origin:center; }
+.system-equations { display: grid; gap: 0; }
+.system-line { margin: 0; font: clamp(1.8rem, 4.5vw, 3rem)/1.25 Georgia, "Times New Roman", serif; }
+.graphical-work { display:block; }
+.graph-stage { margin-top:22px; padding:24px; border:1px solid var(--line); background:var(--panel); box-shadow:5px 5px 0 #d8dedb; }
+.graph-stage:first-child { margin-top:0; }
+.graph-stage > p:first-of-type { max-width:900px; }
+.graph-equations { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:18px; }
+.graph-equation-card { min-width:0; padding:16px; border:1px solid var(--line); border-left:7px solid var(--equation-color); background:#fff; }
+.graph-equation-card h3 { overflow-wrap:anywhere; font:1.2rem/1.4 Georgia,"Times New Roman",serif; }
+.graph-method-form { display:flex; align-items:end; flex-wrap:wrap; gap:10px; }
+.graph-method-form .muted { flex-basis:100%; margin:0; }
+.graph-method-form .feedback { flex-basis:100%; margin:0; }
+.graph-vertex-form { margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+.graph-vertex-value { display:flex; align-items:center; gap:8px; font:1.15rem Georgia,"Times New Roman",serif; }
+.graph-field { display:grid; gap:5px; color:var(--muted); font-size:.82rem; font-weight:700; }
+.graph-field input,.graph-coordinate { width:86px; min-width:0; padding:7px; text-align:center; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
+.graph-table-form .muted { max-width:600px; margin:0 0 10px; }
+.graph-point-table { width:100%; margin:10px 0; border-collapse:collapse; }
+.graph-point-table th,.graph-point-table td { padding:6px; text-align:center; border:1px solid var(--line); }
+.graph-point-table th { background:#eef1f3; }
+.graph-table-form button { margin-top:4px; }
+.graph-plot-choices { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
+.graph-plot-choice { border-left:7px solid var(--equation-color); }
+.graph-plot-choice[aria-pressed="true"] { box-shadow:0 4px 0 var(--gold); }
+.graph-plot-choice:disabled { opacity:.65; }
+.system-tick { fill:#3f4a5e; font:11px "Trebuchet MS",sans-serif; }
+.system-graph { stroke-width:3; vector-effect:non-scaling-stroke; }
+.graph-complete { margin-top:22px; padding:24px; border-top:1px solid var(--line); text-align:center; }
+.graph-complete p { font:1.2rem/1.5 Georgia,"Times New Roman",serif; }
+#finish-intersections { margin-top:4px; }
+.work { display: block; padding: 26px; }
+.work .step { display: block; padding: 24px 0; border-bottom: 1px solid var(--line); }
+.work .step:first-child { padding-top: 0; }
+.work .step[hidden], .work [hidden], [hidden] { display: none !important; }
+.step h2 { margin-bottom: 10px; }
+.step > p { max-width: 850px; }
+.equation-entry { display: grid; grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr); align-items: center; gap: 14px; max-width: 760px; margin: 18px 0; font: 1.45rem Georgia, serif; }
+.equation-entry input { width: 100%; min-width: 0; font: 1rem "Trebuchet MS", "Segoe UI", sans-serif; }
+code { padding: 1px 5px; background: #eef1ee; color: var(--ink); font: .92em Consolas, monospace; }
+.factor-box { position: relative; display: grid; grid-template-columns: 64px repeat(2, minmax(80px, 1fr)); grid-template-rows: 48px minmax(88px, 1fr) minmax(88px, 1fr); width: min(100%, 410px); margin: 22px 0 12px; font: 1.65rem Georgia, serif; }
+.column-x, .row-x { display: flex; align-items: center; justify-content: center; }
+.column-x { grid-column: 2; grid-row: 1; }
+.row-x { grid-column: 1; grid-row: 2; }
+.top-factor { grid-column: 3; grid-row: 1; }
+.side-factor { grid-column: 1; grid-row: 3; }
+.factor-box input { width: 56px; min-width: 0; justify-self: center; align-self: center; padding: 9px 4px; text-align: center; font: 1rem "Trebuchet MS", sans-serif; }
+.cell { display: flex; flex-direction:column; align-items: center; justify-content: center; min-width: 0; aspect-ratio: 1; border: 1px solid var(--ink); background: #fff; padding: 10px; font-size: clamp(1.1rem, 3vw, 1.55rem); }
+.upper-left { grid-column: 2; grid-row: 2; background: #fff7de; }
+.upper-right { grid-column: 3; grid-row: 2; }
+.lower-left { grid-column: 2; grid-row: 3; }
+.lower-right { grid-column: 3; grid-row: 3; background: #fff7de; }
+.middle-target { position: relative; z-index: 1; grid-column: 2 / 4; grid-row: 2 / 4; display: flex; flex-direction:column; align-items: center; justify-content: center; justify-self: center; align-self: center; width: 45%; aspect-ratio: 1; border: 2px solid var(--ink); border-radius: 50%; background: #fff7de; box-shadow: 0 0 0 5px var(--panel); pointer-events: none; white-space: nowrap; }
+.status-mark { font:700 1.2rem "Segoe UI",sans-serif; }
+.cell.correct,.middle-target.correct { border-color:var(--green); background:#e1f3e9; color:#195b43; }
+.cell.incorrect,.middle-target.incorrect { border-color:var(--red); background:#ffebe8; color:#a22e2e; }
+.split-checks { max-width: 420px; }
+.split-checks p { margin: 8px 0; padding: 8px 10px; border: 1px solid var(--line); background: #f4f5f2; }
+.split-checks .condition-correct { border-color: var(--green); background: #e1f3e9; color: #195b43; }
+.split-checks .condition-incorrect { border-color: var(--red); background: #ffebe8; color: #a22e2e; }
+.factor-answer, .root-entries, .pair-entries { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin: 18px 0; font: 1.45rem Georgia, serif; }
+.factor-answer input { width: 120px; min-width: 0; text-align: center; font: 1rem "Trebuchet MS", sans-serif; }
+.factor-answer sup { align-self: flex-start; margin-left: -8px; }
+.root-entries { gap: 18px 30px; }
+.root-row { display: flex; align-items: center; gap: 8px; }
+.root-row input, .substitution-equation input, .ordered-pair-row input { width: 90px; text-align: center; font: 1rem "Trebuchet MS", sans-serif; }
+.y-entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin: 18px 0; }
+.substitution-row { padding: 14px; border: 1px solid var(--line); background: #fff; }
+.substitution-row p { margin: 0 0 10px; font-weight: 700; }
+.substitution-equation { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; font: 1.2rem Georgia, serif; }
+.ordered-pair-row { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+.ordered-pair-row > span:first-child { min-width: 90px; font: 1rem "Trebuchet MS", sans-serif; }
+.ordered-pair-row input { width: 72px; }
+.complete { padding: 24px 0 0; text-align: center; }
+.complete h2 { font-size: 2rem; }
+.complete p { font: 1.25rem/1.5 Georgia, serif; }
+.answer-row { padding-top: 16px; }
+@media (max-width: 600px) {
+  .work { padding: 18px; }
+  .work .step { padding: 20px 0; }
+  .equation-entry { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; font-size: 1.2rem; }
+  .system-display { gap:4px; }
+  .system-brace { font-size:5rem; }
+  .system-line { font-size:clamp(1.55rem,7vw,2.2rem); }
+  .picker-label select { max-width:100%; }
+  .method-options { grid-template-columns:1fr; }
+  .graph-stage { padding:17px; }
+  .graph-equations { grid-template-columns:1fr; }
+  .graph-equation-card { padding:13px; }
+  .graph-method-form { gap:8px; }
+  .graph-vertex-value { font-size:1rem; }
+  .graph-field input,.graph-coordinate { width:72px; }
+  .factor-box { grid-template-columns: 50px repeat(2, minmax(70px, 1fr)); grid-template-rows: 42px minmax(72px, 1fr) minmax(72px, 1fr); font-size: 1.4rem; }
+  .factor-box input { width: 48px; }
+  .middle-target { width: 48%; }
+  .y-entries { grid-template-columns: minmax(0, 1fr); }
+  .factor-answer { font-size: 1.2rem; }
+  .factor-answer input { width: 95px; }
+}

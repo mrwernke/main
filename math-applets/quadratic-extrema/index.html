@@ -11,11 +11,11 @@
     <main>
       <div class="topbar"><a class="back" href="../../">&larr; Wernke's Math Resources</a><span class="eyebrow">Interactive math applet &middot; Q9</span></div>
       <h1>Quadratic Extrema in Context</h1>
-      <p class="intro">Use the sign of the leading coefficient to identify a maximum or minimum, then find the vertex from the form of the function.</p>
+      <p class="intro">Use the form of each function to find its vertex, then decide whether the vertex is a maximum or a minimum.</p>
 
       <section class="equation-card q9-prompt" aria-label="Real-world scenario and function">
         <div class="card-head">
-          <span>Find the maximum or minimum</span>
+          <span>Real-world scenario</span>
           <label class="picker-label">Example <select id="example-picker" aria-label="Choose a real-world example"></select></label>
         </div>
         <p id="scenario" class="q9-scenario"></p>
@@ -29,7 +29,7 @@
       <section class="q9-work" aria-label="Find and describe the vertex">
         <section class="q9-step" id="step-type">
           <h2>1. Is the vertex a maximum or a minimum?</h2>
-          <p class="muted">Look at the sign of <span class="math">a</span>. If <span class="math">a &gt; 0</span>, the parabola opens up. If <span class="math">a &lt; 0</span>, it opens down.</p>
+          <p class="muted">Use the sign of <span class="math">a</span>. If <span class="math">a &gt; 0</span>, the parabola opens up. If <span class="math">a &lt; 0</span>, it opens down.</p>
           <form id="type-form" class="q9-form">
             <label class="q9-field" for="extremum-type">The vertex is a
               <select id="extremum-type">
@@ -45,54 +45,113 @@
 
         <section class="q9-step" id="step-standard-x" hidden>
           <h2>2. Find the x-coordinate of the vertex</h2>
-          <p class="muted">For standard form, use <span class="math">x = &minus;b/(2a)</span>.</p>
+          <p class="muted">Use <span class="math">x = &minus;b/(2a)</span>. Enter the signed <span class="math">b</span>- and <span class="math">a</span>-values from the function, then calculate <span class="math">x</span>.</p>
           <form id="standard-x-form" class="q9-form">
-            <div class="q9-answer-row"><span class="math">x =</span><span class="math" id="standard-axis-work"></span><span class="math">=</span><input class="q9-number" id="standard-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate from negative b over 2a" /><button type="submit">Check x-value</button></div>
+            <div class="q9-answer-row q9-math-row">
+              <span class="math">x =</span>
+              <span class="fraction q9-fraction" aria-label="negative b over two a">
+                <span class="numerator"><span>&minus;(</span><input class="q9-number" id="standard-b" inputmode="decimal" autocomplete="off" aria-label="Signed b-value" /><span>)</span></span>
+                <span class="denominator">2(<input class="q9-number" id="standard-a" inputmode="decimal" autocomplete="off" aria-label="Signed a-value" />)</span>
+              </span>
+              <span class="math">=</span>
+              <input class="q9-number" id="standard-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the vertex" />
+              <button type="submit">Check</button>
+            </div>
             <p class="feedback" id="standard-x-feedback" aria-live="polite"></p>
           </form>
         </section>
 
+        <section class="q9-step" id="step-factored-zero" hidden>
+          <h2>2. Set each factor equal to zero</h2>
+          <p class="muted">Write each factor from the function above, with each one set equal to zero.</p>
+          <form id="zero-factors-form" class="q9-form">
+            <div class="q9-root-equations">
+              <label><input class="q9-number q9-factor-entry" id="zero-factor-one" autocomplete="off" aria-label="First factor set equal to zero" /><span class="math">= 0</span></label>
+              <label><input class="q9-number q9-factor-entry" id="zero-factor-two" autocomplete="off" aria-label="Second factor set equal to zero" /><span class="math">= 0</span></label>
+              <button type="submit">Check</button>
+            </div>
+            <p class="feedback" id="zero-factors-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
         <section class="q9-step" id="step-factored-roots" hidden>
-          <h2>2. Find the x-intercepts</h2>
-          <p class="muted">Set each factor equal to zero. Enter both x-values.</p>
+          <h2>3. Solve each factor for x</h2>
+          <p class="muted">Solve the two equations you wrote in the previous step.</p>
           <form id="roots-form" class="q9-form">
-            <div class="q9-answer-row q9-roots-row"><label>x-intercept 1 <input class="q9-number" id="root-one" inputmode="decimal" autocomplete="off" /></label><label>x-intercept 2 <input class="q9-number" id="root-two" inputmode="decimal" autocomplete="off" /></label><button type="submit">Check intercepts</button></div>
+            <div class="q9-root-equations">
+              <label><span class="math">x =</span><input class="q9-number" id="root-one" inputmode="decimal" autocomplete="off" aria-label="First x-intercept" /></label>
+              <label><span class="math">x =</span><input class="q9-number" id="root-two" inputmode="decimal" autocomplete="off" aria-label="Second x-intercept" /></label>
+              <button type="submit">Check</button>
+            </div>
             <p class="feedback" id="roots-feedback" aria-live="polite"></p>
           </form>
         </section>
 
         <section class="q9-step" id="step-factored-x" hidden>
-          <h2>3. Find the x-coordinate of the vertex</h2>
-          <p class="muted">The vertex is halfway between the x-intercepts. Average them using <span class="math">x = (r<sub>1</sub> + r<sub>2</sub>)/2</span>.</p>
+          <h2>4. Average the x-intercepts</h2>
+          <p class="muted">Enter the two x-values in the numerator, then divide by 2 to find the vertex's x-coordinate.</p>
           <form id="factored-x-form" class="q9-form">
-            <div class="q9-answer-row"><span class="math">x =</span><span class="math" id="factored-average-work"></span><span class="math">=</span><input class="q9-number" id="factored-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate from the average of the intercepts" /><button type="submit">Check x-value</button></div>
+            <div class="q9-answer-row q9-math-row">
+              <span class="math">x =</span>
+              <span class="fraction q9-fraction" aria-label="the sum of the x-intercepts divided by two">
+                <span class="numerator"><input class="q9-number" id="average-one" inputmode="decimal" autocomplete="off" aria-label="First x-intercept in the average" /><span>+</span><input class="q9-number" id="average-two" inputmode="decimal" autocomplete="off" aria-label="Second x-intercept in the average" /></span>
+                <span class="denominator">2</span>
+              </span>
+              <span class="math">=</span>
+              <input class="q9-number" id="factored-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the vertex" />
+              <button type="submit">Check</button>
+            </div>
             <p class="feedback" id="factored-x-feedback" aria-live="polite"></p>
           </form>
         </section>
 
-        <section class="q9-step" id="step-standard-y" hidden>
-          <h2 id="substitution-heading">3. Find the y-coordinate of the vertex</h2>
-          <p class="muted">Substitute the x-coordinate into the function and simplify.</p>
-          <form id="standard-y-form" class="q9-form">
-            <div class="q9-answer-row"><span class="math" id="substitution-work"></span><span class="math">=</span><input class="q9-number" id="vertex-y" inputmode="decimal" autocomplete="off" aria-label="y-coordinate after substitution" /><button type="submit">Check y-value</button></div>
-            <p class="feedback" id="vertex-y-feedback" aria-live="polite"></p>
+        <section class="q9-step" id="step-evaluate" hidden>
+          <h2 id="evaluate-heading">3. Substitute the x-value</h2>
+          <p class="muted">Enter the x-coordinate you found in every x-blank in the original function.</p>
+          <form id="substitution-form" class="q9-form">
+            <div class="q9-substitution math" id="substitution-work" aria-label="Original function with blanks for substitution"></div>
+            <button type="submit">Check substitution</button>
+            <p class="feedback" id="substitution-feedback" aria-live="polite"></p>
           </form>
         </section>
 
-        <section class="q9-step" id="step-vertex" hidden>
-          <h2>2. Read the vertex from vertex form</h2>
-          <p class="muted">In <span class="math">f(x) = a(x &minus; h)<sup>2</sup> + k</span>, the vertex is <span class="math">(h, k)</span>. Enter the x- and y-coordinates.</p>
-          <form id="vertex-form" class="q9-form">
-            <div class="q9-answer-row"><label>Vertex x-coordinate <input class="q9-number" id="vertex-x" inputmode="decimal" autocomplete="off" /></label><label>Vertex y-coordinate <input class="q9-number" id="vertex-form-y" inputmode="decimal" autocomplete="off" /></label><button type="submit">Check vertex</button></div>
-            <p class="feedback" id="vertex-feedback" aria-live="polite"></p>
+        <section class="q9-step" id="step-evaluate-y" hidden>
+          <h2 id="evaluate-y-heading">4. Evaluate to find the y-coordinate</h2>
+          <p class="muted">Now evaluate the function using the substituted x-value.</p>
+          <form id="evaluate-y-form" class="q9-form">
+            <p class="q9-substitution math" id="substituted-expression" aria-live="polite"></p>
+            <div class="q9-answer-row"><label for="vertex-y" class="math">y =</label><input class="q9-number" id="vertex-y" inputmode="decimal" autocomplete="off" aria-label="y-coordinate after evaluating the function" /><button type="submit">Check y-value</button></div>
+            <p class="feedback" id="evaluate-y-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step" id="step-vertex-x" hidden>
+          <h2>2. Read the x-coordinate from vertex form</h2>
+          <p class="muted">In <span class="math">f(x) = a(x &minus; h)<sup>2</sup> + k</span>, the vertex is <span class="math">(h, k)</span>. Enter <span class="math">h</span>.</p>
+          <form id="vertex-x-form" class="q9-form">
+            <div class="q9-answer-row"><span class="math">x =</span><input class="q9-number" id="vertex-x" inputmode="decimal" autocomplete="off" aria-label="h, the x-coordinate of the vertex" /><button type="submit">Check x-value</button></div>
+            <p class="feedback" id="vertex-x-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="q9-step" id="step-vertex-y" hidden>
+          <h2>3. Read the y-coordinate from vertex form</h2>
+          <p class="muted">The <span class="math">k</span>-value is the vertex's y-coordinate.</p>
+          <form id="vertex-y-form" class="q9-form">
+            <div class="q9-answer-row"><span class="math">y =</span><input class="q9-number" id="vertex-form-y" inputmode="decimal" autocomplete="off" aria-label="k, the y-coordinate of the vertex" /><button type="submit">Check y-value</button></div>
+            <p class="feedback" id="vertex-form-y-feedback" aria-live="polite"></p>
           </form>
         </section>
 
         <section class="q9-step q9-final-step" id="step-final" hidden>
-          <h2 id="final-step-heading">4. State the extremum</h2>
-          <p class="muted">Use the point you found to complete the statement.</p>
+          <h2 id="final-step-heading">5. Complete the extrema statement</h2>
+          <p class="muted">Choose the correct type and use the point you found.</p>
           <form id="final-form" class="q9-form">
-            <div class="q9-final-sentence">The vertex is a <strong id="final-type"></strong> of <span class="math">y =</span> <input class="q9-number" id="final-y" inputmode="decimal" autocomplete="off" aria-label="Extreme y-value" /> <span>at</span> <span class="math">x =</span> <input class="q9-number" id="final-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the extremum" />.</div>
+            <div class="q9-final-sentence">The vertex is a <select id="final-extremum-type" aria-label="Maximum or minimum">
+              <option value="">Choose one</option>
+              <option value="maximum">Maximum</option>
+              <option value="minimum">Minimum</option>
+            </select> of <span class="math">y =</span> <input class="q9-number" id="final-y" inputmode="decimal" autocomplete="off" aria-label="Extreme y-value" /> <span>at</span> <span class="math">x =</span> <input class="q9-number" id="final-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the extremum" />.</div>
             <button type="submit">Check statement</button>
             <p class="feedback" id="final-feedback" aria-live="polite"></p>
           </form>

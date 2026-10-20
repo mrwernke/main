@@ -27,16 +27,15 @@
 
       <section class="vertex-work-card q14-work" aria-label="Quadratic formula work">
         <section id="standardize-step" class="q14-step" hidden>
-          <h2>1. Write the equation in standard form</h2>
+          <h2>1. Move terms to one side</h2>
           <form id="move-form">
-            <p class="muted">Subtract the right-side terms from both sides. Enter the signed coefficients to subtract.</p>
-            <div class="q14-move-expression" id="move-expression"></div>
-            <button type="submit">Check terms to move</button>
+            <p class="muted">For each nonzero term on the right, enter its opposite as a signed coefficient in both matching blanks. Use +# when adding and -# when subtracting.</p>
+            <div id="move-work" class="q14-move-work-grid" aria-label="Equation and aligned term-movement work"></div>
+            <button type="submit">Check moved terms</button>
             <p id="move-feedback" class="feedback" aria-live="polite"></p>
           </form>
-          <div id="move-work" class="q14-work-lines" hidden aria-label="Subtract the right-side terms from both sides"></div>
           <form id="standard-form" hidden>
-            <p>Combine like terms and write the equation in standard form.</p>
+            <h3>2. Combine like terms and write standard form</h3>
             <div class="q14-expression q14-standard-entry" id="standard-expression"></div>
             <button type="submit">Check standard form</button>
             <p id="standard-feedback" class="feedback" aria-live="polite"></p>

@@ -20,7 +20,10 @@ paused) as subdirectories.
 - `math-applets/quadratic-completing-square/` - solve quadratic equations by completing the square.
 - `math-applets/quadratic-square-root/` - solve vertex-form quadratic equations using the square root method.
 - `math-applets/quadratic-extrema/` - find real-world quadratic maximum and minimum values from standard, vertex, and factored forms.
+- `math-applets/quadratic-real-world-solutions/` - solve real-world quadratic equations with the quadratic formula and choose contextually valid roots.
+- `math-applets/quadratic-story-sketch/` - sketch a quadratic from real-world context using the y-intercept, opening direction, and vertex position.
 - `math-applets/quadratic-modeling/` - build real-world quadratic models from vertices, intercepts, and points.
+- `math-applets/quadratic-systems/` - solve systems containing a quadratic function by setting expressions equal and factoring.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
 - `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
 - `math-applets/quadratic-features/` - the same characteristics lab for quadratic graphs.
@@ -67,6 +70,19 @@ vertex-form functions, and two factored-form functions. Students identify a
 maximum or minimum from the sign of a, then find the vertex using -b/(2a), the
 average of the x-intercepts, or the (h, k) values in vertex form. They finish
 by stating the extremum value and its x-coordinate.
+
+The Q10 real-world solutions applet has eight mixed-order problems, five of
+them vertical-motion scenarios. All have two real mathematical roots that are
+not neat integers. Students choose the quadratic formula, substitute signed
+coefficients, calculate the discriminant, round its square root to four decimal
+places, and calculate both roots rounded to two decimal places. They finish by
+entering only the solution or solutions that make sense in the story, such as
+discarding a negative time or side length.
+
+The Q8 story-sketch applet has twelve context problems. Students identify the
+y-intercept sign, whether the parabola opens up or down, and whether its vertex
+is above, on, or below the x-axis. They then choose the matching sketch from
+four graph cards. The cards use schematic axes and randomly ordered distractors.
 
 The quadratic lab uses eight functions in each form. All have integer
 coefficients, vertices, and plotted table points; factored form keeps integer
@@ -212,6 +228,12 @@ confetti with a Next Example button.
 ```bash
 node --test math-applets/function-transformations/model.test.mjs
 ```
+
+Q19 begins with algebraic systems solving. Eight guided problems mix one
+quadratic with one linear function and pairs of quadratic functions. Students
+set the expressions equal, move terms to standard form, factor with the Q15
+box logic, solve for x, substitute to find y, and enter the ordered-pair
+solutions. Most systems intersect twice; two are tangent and have one solution.
 
 ## SAT Math Prep
 

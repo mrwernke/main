@@ -22,7 +22,9 @@ const unitApplets = [
       { code: 'Q5', title: 'Quadratic Transformations', path: '/math-applets/quadratic-transformations/' },
       { code: 'Q6', title: 'Quadratic from a Graph', path: '/math-applets/quadratic-from-graph/' },
       { code: 'Q7', title: 'Quadratic Conversion', path: '/math-applets/quadratic-convert/' },
+      { code: 'Q8', title: 'Sketch from a Story', path: '/math-applets/quadratic-story-sketch/' },
       { code: 'Q9', title: 'Quadratic Extrema', path: '/math-applets/quadratic-extrema/' },
+      { code: 'Q10', title: 'Quadratic Solutions in Context', path: '/math-applets/quadratic-real-world-solutions/' },
       { code: 'Q11', title: 'Solutions from a Graph', path: '/math-applets/quadratic-graph-solutions/' },
       { code: 'Q12', title: 'Discriminant', path: '/math-applets/quadratic-discriminant/' },
       { code: 'Q13', title: 'Choose a Solving Method', path: '/math-applets/quadratic-method-choice/' },
@@ -31,6 +33,7 @@ const unitApplets = [
       { code: 'Q16', title: 'Square Root Method', path: '/math-applets/quadratic-square-root/' },
       { code: 'Q17', title: 'Complete the Square', path: '/math-applets/quadratic-completing-square/' },
       { code: 'Q18', title: 'Quadratic Modeling', path: '/math-applets/quadratic-modeling/?v=20261019a' },
+      { code: 'Q19', title: 'Solving Systems', path: '/math-applets/quadratic-systems/' },
     ],
   },
 ];

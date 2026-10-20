@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solving Quadratic Systems</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-formula/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../main-site/">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Q19 · Solving Systems</span>
+      </div>
+      <h1>Solving Systems of Equations</h1>
+      <p class="intro">Find the ordered pairs where the equations in a system intersect.</p>
+
+      <section class="method-picker" aria-label="Choose a solving method">
+        <h2>Choose a method</h2>
+        <div class="method-options">
+          <button class="form-choice" id="algebraic-mode" type="button" aria-pressed="true">Algebraically<span>Set the expressions equal and solve.</span></button>
+          <button class="form-choice" id="graphical-mode" type="button" aria-pressed="false">Graphically<span>Find the intersection points.</span></button>
+        </div>
+      </section>
+
+      <section class="equation-card" aria-label="System of equations">
+        <div class="card-head">
+          <span>System</span>
+          <label class="picker-label">Choose system <select id="problem-picker" aria-label="Choose a system"></select></label>
+        </div>
+        <div class="system-display" role="group" aria-label="System of two equations">
+          <span class="system-brace" aria-hidden="true">{</span>
+          <div class="system-equations" id="system-equations"></div>
+        </div>
+      </section>
+
+      <section class="work" id="algebraic-work" aria-label="Algebraic system solving steps">
+        <section class="step" id="step-equal">
+          <h2>1. Set the expressions equal</h2>
+          <p>Type the first expression on the left and the second expression on the right. Use <code>^2</code> for the squared term, such as <code>x^2 - 7</code>.</p>
+          <form id="equal-form">
+            <div class="equation-entry">
+              <input id="equal-left" aria-label="First expression" autocomplete="off" spellcheck="false" />
+              <span>=</span>
+              <input id="equal-right" aria-label="Second expression" autocomplete="off" spellcheck="false" />
+            </div>
+            <button type="submit">Check</button>
+            <p class="feedback" id="equal-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="step" id="step-move" hidden>
+          <h2>2. Move terms to the left side</h2>
+          <p>For each nonzero term on the right, enter its opposite as a signed coefficient in both matching blanks. Use <code>+#</code> when adding and <code>-#</code> when subtracting.</p>
+          <form id="move-form">
+            <div id="move-work" class="q14-move-work-grid" aria-label="Equation and aligned term-movement work"></div>
+            <button type="submit">Check moved terms</button>
+            <p class="feedback" id="move-feedback" aria-live="polite"></p>
+          </form>
+          <form id="standard-form" hidden>
+            <h3>3. Combine like terms and write standard form</h3>
+            <div class="q14-expression q14-standard-entry" aria-label="Standard form coefficients">
+              <input id="standard-a" aria-label="Coefficient of x squared" autocomplete="off" inputmode="text" />
+              <span>x<sup>2</sup> + </span>
+              <input id="standard-b" aria-label="Coefficient of x" autocomplete="off" inputmode="text" />
+              <span>x + </span>
+              <input id="standard-c" aria-label="Constant coefficient" autocomplete="off" inputmode="text" />
+              <span>= 0</span>
+            </div>
+            <button type="submit">Check standard form</button>
+            <p class="feedback" id="standard-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="step" id="step-box" hidden>
+          <h2>4. Complete the factoring box</h2>
+          <p>Split the middle term. Enter two signed integers whose product is the constant and whose sum is the x-coefficient.</p>
+          <div class="factor-box" role="group" aria-label="Factoring box">
+            <span class="column-x">x</span>
+            <input id="split-top" class="top-factor" inputmode="numeric" aria-label="First integer to split the middle term" autocomplete="off" />
+            <span class="row-x">x</span>
+            <input id="split-side" class="side-factor" inputmode="numeric" aria-label="Second integer to split the middle term" autocomplete="off" />
+            <div class="cell upper-left">x²</div>
+            <div class="cell upper-right" id="top-product">?</div>
+            <div class="cell lower-left" id="side-product">?</div>
+            <div class="cell lower-right" id="constant-cell"><span id="constant-value">?</span><span class="status-mark" id="product-mark" aria-hidden="true"></span></div>
+            <div class="middle-target" id="middle-term"><span id="middle-value">?</span><span class="status-mark" id="sum-mark" aria-hidden="true"></span></div>
+          </div>
+          <div class="split-checks" aria-live="polite">
+            <p id="product-check">Product: enter both integers.</p>
+            <p id="sum-check">Sum: enter both integers.</p>
+          </div>
+          <p class="feedback" id="split-feedback" aria-live="polite"></p>
+        </section>
+
+        <section class="step" id="step-factors" hidden>
+          <h2>5. Write the complete factors</h2>
+          <p>Use the factoring box to write the factors equal to zero.</p>
+          <form id="factor-form">
+            <div class="factor-answer">
+              <span>(</span><input id="factor-first" aria-label="First factor" autocomplete="off" spellcheck="false" /><span id="factor-middle">)(</span><input id="factor-second" aria-label="Second factor" autocomplete="off" spellcheck="false" /><sup id="factor-square" hidden>2</sup><span id="factor-close">) = 0</span>
+            </div>
+            <button type="submit">Check</button>
+            <p class="feedback" id="factor-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="step" id="step-zero" hidden>
+          <h2>6. Set each factor equal to zero</h2>
+          <p>Write each factor from the line above, followed by <code>= 0</code>.</p>
+          <form id="zero-form">
+            <div class="factor-answer">
+              <input id="zero-first" aria-label="First factor set equal to zero" autocomplete="off" spellcheck="false" /><span id="zero-middle"> = 0 &nbsp;&nbsp; </span><input id="zero-second" aria-label="Second factor set equal to zero" autocomplete="off" spellcheck="false" /><span id="zero-close"> = 0</span>
+            </div>
+            <button type="submit">Check</button>
+            <p class="feedback" id="zero-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="step" id="step-roots" hidden>
+          <h2>7. Solve each factor for x</h2>
+          <form id="roots-form">
+            <div class="root-entries" id="root-entries"></div>
+            <button type="submit">Check</button>
+            <p class="feedback" id="roots-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="step" id="step-y" hidden>
+          <h2>8. Substitute to find each y-value</h2>
+          <p id="substitution-instructions"></p>
+          <form id="y-form">
+            <div id="y-entries" class="y-entries"></div>
+            <button type="submit">Check</button>
+            <p class="feedback" id="y-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="step" id="step-pairs" hidden>
+          <h2>9. Write the ordered pair(s)</h2>
+          <p>Enter each solution as an ordered pair <code>(x, y)</code>.</p>
+          <form id="pairs-form">
+            <div id="pair-entries" class="pair-entries"></div>
+            <button type="submit">Check answers</button>
+            <p class="feedback" id="pairs-feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complete" class="complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-problem" type="button">Next Problem</button>
+        </section>
+        <div class="answer-row"><button id="reset" type="button">Try Again</button></div>
+      </section>
+
+      <section id="graphical-work" class="graphical-work" hidden aria-label="Graphical system solving steps">
+        <section class="graph-stage">
+          <h2>1. Find five points for each equation</h2>
+          <p class="muted">For each parabola, find the vertex with x = −b/(2a), then find two points on each side. For a line, identify its y-intercept and slope, then use the slope to find two points on each side of the y-intercept. Complete and graph Equation 1 before starting Equation 2.</p>
+          <div id="graph-equations" class="graph-equations"></div>
+          <p id="graph-setup-feedback" class="feedback" aria-live="polite"></p>
+        </section>
+
+        <section id="graph-plot-stage" class="graph-stage" hidden>
+          <h2>2. Plot the points and graph each equation</h2>
+          <p>Click the five points for the available equation. Equation 1 will be graphed before Equation 2 unlocks; then plot Equation 2 to draw the second graph.</p>
+          <div id="graph-plot-choices" class="graph-plot-choices" role="group" aria-label="Choose which equation to plot"></div>
+          <div class="plane-wrap">
+            <svg id="system-plane" viewBox="0 0 600 600" role="img" aria-label="Coordinate plane for graphing the system">
+              <g id="system-grid"></g>
+              <path id="system-graph-0" class="system-graph" fill="none"></path>
+              <path id="system-graph-1" class="system-graph" fill="none"></path>
+              <g id="system-plotted-points"></g>
+              <g id="intersection-clicks"></g>
+            </svg>
+          </div>
+          <p id="graph-plot-note" class="plot-note" aria-live="polite"></p>
+          <p id="graph-plot-feedback" class="feedback" aria-live="polite"></p>
+        </section>
+
+        <section id="graph-intersection-stage" class="graph-stage" hidden>
+          <h2>3. Click the intersection point(s)</h2>
+          <p>Look where the graphs cross. Click each intersection on the coordinate plane, then select Enter ordered pairs.</p>
+          <p id="intersection-note" class="plot-note" aria-live="polite"></p>
+          <p id="intersection-feedback" class="feedback" aria-live="polite"></p>
+          <button id="finish-intersections" type="button" hidden>Enter ordered pairs</button>
+        </section>
+
+        <section id="graph-answer-stage" class="graph-stage" hidden>
+          <h2>4. Enter the solution(s)</h2>
+          <p>Type each intersection as an ordered pair.</p>
+          <form id="graph-pairs-form">
+            <div id="graph-pair-entries" class="pair-entries"></div>
+            <button type="submit">Check answers</button>
+            <p id="graph-pairs-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="graph-complete" class="graph-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="graph-complete-text"></p>
+          <button id="graph-next-system" type="button">Next system</button>
+        </section>
+        <div class="answer-row"><button id="graph-reset" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

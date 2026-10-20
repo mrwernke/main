@@ -29,6 +29,12 @@ function parseValue(value) {
   return Number(text);
 }
 
+function parseSignedCoefficient(value) {
+  const text = String(value).trim().replace(/\s/g, '').replace(/−/g, '-');
+  if (!/^[+-]/.test(text)) return NaN;
+  return parseValue(text);
+}
+
 function close(actual, expected) {
   return Number.isFinite(actual) && Math.abs(actual - expected) < 1e-8;
 }
@@ -102,7 +108,7 @@ function buildPicker() {
   problems.forEach((entry, problemIndex) => {
     const isMove = entry.kind === 'move';
     const number = isMove ? ++moveNumber : ++standardNumber;
-    const option = new Option(`Example ${number}: ${equationText(entry)}`, String(problemIndex));
+    const option = new Option(`${number}: ${equationText(entry)}`, String(problemIndex));
     (isMove ? move : standard).append(option);
   });
   $('#problem-picker').replaceChildren(standard, move);
@@ -156,42 +162,72 @@ function chooseFormula(button, choiceId) {
   reveal('#formula-step', '#formula-b');
 }
 
-function buildMoveForm() {
-  const target = $('#move-expression');
-  target.replaceChildren(
-    span('Subtract ('),
-    input('move-a', 'Signed x squared coefficient to subtract'), span('x² +'),
-    input('move-b', 'Signed x coefficient to subtract'), span('x +'),
-    input('move-c', 'Signed constant to subtract'), span(') from both sides.'),
+const moveKeys = ['a', 'b', 'c'];
+const moveVariables = ['x²', 'x', ''];
+const moveTermNames = ['x squared term', 'x term', 'constant term'];
+
+function equationTermCells(coefficients) {
+  const firstTerm = coefficients.findIndex(value => value !== 0);
+  return coefficients.map((coefficient, index) => {
+    if (coefficient === 0) return span('', 'q14-move-term q14-move-empty');
+    const magnitude = Math.abs(coefficient);
+    const body = `${moveVariables[index] && magnitude === 1 ? '' : formatRational(magnitude)}${moveVariables[index]}`;
+    const sign = coefficient < 0 ? '− ' : index === firstTerm ? '' : '+ ';
+    return span(`${sign}${body}`, 'q14-move-term');
+  });
+}
+
+function operationTermCell(side, index) {
+  const coefficient = problem().right[index];
+  if (coefficient === 0) return span('', 'q14-move-term q14-move-empty');
+
+  const cell = span('', 'q14-move-term q14-move-operation-term');
+  const coefficientInput = input(
+    `move-${side}-${moveKeys[index]}-value`,
+    `Signed coefficient to move on the ${side} side for the ${moveTermNames[index]}`,
+    '',
+    'text',
   );
+  cell.append(coefficientInput, span(moveVariables[index]));
+  return cell;
+}
+
+function moveGridRow(left, right, className = '') {
+  const equals = span('=', `q14-move-equals${className === 'q14-move-operation' ? ' q14-move-operation-equals' : ''}`);
+  const cells = [...left, equals, ...right];
+  if (className) cells.forEach(cell => cell.classList.add(className));
+  return cells;
 }
 
 function buildMoveWork() {
-  const target = $('#move-work');
   const p = problem();
-  const subtract = p.right.map(value => -value);
-  const result = [p.a, p.b, p.c];
-  const rows = [
-    [polynomialText(p.left), '=', polynomialText(p.right), ''],
-    [polynomialText(subtract), '=', polynomialText(subtract), 'q14-op'],
-    [polynomialText(result), '=', '0', 'q14-result'],
-  ];
-  target.replaceChildren();
-  rows.forEach(([left, equals, right, className]) => {
-    const leftCell = span(left, className);
-    const equalsCell = span(equals, className);
-    const rightCell = span(right, className);
-    target.append(leftCell, equalsCell, rightCell);
+  const leftOperations = moveKeys.map((_, termIndex) => operationTermCell('left', termIndex));
+  const rightOperations = moveKeys.map((_, termIndex) => operationTermCell('right', termIndex));
+  $('#move-work').replaceChildren(
+    ...moveGridRow(equationTermCells(p.left), equationTermCells(p.right), 'q14-move-equation'),
+    ...moveGridRow(leftOperations, rightOperations, 'q14-move-operation'),
+  );
+}
+
+function moveOperationFields() {
+  const fields = [];
+  problem().right.forEach((coefficient, index) => {
+    if (coefficient === 0) return;
+    fields.push({
+      leftValue: $(`#move-left-${moveKeys[index]}-value`),
+      rightValue: $(`#move-right-${moveKeys[index]}-value`),
+      expected: -coefficient,
+    });
   });
-  target.hidden = false;
+  return fields;
 }
 
 function buildStandardForm() {
   const target = $('#standard-expression');
   target.replaceChildren(
-    input('standard-a', 'Standard form coefficient a'), span('x² + ('),
-    input('standard-b', 'Standard form coefficient b'), span(')x + ('),
-    input('standard-c', 'Standard form coefficient c'), span(') = 0'),
+    input('standard-a', 'Standard form coefficient a'), span('x² + '),
+    input('standard-b', 'Standard form coefficient b'), span('x + '),
+    input('standard-c', 'Standard form coefficient c'), span(' = 0'),
   );
 }
 
@@ -335,7 +371,7 @@ function buildEquationState() {
   $('#final-title').textContent = isMove ? '6. Simplify each part' : '5. Simplify each part';
   $('#answer-title').textContent = isMove ? '7. Calculate the final solution' : '6. Calculate the final solution';
   if (isMove) {
-    buildMoveForm();
+    buildMoveWork();
     buildStandardForm();
   }
 }
@@ -351,7 +387,6 @@ function reset() {
   buildEquationState();
   buildFormulaChoiceOptions();
   buildFormula();
-  $('#move-work').hidden = true;
   $('#standard-form').hidden = true;
   $('#formula-choice-step').hidden = moveProblem();
   $('#formula-step').hidden = true;
@@ -399,18 +434,20 @@ function finish() {
 
 $('#move-form').onsubmit = event => {
   event.preventDefault();
-  const fields = [$('#move-a'), $('#move-b'), $('#move-c')];
-  const expected = problem().right.map(value => -value);
-  const correct = fields.map((field, i) => close(parseValue(field.value), expected[i]));
+  const entries = moveOperationFields();
+  const fields = entries.flatMap(entry => [entry.leftValue, entry.rightValue]);
+  const correct = entries.flatMap(entry => [
+    close(parseSignedCoefficient(entry.leftValue.value), entry.expected),
+    close(parseSignedCoefficient(entry.rightValue.value), entry.expected),
+  ]);
   fields.forEach((field, i) => mark(field, correct[i]));
   if (!correct.every(Boolean)) {
-    showFeedback('#move-feedback', 'Enter the opposite of each right-side coefficient to subtract that expression from both sides.');
+    showFeedback('#move-feedback', 'Enter the opposite term with its sign under both sides. Use + when adding and − when subtracting.');
     return;
   }
   lock(fields);
   hideSubmit(event.currentTarget);
-  showFeedback('#move-feedback', 'Correct. Subtract the same expression from both sides.', true);
-  buildMoveWork();
+  showFeedback('#move-feedback', '');
   $('#standard-form').hidden = false;
   $('#standard-a').focus();
 };

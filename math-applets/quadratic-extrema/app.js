@@ -1,7 +1,8 @@
 import {
   examples, extremumType, formatNumber, functionText, parseNumber,
-  standardAxisWork, vertex, vertexSubstitution,
+  vertex, vertexSubstitution,
 } from './model.mjs';
+import { parseCompleteFactor } from '../quadratic-factoring/model.mjs';
 
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
@@ -42,8 +43,24 @@ function revealStep(selector) {
   section.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
-function formatSigned(value) {
-  return value < 0 ? `−${formatNumber(Math.abs(value))}` : formatNumber(value);
+function renderSubstitutionTemplate() {
+  const pieces = functionText(item()).split('x');
+  const fragment = document.createDocumentFragment();
+  let inputIndex = 0;
+  pieces.forEach((piece, index) => {
+    fragment.append(document.createTextNode(piece));
+    if (index < pieces.length - 1) {
+      inputIndex += 1;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'q9-number q9-substitution-x';
+      input.inputMode = 'decimal';
+      input.autocomplete = 'off';
+      input.setAttribute('aria-label', `Substituted x-value ${inputIndex}`);
+      fragment.append(input);
+    }
+  });
+  $('#substitution-work').replaceChildren(fragment);
 }
 
 function updateExample() {
@@ -52,33 +69,32 @@ function updateExample() {
   $('#x-meaning').textContent = current.xMeaning;
   $('#y-meaning').textContent = current.yMeaning;
   $('#equation').textContent = functionText(current);
-  $('#standard-axis-work').textContent = standardAxisWork(current);
-  $('#factored-average-work').textContent = current.form === 'factored'
-    ? `(${formatNumber(current.r1)} + ${formatNumber(current.r2)}) / 2`
-    : '';
-  $('#substitution-work').textContent = vertexSubstitution(current, correctVertex().x);
-  $('#final-type').textContent = extremumType(current);
-  $('#substitution-heading').textContent = current.form === 'factored'
-    ? '4. Find the y-coordinate of the vertex'
-    : '3. Find the y-coordinate of the vertex';
+  $('#evaluate-heading').textContent = current.form === 'factored'
+    ? '5. Substitute the x-value'
+    : '3. Substitute the x-value';
+  $('#evaluate-y-heading').textContent = current.form === 'factored'
+    ? '6. Evaluate to find the y-coordinate'
+    : '4. Evaluate to find the y-coordinate';
   $('#final-step-heading').textContent = current.form === 'factored'
-    ? '5. State the extremum'
-    : current.form === 'vertex' ? '3. State the extremum' : '4. State the extremum';
+    ? '7. Complete the extrema statement'
+    : current.form === 'standard'
+      ? '5. Complete the extrema statement'
+      : '4. Complete the extrema statement';
+  $('#substituted-expression').textContent = '';
+  renderSubstitutionTemplate();
 }
 
 function reset() {
   all('.q9-step').forEach(step => {
-    step.hidden = step.id !== 'step-type';
+    step.hidden = true;
     step.classList.remove('complete');
   });
   $('#complete').hidden = true;
-  $('#type-form').reset();
-  $('#roots-form').reset();
-  $('#standard-x-form').reset();
-  $('#factored-x-form').reset();
-  $('#standard-y-form').reset();
-  $('#vertex-form').reset();
-  $('#final-form').reset();
+  [
+    '#standard-x-form', '#zero-factors-form', '#roots-form', '#factored-x-form',
+    '#substitution-form', '#evaluate-y-form',
+    '#vertex-x-form', '#vertex-y-form', '#type-form', '#final-form',
+  ].forEach(selector => $(selector).reset());
   all('.q9-work input, .q9-work select').forEach(input => {
     input.disabled = false;
     input.readOnly = false;
@@ -90,6 +106,7 @@ function reset() {
   });
   all('.q9-work button[type="submit"]').forEach(button => { button.hidden = false; });
   updateExample();
+  $('#step-type').hidden = false;
 }
 
 function checkNumber(input, expected) {
@@ -99,9 +116,119 @@ function checkNumber(input, expected) {
   return !invalid;
 }
 
-function showFinalStep() {
+$('#standard-x-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const bCorrect = checkNumber($('#standard-b'), item().b);
+  const aCorrect = checkNumber($('#standard-a'), item().a);
+  const xCorrect = checkNumber($('#standard-x'), correctVertex().x);
+  if (!bCorrect || !aCorrect || !xCorrect) {
+    showFeedback('#standard-x-feedback', 'Use the signed b- and a-values in x = −b/(2a), then simplify the fraction.');
+    return;
+  }
+  freezeStep('#step-standard-x', '#standard-x-feedback');
+  revealStep('#step-evaluate');
+});
+
+$('#zero-factors-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const inputs = [$('#zero-factor-one'), $('#zero-factor-two')];
+  const entries = inputs.map(input => parseCompleteFactor(input.value));
+  const expected = [item().r1, item().r2].map(root => ({ coefficient: 1, constant: -root }));
+  const matches = (entry, factor) => entry?.coefficient === factor.coefficient && entry?.constant === factor.constant;
+  const orderOne = [matches(entries[0], expected[0]), matches(entries[1], expected[1])];
+  const orderTwo = [matches(entries[0], expected[1]), matches(entries[1], expected[0])];
+  const bestOrder = orderTwo.filter(Boolean).length > orderOne.filter(Boolean).length ? orderTwo : orderOne;
+  const correct = bestOrder.every(Boolean);
+  inputs.forEach((input, index) => mark(input, !bestOrder[index]));
+  if (!correct) {
+    showFeedback('#zero-factors-feedback', 'Write each factor from the function above without parentheses, then put each one equal to 0.');
+    return;
+  }
+  freezeStep('#step-factored-zero', '#zero-factors-feedback');
+  revealStep('#step-factored-roots');
+});
+
+$('#roots-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const inputs = [$('#root-one'), $('#root-two')];
+  const actual = inputs.map(input => parseNumber(input.value));
+  const expected = [item().r1, item().r2];
+  const duplicateRoots = expected[0] !== expected[1];
+  const duplicate = duplicateRoots && Number.isFinite(actual[0]) && actual[0] === actual[1];
+  const correct = !duplicate && actual.every(value => Number.isFinite(value) && expected.includes(value));
+  inputs.forEach((input, index) => {
+    mark(input, !Number.isFinite(actual[index]) || duplicate || !expected.includes(actual[index]));
+  });
+  if (!correct) {
+    showFeedback('#roots-feedback', 'Set each factor equal to zero and solve for x. Enter both x-intercepts.');
+    return;
+  }
+  freezeStep('#step-factored-roots', '#roots-feedback');
+  revealStep('#step-factored-x');
+});
+
+$('#factored-x-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const inputs = [$('#average-one'), $('#average-two')];
+  const actual = inputs.map(input => parseNumber(input.value));
+  const expected = [item().r1, item().r2];
+  const duplicateRoots = expected[0] !== expected[1];
+  const duplicate = duplicateRoots && Number.isFinite(actual[0]) && actual[0] === actual[1];
+  const firstCorrect = Number.isFinite(actual[0]) && expected.includes(actual[0]) && !duplicate;
+  const secondCorrect = Number.isFinite(actual[1]) && expected.includes(actual[1]) && !duplicate;
+  const xCorrect = checkNumber($('#factored-x'), correctVertex().x);
+  mark(inputs[0], !firstCorrect);
+  mark(inputs[1], !secondCorrect);
+  if (!firstCorrect || !secondCorrect || !xCorrect) {
+    showFeedback('#factored-x-feedback', 'Enter both different x-intercepts in the numerator, then divide their sum by 2.');
+    return;
+  }
+  freezeStep('#step-factored-x', '#factored-x-feedback');
+  revealStep('#step-evaluate');
+});
+
+$('#substitution-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const inputs = all('#substitution-work .q9-substitution-x');
+  const results = inputs.map(input => checkNumber(input, correctVertex().x));
+  if (!results.every(Boolean)) {
+    showFeedback('#substitution-feedback', 'Enter the vertex x-coordinate in each blank in the original function.');
+    return;
+  }
+  freezeStep('#step-evaluate', '#substitution-feedback');
+  $('#substituted-expression').textContent = vertexSubstitution(item(), correctVertex().x);
+  revealStep('#step-evaluate-y');
+});
+
+$('#evaluate-y-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (!checkNumber($('#vertex-y'), correctVertex().y)) {
+    showFeedback('#evaluate-y-feedback', 'Evaluate the function with the substituted x-value to find y.');
+    return;
+  }
+  freezeStep('#step-evaluate-y', '#evaluate-y-feedback');
   revealStep('#step-final');
-}
+});
+
+$('#vertex-x-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (!checkNumber($('#vertex-x'), correctVertex().x)) {
+    showFeedback('#vertex-x-feedback', 'In vertex form, the x-coordinate of the vertex is h. Check the sign inside the parentheses.');
+    return;
+  }
+  freezeStep('#step-vertex-x', '#vertex-x-feedback');
+  revealStep('#step-vertex-y');
+});
+
+$('#vertex-y-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (!checkNumber($('#vertex-form-y'), correctVertex().y)) {
+    showFeedback('#vertex-form-y-feedback', 'In vertex form, the y-coordinate of the vertex is k.');
+    return;
+  }
+  freezeStep('#step-vertex-y', '#vertex-form-y-feedback');
+  revealStep('#step-final');
+});
 
 $('#type-form').addEventListener('submit', event => {
   event.preventDefault();
@@ -114,79 +241,19 @@ $('#type-form').addEventListener('submit', event => {
   }
   freezeStep('#step-type', '#type-feedback');
   if (item().form === 'standard') revealStep('#step-standard-x');
-  else if (item().form === 'factored') revealStep('#step-factored-roots');
-  else revealStep('#step-vertex');
-});
-
-$('#standard-x-form').addEventListener('submit', event => {
-  event.preventDefault();
-  if (!checkNumber($('#standard-x'), correctVertex().x)) {
-    showFeedback('#standard-x-feedback', 'Use x = −b/(2a). Substitute the signed a- and b-values from the function, then simplify.');
-    return;
-  }
-  freezeStep('#step-standard-x', '#standard-x-feedback');
-  $('#substitution-work').textContent = vertexSubstitution(item(), correctVertex().x);
-  revealStep('#step-standard-y');
-});
-
-$('#roots-form').addEventListener('submit', event => {
-  event.preventDefault();
-  const inputs = [$('#root-one'), $('#root-two')];
-  const actual = inputs.map(input => parseNumber(input.value));
-  const expected = [item().r1, item().r2];
-  const duplicate = actual[0] === actual[1];
-  const correct = !duplicate && actual.every(value => expected.includes(value));
-  inputs.forEach((input, index) => {
-    mark(input, !Number.isFinite(actual[index]) || duplicate || !expected.includes(actual[index]));
-  });
-  if (!correct) {
-    showFeedback('#roots-feedback', 'Set each factor equal to zero. Enter the two different x-intercepts; either order is fine.');
-    return;
-  }
-  freezeStep('#step-factored-roots', '#roots-feedback');
-  revealStep('#step-factored-x');
-});
-
-$('#factored-x-form').addEventListener('submit', event => {
-  event.preventDefault();
-  if (!checkNumber($('#factored-x'), correctVertex().x)) {
-    showFeedback('#factored-x-feedback', 'Average the two x-intercepts: add them, then divide by 2.');
-    return;
-  }
-  freezeStep('#step-factored-x', '#factored-x-feedback');
-  $('#substitution-work').textContent = vertexSubstitution(item(), correctVertex().x);
-  revealStep('#step-standard-y');
-});
-
-$('#standard-y-form').addEventListener('submit', event => {
-  event.preventDefault();
-  if (!checkNumber($('#vertex-y'), correctVertex().y)) {
-    showFeedback('#vertex-y-feedback', 'Substitute the x-coordinate into the given function and simplify carefully.');
-    return;
-  }
-  freezeStep('#step-standard-y', '#vertex-y-feedback');
-  showFinalStep();
-});
-
-$('#vertex-form').addEventListener('submit', event => {
-  event.preventDefault();
-  const correctX = checkNumber($('#vertex-x'), correctVertex().x);
-  const correctY = checkNumber($('#vertex-form-y'), correctVertex().y);
-  if (!correctX || !correctY) {
-    showFeedback('#vertex-feedback', 'In vertex form, f(x) = a(x − h)² + k has vertex (h, k). Read both values from the equation.');
-    return;
-  }
-  freezeStep('#step-vertex', '#vertex-feedback');
-  showFinalStep();
+  else if (item().form === 'factored') revealStep('#step-factored-zero');
+  else revealStep('#step-vertex-x');
 });
 
 $('#final-form').addEventListener('submit', event => {
   event.preventDefault();
   const answer = correctVertex();
+  const typeCorrect = $('#final-extremum-type').value === extremumType(item());
+  mark($('#final-extremum-type'), !typeCorrect);
   const correctY = checkNumber($('#final-y'), answer.y);
   const correctX = checkNumber($('#final-x'), answer.x);
-  if (!correctY || !correctX) {
-    showFeedback('#final-feedback', 'Use the coordinates you found in the steps above to complete the extrema statement.');
+  if (!typeCorrect || !correctY || !correctX) {
+    showFeedback('#final-feedback', 'Use the coordinates you found above to complete the extrema statement.');
     return;
   }
   freezeStep('#step-final', '#final-feedback');
@@ -208,9 +275,11 @@ $('#next-example').addEventListener('click', () => {
   $('#scenario').scrollIntoView({ block: 'start', behavior: 'smooth' });
 });
 
-all('.q9-work input, .q9-work select').forEach(input => {
-  input.addEventListener('input', () => mark(input, false));
-  input.addEventListener('change', () => mark(input, false));
+$('.q9-work').addEventListener('input', event => {
+  if (event.target.matches('input, select')) mark(event.target, false);
+});
+$('.q9-work').addEventListener('change', event => {
+  if (event.target.matches('input, select')) mark(event.target, false);
 });
 
 reset();

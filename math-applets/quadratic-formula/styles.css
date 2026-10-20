@@ -39,8 +39,13 @@
 .q14-work-lines { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); align-items:center; gap:8px 12px; max-width:650px; margin:20px auto; text-align:center; font:1.22rem Georgia,"Times New Roman",serif; }
 .q14-work-lines .q14-op { padding-bottom:7px; border-bottom:2px solid var(--ink); }
 .q14-work-lines .q14-result { padding-top:3px; }
-.q14-move-expression { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:16px 0; font:1.25rem Georgia,"Times New Roman",serif; }
-.q14-move-expression input { width:66px; text-align:center; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
+.q14-move-work-grid { display:grid; grid-template-columns:repeat(3,max-content) 18px repeat(3,max-content); align-items:baseline; justify-content:center; gap:8px 5px; width:max-content; max-width:100%; overflow-x:auto; margin:18px auto; font:1.2rem Georgia,"Times New Roman",serif; }
+.q14-move-term { display:flex; align-items:center; justify-self:end; gap:3px; white-space:nowrap; }
+.q14-move-equals { justify-self:center; }
+.q14-move-empty { visibility:hidden; }
+.q14-move-operation-term { padding:0 4px 4px; border-bottom:2px solid var(--ink); }
+.q14-move-operation-equals { visibility:hidden; }
+.q14-move-term input { width:48px; padding:6px 3px; text-align:center; font:1rem "Trebuchet MS","Segoe UI",sans-serif; }
 .q14-complete { margin-top:24px; padding-top:20px; border-top:1px solid var(--line); }
 .q14-complete h2 { margin-top:0; }
 .q14-actions { margin-top:20px; }
@@ -52,4 +57,6 @@
   .q14-formula { font-size:1.28rem; }
   .q14-expression input { width:58px; }
   .q14-work-lines { grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr); gap:8px 5px; font-size:1rem; }
+  .q14-move-work-grid { grid-template-columns:repeat(3,max-content) 14px repeat(3,max-content); justify-content:start; gap:7px 3px; font-size:1.02rem; }
+  .q14-move-term input { width:42px; font-size:.9rem; }
 }

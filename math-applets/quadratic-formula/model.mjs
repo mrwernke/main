@@ -9,7 +9,7 @@ export const problems = [
   { kind: 'standard', a: 1, b: 1, c: -1 },
   { kind: 'move', left: [2, 5, 6], right: [0, 3, 10], a: 2, b: 2, c: -4 },
   { kind: 'move', left: [3, 4, 1], right: [1, -2, 3], a: 2, b: 6, c: -2 },
-  { kind: 'move', left: [2, 0, 1.5], right: [1, 0, 0], a: 1, b: 0, c: 1.5 },
+  { kind: 'move', left: [2, 6, 3], right: [1, 2, 0], a: 1, b: 4, c: 3 },
   { kind: 'move', left: [3, 6, 10], right: [2, 2, 2], a: 1, b: 4, c: 8 },
 ];
 

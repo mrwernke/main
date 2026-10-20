@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quadratic Solutions in Context</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../quadratic-convert/styles.css" />
+    <link rel="stylesheet" href="../quadratic-formula/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="back" href="../../">Back to Wernke's Math Resources</a>
+        <span class="eyebrow">Interactive math applet &middot; Q10</span>
+      </div>
+      <h1>Find Quadratic Solutions in Context</h1>
+      <p class="intro">Use the quadratic formula. Round the square root to four decimal places as needed, then round each solution to two decimal places and decide which answer(s) fit the situation.</p>
+
+      <section class="equation-card q10-prompt" aria-label="Real-world quadratic problem">
+        <div class="card-head">
+          <span>Real-world problem</span>
+          <label class="picker-label">Choose a problem <select id="problem-picker" aria-label="Choose a problem"></select></label>
+        </div>
+        <p id="scenario" class="q10-scenario"></p>
+        <p class="q10-model-label">Function model (standard form)</p>
+        <p id="model" class="q10-model"></p>
+        <div class="q10-context">
+          <p><strong>x</strong> represents <span id="x-meaning"></span>.</p>
+        </div>
+      </section>
+
+      <section class="vertex-work-card q14-work q10-work" aria-label="Solve the contextual equation">
+        <section id="target-step" class="q14-step">
+          <h2 id="target-step-title">1. Set the equation equal to the target</h2>
+          <p id="target-step-prompt" class="muted">Use the height or value asked for in the problem.</p>
+          <form id="target-form">
+            <div class="q14-expression q10-target-expression" id="target-expression"></div>
+            <button type="submit">Check target value</button>
+            <p id="target-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="move-over-step" class="q14-step" hidden>
+          <h2 id="move-over-title">2. Subtract the target value from both sides</h2>
+          <p class="muted">Enter the value being subtracted under each side, then enter the new constant term.</p>
+          <form id="move-over-form">
+            <div id="move-over-work" class="q10-balance-work"></div>
+            <button type="submit">Check equation</button>
+            <p id="move-over-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="formula-step" class="q14-step" hidden>
+          <h2 id="formula-step-title">2. Substitute into the quadratic formula</h2>
+          <p class="muted">Enter the signed a-, b-, and c-values in each matching blank.</p>
+          <form id="formula-form">
+            <div id="formula-given" class="q14-expression q14-formula q10-formula-given" aria-label="Quadratic formula"></div>
+            <div class="q14-expression q14-formula" id="formula-expression" aria-label="Quadratic formula with blanks"></div>
+            <button type="submit">Check substitution</button>
+            <p id="formula-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="simplify-step" class="q14-step" hidden>
+          <h2 id="simplify-step-title">3. Simplify the discriminant and denominator</h2>
+          <p class="muted">Calculate −b, b² − 4ac, and 2a.</p>
+          <form id="simplify-form">
+            <div class="q14-expression" id="simplify-expression"></div>
+            <button type="submit">Check</button>
+            <p id="simplify-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="square-root-step" class="q14-step" hidden>
+          <h2 id="square-root-step-title">4. Evaluate the square root</h2>
+          <p class="muted">Round the square root of the discriminant to four decimal places as needed.</p>
+          <form id="square-root-form">
+            <div class="q14-expression q10-square-root-line" id="square-root-expression"></div>
+            <button type="submit">Check square root</button>
+            <p id="square-root-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="solutions-step" class="q14-step" hidden>
+          <h2 id="solutions-step-title">5. Substitute the values, then calculate each x-value</h2>
+          <p class="muted">Enter −b, the square root rounded in Step 4, and 2a in both branches.</p>
+          <form id="solutions-substitution-form">
+            <div class="q14-expression q14-answer-line" id="solutions-expression"></div>
+            <button type="submit">Check substituted values</button>
+            <p id="solutions-substitution-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+          <form id="solutions-answer-form" hidden>
+            <p class="muted">Now calculate each x-value using those rounded values. Round to two decimal places.</p>
+            <div class="q14-expression q14-answer-line" id="solutions-answer-expression"></div>
+            <button type="submit">Check x-values</button>
+            <p id="solutions-answer-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="context-step" class="q14-step" hidden>
+          <h2 id="context-step-title">6. How many solutions make sense?</h2>
+          <p class="muted">Use the story to rule out values that cannot happen, such as negative time or negative side lengths.</p>
+          <form id="context-count-form">
+            <label class="q10-count-label" for="context-solution-count">Number of solutions that make sense
+              <select id="context-solution-count">
+                <option value="">Choose one</option>
+                <option value="1">1 solution</option>
+                <option value="2">2 solutions</option>
+              </select>
+            </label>
+            <button type="submit">Check number</button>
+            <p id="context-count-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+          <form id="context-form" hidden>
+            <p class="muted">Enter the final answer(s) that make sense, rounded to two decimal places.</p>
+            <div class="q10-context-answers">
+              <div id="context-answer-fields"></div>
+              <span id="context-units" class="q10-answer-units"></span>
+            </div>
+            <button type="submit">Check final answer(s)</button>
+            <p id="context-feedback" class="feedback" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="complete" class="q14-complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p id="complete-text"></p>
+          <button id="next-problem" type="button">Next Example</button>
+        </section>
+        <div class="answer-row q14-actions"><button id="reset" type="button">Try Again</button></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js"></script>
+  </body>
+</html>

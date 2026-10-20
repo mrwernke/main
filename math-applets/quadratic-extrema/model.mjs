@@ -90,7 +90,7 @@ function constantTerm(value) {
   return ` ${value < 0 ? minus : '+'} ${formatNumber(Math.abs(value))}`;
 }
 
-function factor(root) {
+export function factorText(root) {
   if (root === 0) return 'x';
   return `(x ${root > 0 ? minus : '+'} ${formatNumber(Math.abs(root))})`;
 }
@@ -102,7 +102,7 @@ export function functionText(item) {
     return `f(x) = ${lead}x${square}${middle}${constantTerm(item.c)}`;
   }
   if (item.form === 'factored') {
-    return `f(x) = ${lead}${factor(item.r1)}${factor(item.r2)}`;
+    return `f(x) = ${lead}${factorText(item.r1)}${factorText(item.r2)}`;
   }
   const inside = item.h === 0 ? `x${square}` : `(x ${item.h > 0 ? minus : '+'} ${formatNumber(Math.abs(item.h))})${square}`;
   return `f(x) = ${lead}${inside}${constantTerm(item.k)}`;
@@ -122,11 +122,6 @@ export function vertex(item) {
 
 export function extremumType(item) {
   return item.a > 0 ? 'minimum' : 'maximum';
-}
-
-export function standardAxisWork(item) {
-  const signed = value => value < 0 ? `${minus}${formatNumber(Math.abs(value))}` : formatNumber(value);
-  return `${minus}(${signed(item.b)}) / (2(${signed(item.a)}))`;
 }
 
 function signedTerm(coefficient, body, isFirst = false) {
