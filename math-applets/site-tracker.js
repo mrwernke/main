@@ -52,7 +52,7 @@ export function logVisit() {
     const cleanPath = location.pathname.replace(/^\/main\//, '/');
     const pageLabel = rawTitle ? `${rawTitle} (${cleanPath})` : cleanPath;
 
-    // 5. Send background ping
+    // 5. Send payload in the background
     const payload = JSON.stringify({
       userId: uid,
       page: pageLabel,
@@ -62,24 +62,20 @@ export function logVisit() {
 
     hasLoggedThisPage = true;
 
-    if (typeof fetch === 'function') {
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: payload,
-        mode: 'no-cors',
-        keepalive: true
-      }).catch(() => {});
-    } else if (navigator.sendBeacon) {
-      navigator.sendBeacon(SCRIPT_URL, payload);
-    }
+    // Use standard CORS-safelisted request with redirect follow so the browser
+    // can follow Google Apps Script's 302 redirect to the execution server.
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: payload,
+      redirect: 'follow'
+    }).catch(() => {});
   } catch {
     // Fail silently without interrupting user experience
   }
 }
 
-// Automatically trigger on page load
-if (document.readyState === 'complete') {
-  logVisit();
-} else {
-  window.addEventListener('load', () => logVisit(), { once: true });
-}
+// Automatically trigger immediately upon module evaluation
+logVisit();
