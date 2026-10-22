@@ -613,20 +613,58 @@ $('#answer-form').onsubmit = event => {
   finish();
 };
 
-function updateCustomPreview() {
-  const aText = $('#custom-a').value.trim();
-  const bText = $('#custom-b').value.trim();
-  const cText = $('#custom-c').value.trim();
-  const a = parseValue(aText || '1');
-  const b = parseValue(bText || '0');
-  const c = parseValue(cText || '0');
-  if (Number.isFinite(a) && Number.isFinite(b) && Number.isFinite(c) && a !== 0) {
-    $('#custom-preview-equation').textContent = `${polynomialText([a, b, c])} = 0`;
-  } else if (a === 0) {
-    $('#custom-preview-equation').textContent = 'a cannot be 0';
-  } else {
-    $('#custom-preview-equation').textContent = '—';
+function formatCustomEquation(aText, bText, cText) {
+  const aTrim = aText.trim();
+  const bTrim = bText.trim();
+  const cTrim = cText.trim();
+  if (!aTrim && !bTrim && !cTrim) return 'ax² + bx + c = 0';
+
+  const aVal = aTrim ? parseValue(aTrim) : NaN;
+  const bVal = bTrim ? parseValue(bTrim) : NaN;
+  const cVal = cTrim ? parseValue(cTrim) : NaN;
+
+  if (Number.isFinite(aVal) && Number.isFinite(bVal) && Number.isFinite(cVal) && aVal !== 0) {
+    return `${polynomialText([aVal, bVal, cVal])} = 0`;
   }
+
+  let aPart = 'ax²';
+  if (Number.isFinite(aVal)) {
+    if (aVal === 1) aPart = 'x²';
+    else if (aVal === -1) aPart = '−x²';
+    else if (aVal === 0) aPart = '0x²';
+    else aPart = `${aVal < 0 ? '−' : ''}${Math.abs(aVal)}x²`;
+  } else if (aTrim) {
+    aPart = `${aTrim}x²`;
+  }
+
+  let bPart = '+ bx';
+  if (Number.isFinite(bVal)) {
+    if (bVal === 0) bPart = '';
+    else if (bVal === 1) bPart = '+ x';
+    else if (bVal === -1) bPart = '− x';
+    else bPart = `${bVal < 0 ? '−' : '+'} ${Math.abs(bVal)}x`;
+  } else if (bTrim) {
+    const sign = bTrim.startsWith('-') || bTrim.startsWith('−') ? '−' : '+';
+    bPart = `${sign} ${bTrim.replace(/^[+−-]/, '')}x`;
+  }
+
+  let cPart = '+ c';
+  if (Number.isFinite(cVal)) {
+    if (cVal === 0) cPart = '';
+    else cPart = `${cVal < 0 ? '−' : '+'} ${Math.abs(cVal)}`;
+  } else if (cTrim) {
+    const sign = cTrim.startsWith('-') || cTrim.startsWith('−') ? '−' : '+';
+    cPart = `${sign} ${cTrim.replace(/^[+−-]/, '')}`;
+  }
+
+  return `${[aPart, bPart, cPart].filter(Boolean).join(' ')} = 0`;
+}
+
+function updateCustomPreview() {
+  const aText = $('#custom-a').value;
+  const bText = $('#custom-b').value;
+  const cText = $('#custom-c').value;
+  $('#equation').textContent = formatCustomEquation(aText, bText, cText);
 }
 
 $('#make-own-btn').onclick = () => {
@@ -634,31 +672,26 @@ $('#make-own-btn').onclick = () => {
   const isHidden = form.hidden;
   form.hidden = !isHidden;
   if (!form.hidden) {
-    if (customProblem) {
-      $('#custom-a').value = String(customProblem.a);
-      $('#custom-b').value = String(customProblem.b);
-      $('#custom-c').value = String(customProblem.c);
-    } else {
-      const cur = problem();
-      if (cur.kind === 'standard') {
-        $('#custom-a').value = String(cur.a);
-        $('#custom-b').value = String(cur.b);
-        $('#custom-c').value = String(cur.c);
-      } else {
-        $('#custom-a').value = '1';
-        $('#custom-b').value = '-5';
-        $('#custom-c').value = '6';
-      }
-    }
-    updateCustomPreview();
+    $('#custom-a').value = '';
+    $('#custom-b').value = '';
+    $('#custom-c').value = '';
+    $('#equation').textContent = 'ax² + bx + c = 0';
+    $('#equation-label').textContent = 'Create your own equation';
+    $('.q14-work').hidden = true;
     showFeedback('#custom-feedback', '');
     $('#custom-a').focus();
-    $('#custom-a').select();
+  } else {
+    $('.q14-work').hidden = false;
+    buildEquationState();
   }
 };
 
 $('#custom-cancel-btn').onclick = () => {
   $('#custom-problem-form').hidden = true;
+  $('.q14-work').hidden = false;
+  buildEquationState();
+  buildFormulaChoiceOptions();
+  buildFormula();
 };
 
 $('#custom-problem-form').oninput = updateCustomPreview;
@@ -696,11 +729,14 @@ $('#custom-problem-form').onsubmit = event => {
 
   customProblem = { kind: 'standard', a: aVal, b: bVal, c: cVal };
   $('#custom-problem-form').hidden = true;
+  $('.q14-work').hidden = false;
   reset();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 $('#problem-picker').onchange = event => {
+  $('#custom-problem-form').hidden = true;
+  $('.q14-work').hidden = false;
   if (event.target.value === 'custom') {
     // keep current custom problem
   } else {

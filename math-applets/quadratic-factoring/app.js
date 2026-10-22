@@ -3,8 +3,9 @@ import { clearConfetti, fireConfetti } from '../quadratic-graphing/confetti.js';
 
 const $ = selector => document.querySelector(selector);
 let index = 0, submitted = false, nonMonic = false, confirmedFactors = null, repeated = false;
+let customProblem = null;
 const bank = () => nonMonic ? nonMonicExercises : exercises;
-const item = () => bank()[index];
+const item = () => customProblem || bank()[index];
 const boxValues = () => [
   parseInteger($('#top-factor').value), parseInteger($('#side-factor').value),
   nonMonic ? parseInteger($('#top-coefficient').value) : 1,
@@ -213,9 +214,15 @@ function selectMode(value) {
   $('#monic-mode').setAttribute('aria-pressed', String(!nonMonic));
   $('#non-monic-mode').setAttribute('aria-pressed', String(nonMonic));
   $('#example-picker').replaceChildren();
+  if (customProblem) {
+    $('#example-picker').add(new Option(`My Problem: ${expressionText(customProblem)} = 0`, 'custom'));
+  }
   bank().forEach((exercise, i) => {
     $('#example-picker').add(new Option(`${i + 1}. ${expressionText(exercise)} = 0`, i));
   });
+  if (customProblem) {
+    $('#example-picker').value = 'custom';
+  }
   reset();
 }
 $('#monic-mode').onclick = () => selectMode(false);
@@ -234,3 +241,137 @@ $('#next').onclick = () => {
   $('#top-factor').focus();
 };
 selectMode(false);
+
+function formatCustomEquation(aText, bText, cText) {
+  const aTrim = aText.trim();
+  const bTrim = bText.trim();
+  const cTrim = cText.trim();
+  if (!aTrim && !bTrim && !cTrim) return 'ax² + bx + c = 0';
+
+  const aVal = aTrim ? parseInteger(aTrim) : NaN;
+  const bVal = bTrim ? parseInteger(bTrim) : NaN;
+  const cVal = cTrim ? parseInteger(cTrim) : NaN;
+
+  if (Number.isFinite(aVal) && Number.isFinite(bVal) && Number.isFinite(cVal) && aVal > 0) {
+    return `${expressionText({ a: aVal, b: bVal, c: cVal })} = 0`;
+  }
+
+  let aPart = 'ax²';
+  if (Number.isFinite(aVal)) {
+    if (aVal === 1) aPart = 'x²';
+    else aPart = `${aVal}x²`;
+  } else if (aTrim) aPart = `${aTrim}x²`;
+
+  let bPart = '+ bx';
+  if (Number.isFinite(bVal)) {
+    if (bVal === 0) bPart = '';
+    else if (bVal === 1) bPart = '+ x';
+    else if (bVal === -1) bPart = '− x';
+    else bPart = `${bVal < 0 ? '−' : '+'} ${Math.abs(bVal)}x`;
+  } else if (bTrim) {
+    const sign = bTrim.startsWith('-') || bTrim.startsWith('−') ? '−' : '+';
+    bPart = `${sign} ${bTrim.replace(/^[+−-]/, '')}x`;
+  }
+
+  let cPart = '+ c';
+  if (Number.isFinite(cVal)) {
+    if (cVal === 0) cPart = '';
+    else cPart = `${cVal < 0 ? '−' : '+'} ${Math.abs(cVal)}`;
+  } else if (cTrim) {
+    const sign = cTrim.startsWith('-') || cTrim.startsWith('−') ? '−' : '+';
+    cPart = `${sign} ${cTrim.replace(/^[+−-]/, '')}`;
+  }
+
+  return `${[aPart, bPart, cPart].filter(Boolean).join(' ')} = 0`;
+}
+
+function updateCustomPreview() {
+  $('#expression').textContent = formatCustomEquation($('#custom-a').value, $('#custom-b').value, $('#custom-c').value);
+}
+
+$('#make-own-btn').onclick = () => {
+  const form = $('#custom-problem-form');
+  const isHidden = form.hidden;
+  form.hidden = !isHidden;
+  if (!form.hidden) {
+    $('#custom-a').value = '';
+    $('#custom-b').value = '';
+    $('#custom-c').value = '';
+    $('#expression').textContent = 'ax² + bx + c = 0';
+    $('.factoring-work').hidden = true;
+    $('#custom-feedback').textContent = '';
+    $('#custom-feedback').className = 'feedback';
+    $('#custom-a').focus();
+  } else {
+    $('.factoring-work').hidden = false;
+    reset();
+  }
+};
+
+$('#custom-cancel-btn').onclick = () => {
+  $('#custom-problem-form').hidden = true;
+  $('.factoring-work').hidden = false;
+  reset();
+};
+
+$('#custom-problem-form').oninput = updateCustomPreview;
+
+$('#custom-problem-form').onsubmit = event => {
+  event.preventDefault();
+  const aVal = parseInteger($('#custom-a').value);
+  const bVal = parseInteger($('#custom-b').value);
+  const cVal = parseInteger($('#custom-c').value);
+
+  if (!Number.isFinite(aVal) || aVal <= 0) {
+    $('#custom-feedback').textContent = "Please enter a positive integer (at least 1) for 'a'.";
+    $('#custom-feedback').className = 'feedback no';
+    $('#custom-a').focus();
+    return;
+  }
+  if (!Number.isFinite(bVal)) {
+    $('#custom-feedback').textContent = "Please enter a valid integer for 'b'.";
+    $('#custom-feedback').className = 'feedback no';
+    $('#custom-b').focus();
+    return;
+  }
+  if (!Number.isFinite(cVal)) {
+    $('#custom-feedback').textContent = "Please enter a valid integer for 'c'.";
+    $('#custom-feedback').className = 'feedback no';
+    $('#custom-c').focus();
+    return;
+  }
+
+  const disc = bVal * bVal - 4 * aVal * cVal;
+  if (disc < 0) {
+    $('#custom-feedback').textContent = 'This expression has no real factors (discriminant is negative). Choose values where b² − 4ac is a non-negative perfect square.';
+    $('#custom-feedback').className = 'feedback no';
+    return;
+  }
+  const rootDisc = Math.round(Math.sqrt(disc));
+  if (rootDisc * rootDisc !== disc) {
+    $('#custom-feedback').textContent = 'This expression cannot be factored over integers. Choose values where b² − 4ac is a perfect square.';
+    $('#custom-feedback').className = 'feedback no';
+    return;
+  }
+
+  customProblem = { a: aVal, b: bVal, c: cVal };
+  nonMonic = aVal > 1;
+  $('#monic-mode').setAttribute('aria-pressed', String(!nonMonic));
+  $('#non-monic-mode').setAttribute('aria-pressed', String(nonMonic));
+  $('#custom-problem-form').hidden = true;
+  $('.factoring-work').hidden = false;
+  selectMode(nonMonic);
+};
+
+const originalPickerChange = $('#example-picker').onchange;
+$('#example-picker').onchange = () => {
+  $('#custom-problem-form').hidden = true;
+  $('.factoring-work').hidden = false;
+  if ($('#example-picker').value === 'custom') {
+    // keep custom problem
+  } else {
+    customProblem = null;
+    index = Number($('#example-picker').value);
+  }
+  reset();
+};

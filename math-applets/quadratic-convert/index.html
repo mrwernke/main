@@ -28,9 +28,34 @@
       <section class="equation-card" aria-label="Standard form problem">
         <div class="card-head">
           <span>Convert this quadratic</span>
-          <label class="picker-label">Example <select id="example-picker" aria-label="Choose a quadratic"></select></label>
+          <div class="card-picker-group">
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose a quadratic"></select></label>
+            <button type="button" id="make-own-btn" class="make-own-btn">Make My Own Problem</button>
+          </div>
         </div>
         <div class="equation" id="expression"></div>
+        <form id="custom-problem-form" class="custom-problem-form" hidden>
+          <div class="custom-form-title">Enter values in standard form: f(x) = ax² + bx + c</div>
+          <div class="custom-equation-row">
+            <label class="custom-field">
+              <span class="custom-field-name">a =</span>
+              <input id="custom-a" type="text" inputmode="numeric" placeholder="e.g. 1" autocomplete="off" required />
+            </label>
+            <label class="custom-field">
+              <span class="custom-field-name">b =</span>
+              <input id="custom-b" type="text" inputmode="numeric" placeholder="e.g. 4" autocomplete="off" required />
+            </label>
+            <label class="custom-field">
+              <span class="custom-field-name">c =</span>
+              <input id="custom-c" type="text" inputmode="numeric" placeholder="e.g. -5" autocomplete="off" required />
+            </label>
+          </div>
+          <div class="custom-buttons-row">
+            <button type="submit" id="custom-submit-btn">Convert This Problem</button>
+            <button type="button" id="custom-cancel-btn">Cancel</button>
+          </div>
+          <p id="custom-feedback" class="feedback" aria-live="polite"></p>
+        </form>
       </section>
 
       <section class="conversion-work">

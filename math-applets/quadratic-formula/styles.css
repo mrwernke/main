@@ -54,7 +54,7 @@
 .make-own-btn { background:var(--paper); color:var(--ink); border:1px solid var(--paper); padding:6px 14px; font:700 .82rem "Trebuchet MS",sans-serif; letter-spacing:.04em; cursor:pointer; transition:background .15s ease, color .15s ease; }
 .make-own-btn:hover { background:#fff; color:var(--ink); }
 .custom-problem-form { margin-top:16px; padding:16px 20px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.18); box-shadow:0 2px 8px rgba(0,0,0,.15); }
-.custom-form-title { color:#c7ead8; font:700 .78rem "Trebuchet MS",sans-serif; letter-spacing:.08em; text-transform:uppercase; margin-bottom:12px; }
+.custom-form-title { color:#c7ead8; font:700 .84rem "Trebuchet MS",sans-serif; letter-spacing:.04em; margin-bottom:12px; }
 .custom-equation-row { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:12px; }
 .custom-field { display:flex; align-items:center; gap:6px; font:700 1.05rem Georgia,serif; color:#fffdf8; }
 .custom-field input { width:68px; padding:6px 8px; text-align:center; font:1rem "Trebuchet MS",sans-serif; border:1px solid var(--line); background:#fff; color:var(--ink); }

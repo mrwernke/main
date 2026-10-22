@@ -20,9 +20,34 @@
       <section class="equation-card" aria-label="Quadratic function">
         <div class="card-head">
           <span id="equation-label">Quadratic function</span>
-          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+          <div class="card-picker-group">
+            <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+            <button type="button" id="make-own-btn" class="make-own-btn">Make My Own Problem</button>
+          </div>
         </div>
         <div id="equation" class="equation"></div>
+        <form id="custom-problem-form" class="custom-problem-form" hidden>
+          <div class="custom-form-title">Enter values in standard form: f(x) = ax² + bx + c</div>
+          <div class="custom-equation-row">
+            <label class="custom-field">
+              <span class="custom-field-name">a =</span>
+              <input id="custom-a" type="text" inputmode="numeric" placeholder="e.g. 1" autocomplete="off" required />
+            </label>
+            <label class="custom-field">
+              <span class="custom-field-name">b =</span>
+              <input id="custom-b" type="text" inputmode="numeric" placeholder="e.g. -5" autocomplete="off" required />
+            </label>
+            <label class="custom-field">
+              <span class="custom-field-name">c =</span>
+              <input id="custom-c" type="text" inputmode="numeric" placeholder="e.g. 6" autocomplete="off" required />
+            </label>
+          </div>
+          <div class="custom-buttons-row">
+            <button type="submit" id="custom-submit-btn">Use This Function</button>
+            <button type="button" id="custom-cancel-btn">Cancel</button>
+          </div>
+          <p id="custom-feedback" class="feedback" aria-live="polite"></p>
+        </form>
       </section>
 
       <section class="vertex-work-card q12-work" aria-label="Discriminant practice">

@@ -3,10 +3,11 @@ import { clearConfetti, fireConfetti } from '../quadratic-graphing/confetti.js';
 
 const $ = selector => document.querySelector(selector);
 let index = 0;
+let customProblem = null;
 let solveStage = '';
 let activeSolveOperation = '';
 let activeSolveInput = null;
-const problem = () => problems[index];
+const problem = () => customProblem || problems[index];
 const data = () => squareData(problem());
 const close = (value, expected) => Number.isFinite(value) && Math.abs(value - expected) < 1e-5;
 
@@ -335,8 +336,17 @@ function buildPicker() {
     });
     return group;
   });
-  $('#problem-picker').replaceChildren(...groups);
-  $('#problem-picker').value = String(index);
+  if (customProblem) {
+    const customGroup = document.createElement('optgroup');
+    customGroup.label = 'Custom Problem';
+    const customOption = new Option(`My Problem: ${equationText(customProblem)}`, 'custom');
+    customGroup.append(customOption);
+    $('#problem-picker').replaceChildren(customGroup, ...groups);
+    $('#problem-picker').value = 'custom';
+  } else {
+    $('#problem-picker').replaceChildren(...groups);
+    $('#problem-picker').value = String(index);
+  }
 }
 
 function reset() {
@@ -647,3 +657,127 @@ $('#problem-picker').onchange = () => { index = Number($('#problem-picker').valu
 $('#reset').onclick = reset;
 $('#next-problem').onclick = () => { index = (index + 1) % problems.length; reset(); };
 reset();
+
+function formatCustomEquation(aText, bText, cText) {
+  const aTrim = aText.trim();
+  const bTrim = bText.trim();
+  const cTrim = cText.trim();
+  if (!aTrim && !bTrim && !cTrim) return 'ax² + bx + c = 0';
+
+  const aVal = aTrim ? parseValue(aTrim) : NaN;
+  const bVal = bTrim ? parseValue(bTrim) : NaN;
+  const cVal = cTrim ? parseValue(cTrim) : NaN;
+
+  if (Number.isFinite(aVal) && Number.isFinite(bVal) && Number.isFinite(cVal) && aVal > 0) {
+    return equationText({ a: aVal, b: bVal, c: cVal });
+  }
+
+  let aPart = 'ax²';
+  if (Number.isFinite(aVal)) {
+    if (aVal === 1) aPart = 'x²';
+    else aPart = `${formatNumber(aVal)}x²`;
+  } else if (aTrim) aPart = `${aTrim}x²`;
+
+  let bPart = '+ bx';
+  if (Number.isFinite(bVal)) {
+    if (bVal === 0) bPart = '';
+    else if (bVal === 1) bPart = '+ x';
+    else if (bVal === -1) bPart = '− x';
+    else bPart = `${bVal < 0 ? '−' : '+'} ${formatNumber(Math.abs(bVal))}x`;
+  } else if (bTrim) {
+    const sign = bTrim.startsWith('-') || bTrim.startsWith('−') ? '−' : '+';
+    bPart = `${sign} ${bTrim.replace(/^[+−-]/, '')}x`;
+  }
+
+  let cPart = '+ c';
+  if (Number.isFinite(cVal)) {
+    if (cVal === 0) cPart = '';
+    else cPart = `${cVal < 0 ? '−' : '+'} ${formatNumber(Math.abs(cVal))}`;
+  } else if (cTrim) {
+    const sign = cTrim.startsWith('-') || cTrim.startsWith('−') ? '−' : '+';
+    cPart = `${sign} ${cTrim.replace(/^[+−-]/, '')}`;
+  }
+
+  return `${[aPart, bPart, cPart].filter(Boolean).join(' ')} = 0`;
+}
+
+function updateCustomPreview() {
+  $('#equation').textContent = formatCustomEquation($('#custom-a').value, $('#custom-b').value, $('#custom-c').value);
+}
+
+$('#make-own-btn').onclick = () => {
+  const form = $('#custom-problem-form');
+  const isHidden = form.hidden;
+  form.hidden = !isHidden;
+  if (!form.hidden) {
+    $('#custom-a').value = '';
+    $('#custom-b').value = '';
+    $('#custom-c').value = '';
+    $('#equation').textContent = 'ax² + bx + c = 0';
+    $('#square-work').hidden = true;
+    showFeedback('#custom-feedback', '');
+    $('#custom-a').focus();
+  } else {
+    $('#square-work').hidden = false;
+    reset();
+  }
+};
+
+$('#custom-cancel-btn').onclick = () => {
+  $('#custom-problem-form').hidden = true;
+  $('#square-work').hidden = false;
+  reset();
+};
+
+$('#custom-problem-form').oninput = updateCustomPreview;
+
+$('#custom-problem-form').onsubmit = event => {
+  event.preventDefault();
+  const aVal = parseValue($('#custom-a').value);
+  const bVal = parseValue($('#custom-b').value);
+  const cVal = parseValue($('#custom-c').value);
+
+  if (!Number.isFinite(aVal) || aVal <= 0) {
+    showFeedback('#custom-feedback', "Please enter a positive integer for 'a'.");
+    $('#custom-a').focus();
+    return;
+  }
+  if (!Number.isFinite(bVal) || !Number.isInteger(bVal)) {
+    showFeedback('#custom-feedback', "Please enter a valid integer for 'b'.");
+    $('#custom-b').focus();
+    return;
+  }
+  if (!Number.isFinite(cVal) || !Number.isInteger(cVal)) {
+    showFeedback('#custom-feedback', "Please enter a valid integer for 'c'.");
+    $('#custom-c').focus();
+    return;
+  }
+
+  customProblem = { a: aVal, b: bVal, c: cVal, category: 'custom' };
+  $('#custom-problem-form').hidden = true;
+  $('#square-work').hidden = false;
+  reset();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+$('#problem-picker').onchange = () => {
+  $('#custom-problem-form').hidden = true;
+  $('#square-work').hidden = false;
+  if ($('#problem-picker').value === 'custom') {
+    // keep custom
+  } else {
+    customProblem = null;
+    index = Number($('#problem-picker').value);
+  }
+  reset();
+};
+
+$('#next-problem').onclick = () => {
+  if (customProblem) {
+    customProblem = null;
+    index = 0;
+  } else {
+    index = (index + 1) % problems.length;
+  }
+  reset();
+};

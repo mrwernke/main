@@ -7,7 +7,8 @@ import { clearConfetti, fireConfetti } from '../quadratic-graphing/confetti.js';
 
 const $ = selector => document.querySelector(selector);
 let form = 'factored', method = 'manual', index = 0, factorsSubmitted = false, confirmedFactors = null, scaledFactor = null, remainingFactor = null;
-const item = () => practice[index];
+let customProblem = null;
+const item = () => customProblem || practice[index];
 const squareData = () => {
   const b = item().b / item().a;
   const c = item().c / item().a;
@@ -158,11 +159,20 @@ function fillPicker() {
   const extendedGroup = document.createElement('optgroup');
   extendedGroup.label = 'Extended problems';
   extendedGroup.append(...extended.map(({ example, i }) => new Option(`${i + 1}. ${standardText(example)}`, i)));
-  $('#example-picker').replaceChildren(
+  const options = [
     ...ordinary.map(({ example, i }) => new Option(`${i + 1}. ${standardText(example)}`, i)),
     extendedGroup,
-  );
-  $('#example-picker').value = String(index);
+  ];
+  if (customProblem) {
+    const customGroup = document.createElement('optgroup');
+    customGroup.label = 'Custom Problem';
+    customGroup.append(new Option(`My Problem: ${standardText(customProblem)}`, 'custom'));
+    $('#example-picker').replaceChildren(customGroup, ...options);
+    $('#example-picker').value = 'custom';
+  } else {
+    $('#example-picker').replaceChildren(...options);
+    $('#example-picker').value = String(index);
+  }
 }
 
 function reset() {
@@ -585,12 +595,155 @@ $('#vertex-mode').onclick = () => changeForm('vertex');
 $('#manual-method').onclick = () => changeMethod('manual');
 $('#square-method').onclick = () => changeMethod('square');
 ['#top-factor', '#side-factor', '#top-coefficient', '#side-coefficient'].forEach(id => $(id).addEventListener('input', updateBox));
-$('#example-picker').onchange = () => { index = Number($('#example-picker').value); reset(); };
+$('#example-picker').onchange = () => {
+  $('#custom-problem-form').hidden = true;
+  $('#factored-work').hidden = form !== 'factored';
+  $('#vertex-work').hidden = form !== 'vertex';
+  if ($('#example-picker').value === 'custom') {
+    // keep custom problem
+  } else {
+    customProblem = null;
+    index = Number($('#example-picker').value);
+  }
+  reset();
+};
 $('#reset').onclick = reset;
 $('#vertex-reset').onclick = reset;
-$('#next').onclick = () => { index = (index + 1) % practice.length; reset(); };
-$('#vertex-next').onclick = () => { index = (index + 1) % practice.length; reset(); };
+$('#next').onclick = () => {
+  if (customProblem) { customProblem = null; index = 0; }
+  else index = (index + 1) % practice.length;
+  reset();
+};
+$('#vertex-next').onclick = () => {
+  if (customProblem) { customProblem = null; index = 0; }
+  else index = (index + 1) % practice.length;
+  reset();
+};
 
 setPressed([['#factored-mode', 'factored'], ['#vertex-mode', 'vertex']], form);
 setPressed([['#manual-method', 'manual'], ['#square-method', 'square']], method);
 reset();
+
+function parseIntegerQ7(text) {
+  const t = String(text).trim().replace(/−/g, '-');
+  if (!/^[+-]?\d+$/.test(t)) return NaN;
+  return parseInt(t, 10);
+}
+
+function formatCustomStandard(aText, bText, cText) {
+  const aTrim = aText.trim();
+  const bTrim = bText.trim();
+  const cTrim = cText.trim();
+  if (!aTrim && !bTrim && !cTrim) return 'f(x) = ax² + bx + c';
+
+  const aVal = aTrim ? parseIntegerQ7(aTrim) : NaN;
+  const bVal = bTrim ? parseIntegerQ7(bTrim) : NaN;
+  const cVal = cTrim ? parseIntegerQ7(cTrim) : NaN;
+
+  if (Number.isFinite(aVal) && Number.isFinite(bVal) && Number.isFinite(cVal) && aVal !== 0) {
+    return standardText({ a: aVal, b: bVal, c: cVal });
+  }
+
+  let aPart = 'ax²';
+  if (Number.isFinite(aVal)) {
+    if (aVal === 1) aPart = 'x²';
+    else if (aVal === -1) aPart = '−x²';
+    else aPart = `${aVal < 0 ? '−' : ''}${Math.abs(aVal)}x²`;
+  } else if (aTrim) aPart = `${aTrim}x²`;
+
+  let bPart = '+ bx';
+  if (Number.isFinite(bVal)) {
+    if (bVal === 0) bPart = '';
+    else if (bVal === 1) bPart = '+ x';
+    else if (bVal === -1) bPart = '− x';
+    else bPart = `${bVal < 0 ? '−' : '+'} ${Math.abs(bVal)}x`;
+  } else if (bTrim) {
+    const sign = bTrim.startsWith('-') || bTrim.startsWith('−') ? '−' : '+';
+    bPart = `${sign} ${bTrim.replace(/^[+−-]/, '')}x`;
+  }
+
+  let cPart = '+ c';
+  if (Number.isFinite(cVal)) {
+    if (cVal === 0) cPart = '';
+    else cPart = `${cVal < 0 ? '−' : '+'} ${Math.abs(cVal)}`;
+  } else if (cTrim) {
+    const sign = cTrim.startsWith('-') || cTrim.startsWith('−') ? '−' : '+';
+    cPart = `${sign} ${cTrim.replace(/^[+−-]/, '')}`;
+  }
+
+  return `f(x) = ${[aPart, bPart, cPart].filter(Boolean).join(' ')}`;
+}
+
+function showCustomFeedback(msg) {
+  const el = $('#custom-feedback');
+  el.textContent = msg;
+  el.className = msg ? 'feedback no' : 'feedback';
+}
+
+$('#make-own-btn').onclick = () => {
+  const formEl = $('#custom-problem-form');
+  const isHidden = formEl.hidden;
+  formEl.hidden = !isHidden;
+  if (!formEl.hidden) {
+    $('#custom-a').value = '';
+    $('#custom-b').value = '';
+    $('#custom-c').value = '';
+    $('#expression').textContent = 'f(x) = ax² + bx + c';
+    $('#factored-work').hidden = true;
+    $('#vertex-work').hidden = true;
+    showCustomFeedback('');
+    $('#custom-a').focus();
+  } else {
+    $('#factored-work').hidden = form !== 'factored';
+    $('#vertex-work').hidden = form !== 'vertex';
+    reset();
+  }
+};
+
+$('#custom-cancel-btn').onclick = () => {
+  $('#custom-problem-form').hidden = true;
+  $('#factored-work').hidden = form !== 'factored';
+  $('#vertex-work').hidden = form !== 'vertex';
+  reset();
+};
+
+$('#custom-problem-form').oninput = () => {
+  $('#expression').textContent = formatCustomStandard($('#custom-a').value, $('#custom-b').value, $('#custom-c').value);
+};
+
+$('#custom-problem-form').onsubmit = event => {
+  event.preventDefault();
+  const aVal = parseIntegerQ7($('#custom-a').value);
+  const bVal = parseIntegerQ7($('#custom-b').value);
+  const cVal = parseIntegerQ7($('#custom-c').value);
+
+  if (!Number.isFinite(aVal)) {
+    showCustomFeedback("Please enter a valid integer for 'a'.");
+    $('#custom-a').focus();
+    return;
+  }
+  if (aVal === 0) {
+    showCustomFeedback("The coefficient 'a' cannot be 0 in a quadratic function.");
+    $('#custom-a').focus();
+    return;
+  }
+  if (!Number.isFinite(bVal)) {
+    showCustomFeedback("Please enter a valid integer for 'b'.");
+    $('#custom-b').focus();
+    return;
+  }
+  if (!Number.isFinite(cVal)) {
+    showCustomFeedback("Please enter a valid integer for 'c'.");
+    $('#custom-c').focus();
+    return;
+  }
+  if (Math.abs(aVal) > 100 || Math.abs(bVal) > 100 || Math.abs(cVal) > 100) {
+    showCustomFeedback('Please enter integer values between −100 and 100.');
+    return;
+  }
+
+  customProblem = { a: aVal, b: bVal, c: cVal };
+  $('#custom-problem-form').hidden = true;
+  reset();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
