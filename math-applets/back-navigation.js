@@ -1,3 +1,5 @@
+import './site-tracker.js';
+
 // Source of truth for the nearby-applet links in every applet header.
 // Register new applets here in unit order; each applet page loads this module.
 const unitApplets = [

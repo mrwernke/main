@@ -490,5 +490,11 @@
         });
       }
     </script>
+    <script type="module">
+      const trackerPath = /\/main-site\/(index\.html)?$/.test(location.pathname)
+        ? '../math-applets/site-tracker.js'
+        : './math-applets/site-tracker.js';
+      import(trackerPath);
+    </script>
   </body>
 </html>
