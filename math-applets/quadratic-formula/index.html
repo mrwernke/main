@@ -20,8 +20,37 @@
       <section class="equation-card" aria-label="Quadratic equation">
         <div class="card-head">
           <span id="equation-label">Solve this equation</span>
-          <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+          <div class="card-picker-group">
+            <label class="picker-label">Example <select id="problem-picker" aria-label="Choose an example"></select></label>
+            <button type="button" id="make-own-btn" class="make-own-btn">Make My Own Problem</button>
+          </div>
         </div>
+        <form id="custom-problem-form" class="custom-problem-form" hidden>
+          <div class="custom-form-title">Enter values in standard form: ax² + bx + c = 0</div>
+          <div class="custom-equation-row">
+            <label class="custom-field">
+              <span class="custom-field-name">a =</span>
+              <input id="custom-a" type="text" inputmode="numeric" placeholder="1" autocomplete="off" required />
+            </label>
+            <label class="custom-field">
+              <span class="custom-field-name">b =</span>
+              <input id="custom-b" type="text" inputmode="numeric" placeholder="0" autocomplete="off" required />
+            </label>
+            <label class="custom-field">
+              <span class="custom-field-name">c =</span>
+              <input id="custom-c" type="text" inputmode="numeric" placeholder="0" autocomplete="off" required />
+            </label>
+          </div>
+          <div class="custom-preview-row">
+            <span>Equation:</span>
+            <span id="custom-preview-equation" class="custom-preview-eq">x² = 0</span>
+          </div>
+          <div class="custom-buttons-row">
+            <button type="submit" id="custom-submit-btn">Solve This Problem</button>
+            <button type="button" id="custom-cancel-btn">Cancel</button>
+          </div>
+          <p id="custom-feedback" class="feedback" aria-live="polite"></p>
+        </form>
         <div id="equation" class="equation" aria-live="polite"></div>
       </section>
 

@@ -3,7 +3,8 @@ import { problems, equationText, formatRational, polynomialText, solutionData } 
 
 const $ = selector => document.querySelector(selector);
 let index = 0;
-const problem = () => problems[index];
+let customProblem = null;
+const problem = () => customProblem || problems[index];
 const data = () => solutionData(problem());
 const needsFinalRadicand = result => result.radical.hasRadical
   && result.radical.imaginary
@@ -111,8 +112,17 @@ function buildPicker() {
     const option = new Option(`${number}: ${equationText(entry)}`, String(problemIndex));
     (isMove ? move : standard).append(option);
   });
-  $('#problem-picker').replaceChildren(standard, move);
-  $('#problem-picker').value = String(index);
+  if (customProblem) {
+    const customGroup = document.createElement('optgroup');
+    customGroup.label = 'Custom Problem';
+    const customOption = new Option(`My Problem: ${equationText(customProblem)}`, 'custom');
+    customGroup.append(customOption);
+    $('#problem-picker').replaceChildren(customGroup, standard, move);
+    $('#problem-picker').value = 'custom';
+  } else {
+    $('#problem-picker').replaceChildren(standard, move);
+    $('#problem-picker').value = String(index);
+  }
 }
 
 function shuffle(items) {
@@ -603,13 +613,110 @@ $('#answer-form').onsubmit = event => {
   finish();
 };
 
+function updateCustomPreview() {
+  const aText = $('#custom-a').value.trim();
+  const bText = $('#custom-b').value.trim();
+  const cText = $('#custom-c').value.trim();
+  const a = parseValue(aText || '1');
+  const b = parseValue(bText || '0');
+  const c = parseValue(cText || '0');
+  if (Number.isFinite(a) && Number.isFinite(b) && Number.isFinite(c) && a !== 0) {
+    $('#custom-preview-equation').textContent = `${polynomialText([a, b, c])} = 0`;
+  } else if (a === 0) {
+    $('#custom-preview-equation').textContent = 'a cannot be 0';
+  } else {
+    $('#custom-preview-equation').textContent = '—';
+  }
+}
+
+$('#make-own-btn').onclick = () => {
+  const form = $('#custom-problem-form');
+  const isHidden = form.hidden;
+  form.hidden = !isHidden;
+  if (!form.hidden) {
+    if (customProblem) {
+      $('#custom-a').value = String(customProblem.a);
+      $('#custom-b').value = String(customProblem.b);
+      $('#custom-c').value = String(customProblem.c);
+    } else {
+      const cur = problem();
+      if (cur.kind === 'standard') {
+        $('#custom-a').value = String(cur.a);
+        $('#custom-b').value = String(cur.b);
+        $('#custom-c').value = String(cur.c);
+      } else {
+        $('#custom-a').value = '1';
+        $('#custom-b').value = '-5';
+        $('#custom-c').value = '6';
+      }
+    }
+    updateCustomPreview();
+    showFeedback('#custom-feedback', '');
+    $('#custom-a').focus();
+    $('#custom-a').select();
+  }
+};
+
+$('#custom-cancel-btn').onclick = () => {
+  $('#custom-problem-form').hidden = true;
+};
+
+$('#custom-problem-form').oninput = updateCustomPreview;
+
+$('#custom-problem-form').onsubmit = event => {
+  event.preventDefault();
+  const aVal = parseValue($('#custom-a').value);
+  const bVal = parseValue($('#custom-b').value);
+  const cVal = parseValue($('#custom-c').value);
+
+  if (!Number.isFinite(aVal) || !Number.isInteger(aVal)) {
+    showFeedback('#custom-feedback', 'Please enter a valid integer for a.');
+    $('#custom-a').focus();
+    return;
+  }
+  if (aVal === 0) {
+    showFeedback('#custom-feedback', "The coefficient 'a' cannot be 0 in a quadratic equation.");
+    $('#custom-a').focus();
+    return;
+  }
+  if (!Number.isFinite(bVal) || !Number.isInteger(bVal)) {
+    showFeedback('#custom-feedback', 'Please enter a valid integer for b.');
+    $('#custom-b').focus();
+    return;
+  }
+  if (!Number.isFinite(cVal) || !Number.isInteger(cVal)) {
+    showFeedback('#custom-feedback', 'Please enter a valid integer for c.');
+    $('#custom-c').focus();
+    return;
+  }
+  if (Math.abs(aVal) > 100 || Math.abs(bVal) > 100 || Math.abs(cVal) > 100) {
+    showFeedback('#custom-feedback', 'Please enter integer values between -100 and 100.');
+    return;
+  }
+
+  customProblem = { kind: 'standard', a: aVal, b: bVal, c: cVal };
+  $('#custom-problem-form').hidden = true;
+  reset();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 $('#problem-picker').onchange = event => {
-  index = Number(event.target.value);
+  if (event.target.value === 'custom') {
+    // keep current custom problem
+  } else {
+    customProblem = null;
+    index = Number(event.target.value);
+  }
   reset();
 };
 
 $('#next-problem').onclick = () => {
-  index = (index + 1) % problems.length;
+  if (customProblem) {
+    customProblem = null;
+    index = 0;
+  } else {
+    index = (index + 1) % problems.length;
+  }
   reset();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
