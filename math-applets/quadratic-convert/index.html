@@ -40,15 +40,15 @@
           <div class="custom-equation-row">
             <label class="custom-field">
               <span class="custom-field-name">a =</span>
-              <input id="custom-a" type="text" inputmode="decimal" placeholder="e.g. 1" autocomplete="off" required />
+              <input id="custom-a" type="text" inputmode="text" placeholder="e.g. 1" autocomplete="off" required />
             </label>
             <label class="custom-field">
               <span class="custom-field-name">b =</span>
-              <input id="custom-b" type="text" inputmode="decimal" placeholder="e.g. 4" autocomplete="off" required />
+              <input id="custom-b" type="text" inputmode="text" placeholder="e.g. 4" autocomplete="off" required />
             </label>
             <label class="custom-field">
               <span class="custom-field-name">c =</span>
-              <input id="custom-c" type="text" inputmode="decimal" placeholder="e.g. -5" autocomplete="off" required />
+              <input id="custom-c" type="text" inputmode="text" placeholder="e.g. -5" autocomplete="off" required />
             </label>
           </div>
           <div class="custom-buttons-row">
@@ -120,13 +120,13 @@
                 <form id="square-move-step" class="square-step">
                   <h3>1. Move the constant to the other side</h3>
                   <p class="muted">Move the c-term to right side of equal sign.</p>
-                  <div class="square-equation"><span id="square-move-left"></span><span id="square-complete-gap" class="square-complete-gap" aria-hidden="true"></span><span>=</span><input id="square-move-right" inputmode="decimal" aria-label="Right side after moving the constant" /></div>
+                  <div class="square-equation"><span id="square-move-left"></span><span id="square-complete-gap" class="square-complete-gap" aria-hidden="true"></span><span>=</span><input id="square-move-right" inputmode="text" aria-label="Right side after moving the constant" /></div>
                   <button type="submit">Check</button><p class="feedback" id="square-move-feedback" aria-live="polite"></p>
                 </form>
                 <form id="square-factor-step" class="square-step" hidden>
                   <h3>Factor out <span id="square-factor-a"></span></h3>
                   <p id="square-factor-instructions" class="muted">Write the x-term coefficient after factoring out a.</p>
-                  <div class="square-equation"><span id="square-factor-left"></span><input id="square-factor-coefficient" inputmode="decimal" aria-label="Coefficient of x inside parentheses after factoring out a" /><span id="square-factor-right"></span><span class="square-complete-gap" aria-hidden="true"></span><span id="square-factor-close"></span></div>
+                  <div class="square-equation"><span id="square-factor-left"></span><input id="square-factor-coefficient" inputmode="text" aria-label="Coefficient of x inside parentheses after factoring out a" /><span id="square-factor-right"></span><span class="square-complete-gap" aria-hidden="true"></span><span id="square-factor-close"></span></div>
                   <button type="submit">Check</button><p class="feedback" id="square-factor-feedback" aria-live="polite"></p>
                 </form>
                 <section id="square-box-work" class="square-step" hidden>
@@ -158,7 +158,7 @@
             </form>
             <form id="square-simplify-step" class="square-step" hidden>
               <h3>6. Simplify both sides</h3>
-              <div class="square-equation"><span id="square-simplified-leading"></span><span>(x </span><select id="square-binomial-sign" aria-label="Sign inside the squared binomial"><option value="">±</option><option value="+">+</option><option value="-">−</option></select><input id="square-binomial-value" inputmode="decimal" aria-label="Binomial value" /><span>)² = </span><input id="square-simplified-right" inputmode="decimal" aria-label="Simplified right side" /></div>
+              <div class="square-equation"><span id="square-simplified-leading"></span><span>(x </span><select id="square-binomial-sign" aria-label="Sign inside the squared binomial"><option value="">±</option><option value="+">+</option><option value="-">−</option></select><input id="square-binomial-value" inputmode="decimal" aria-label="Binomial value" /><span>)² = </span><input id="square-simplified-right" inputmode="text" aria-label="Simplified right side" /></div>
               <button type="submit">Check</button><p class="feedback" id="square-simplify-feedback" aria-live="polite"></p>
             </form>
           </section>

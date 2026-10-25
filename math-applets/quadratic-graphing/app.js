@@ -47,8 +47,8 @@ function buildTable() {
   $('#table-body').innerHTML = [-2, -1, 0, 1, 2].map((offset, index) => `
     <tr class="${offset === 0 ? 'vertex-row' : ''}">
       <td>${offset === 0 ? 'Vertex' : offset < 0 ? 'Left' : 'Right'}</td>
-      <td><input data-role="x" aria-label="Table row ${index + 1} x-coordinate" inputmode="decimal" ${offset === 0 ? '' : 'disabled'}></td>
-      <td><input data-role="y" aria-label="Table row ${index + 1} y-coordinate" inputmode="decimal" ${offset === 0 ? '' : 'disabled'}></td>
+      <td><input data-role="x" aria-label="Table row ${index + 1} x-coordinate" inputmode="text" ${offset === 0 ? '' : 'disabled'}></td>
+      <td><input data-role="y" aria-label="Table row ${index + 1} y-coordinate" inputmode="text" ${offset === 0 ? '' : 'disabled'}></td>
     </tr>`).join('');
   tableStage = 'vertex';
   $('#table-instructions').textContent = 'Enter the vertex in the middle of the table.';

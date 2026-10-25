@@ -26,28 +26,28 @@
           <div class="form-work" data-for="standard">
             <h2>1. Find the line of symmetry and vertex</h2>
             <p class="muted">First use x = −b/(2a) to find the line of symmetry.</p>
-            <div class="answer-row"><span>x =</span><input class="coord" id="standard-axis" inputmode="decimal" aria-label="Standard form line of symmetry"><button id="check-standard-axis">Check line of symmetry</button></div>
+            <div class="answer-row"><span>x =</span><input class="coord" id="standard-axis" inputmode="text" aria-label="Standard form line of symmetry"><button id="check-standard-axis">Check line of symmetry</button></div>
             <p class="feedback" id="standard-axis-feedback" aria-live="polite"></p>
             <div id="standard-y-work" hidden>
               <p class="muted">Substitute your x-value into f(x) to find the y-coordinate of the vertex.</p>
-              <div class="answer-row"><span id="standard-substitution"></span><input class="coord" id="standard-y" inputmode="decimal" aria-label="Standard form vertex y-coordinate"><button id="check-standard-y">Check y-coordinate</button></div>
+              <div class="answer-row"><span id="standard-substitution"></span><input class="coord" id="standard-y" inputmode="text" aria-label="Standard form vertex y-coordinate"><button id="check-standard-y">Check y-coordinate</button></div>
               <p class="feedback" id="standard-y-feedback" aria-live="polite"></p>
             </div>
           </div>
           <div class="form-work" data-for="factored" hidden>
             <h2>1. Find the x-intercepts</h2>
             <p class="muted">Set each factor equal to zero. Enter the two x-intercepts in either order.</p>
-            <div class="answer-row">(<input class="coord" id="root-1" inputmode="decimal" aria-label="First x-intercept">, 0) and (<input class="coord" id="root-2" inputmode="decimal" aria-label="Second x-intercept">, 0)<button id="check-roots">Check x-intercepts</button></div>
+            <div class="answer-row">(<input class="coord" id="root-1" inputmode="text" aria-label="First x-intercept">, 0) and (<input class="coord" id="root-2" inputmode="text" aria-label="Second x-intercept">, 0)<button id="check-roots">Check x-intercepts</button></div>
             <p class="feedback" id="roots-feedback" aria-live="polite"></p>
           </div>
           <div class="form-work" data-for="vertex" hidden>
             <h2>1. Find the vertex and line of symmetry</h2>
             <p class="muted">Enter the vertex as an ordered pair.</p>
-            <div class="answer-row">(<input class="coord" id="vertex-x" inputmode="decimal" aria-label="Vertex form vertex x-coordinate">, <input class="coord" id="vertex-y" inputmode="decimal" aria-label="Vertex form vertex y-coordinate">)<button id="check-vertex">Check vertex</button></div>
+            <div class="answer-row">(<input class="coord" id="vertex-x" inputmode="text" aria-label="Vertex form vertex x-coordinate">, <input class="coord" id="vertex-y" inputmode="text" aria-label="Vertex form vertex y-coordinate">)<button id="check-vertex">Check vertex</button></div>
             <p class="feedback" id="vertex-feedback" aria-live="polite"></p>
             <div id="vertex-axis-work" hidden>
               <p class="muted">The line of symmetry passes through the vertex. Complete its equation.</p>
-              <div class="answer-row">x = <input class="coord" id="vertex-axis" inputmode="decimal" aria-label="Vertex form line of symmetry"><button id="check-vertex-axis">Check line of symmetry</button></div>
+              <div class="answer-row">x = <input class="coord" id="vertex-axis" inputmode="text" aria-label="Vertex form line of symmetry"><button id="check-vertex-axis">Check line of symmetry</button></div>
               <p class="feedback" id="vertex-axis-feedback" aria-live="polite"></p>
             </div>
           </div>
@@ -69,11 +69,11 @@
               <div class="symmetry-formula">
                 <span>x =</span>
                 <span class="fraction">
-                  <span class="numerator"><input class="coord" id="average-1" inputmode="decimal" aria-label="First intercept in symmetry formula"><span>+</span><input class="coord" id="average-2" inputmode="decimal" aria-label="Second intercept in symmetry formula"></span>
+                  <span class="numerator"><input class="coord" id="average-1" inputmode="text" aria-label="First intercept in symmetry formula"><span>+</span><input class="coord" id="average-2" inputmode="text" aria-label="Second intercept in symmetry formula"></span>
                   <span class="denominator"><span class="sr-only">divided by</span>2</span>
                 </span>
                 <span>=</span>
-                <input class="coord" id="factored-axis" inputmode="decimal" aria-label="Factored form line of symmetry">
+                <input class="coord" id="factored-axis" inputmode="text" aria-label="Factored form line of symmetry">
               </div>
               <button id="check-average">Check line of symmetry</button>
             </div>
@@ -90,11 +90,11 @@
           <div class="form-work" data-for="factored" hidden>
             <h2>3. Find the vertex</h2>
             <p class="muted">Substitute the line-of-symmetry x-value into f(x) to find the y-coordinate.</p>
-            <div class="answer-row"><span id="factored-substitution"></span><input class="coord" id="factored-y" inputmode="decimal" aria-label="Factored form vertex y-coordinate"><button id="check-factored-y">Check y-coordinate</button></div>
+            <div class="answer-row"><span id="factored-substitution"></span><input class="coord" id="factored-y" inputmode="text" aria-label="Factored form vertex y-coordinate"><button id="check-factored-y">Check y-coordinate</button></div>
             <p class="feedback" id="factored-y-feedback" aria-live="polite"></p>
             <div id="factored-vertex-work" hidden>
               <p class="muted">Now enter the vertex as an ordered pair.</p>
-              <div class="answer-row">(<input class="coord" id="factored-vx" inputmode="decimal" aria-label="Factored form vertex ordered pair x-coordinate">, <input class="coord" id="factored-vy" inputmode="decimal" aria-label="Factored form vertex ordered pair y-coordinate">)<button id="check-factored-vertex">Check vertex</button></div>
+              <div class="answer-row">(<input class="coord" id="factored-vx" inputmode="text" aria-label="Factored form vertex ordered pair x-coordinate">, <input class="coord" id="factored-vy" inputmode="text" aria-label="Factored form vertex ordered pair y-coordinate">)<button id="check-factored-vertex">Check vertex</button></div>
               <p class="feedback" id="factored-vertex-feedback" aria-live="polite"></p>
             </div>
           </div>
@@ -125,7 +125,7 @@
           <p class="feedback" id="domain-feedback" aria-live="polite"></p>
           <div id="range-work" hidden>
             <p>Complete the range inequality:</p>
-            <div class="domain-row"><strong>y</strong><select id="range-symbol" aria-label="Range inequality symbol"><option value="">choose</option><option value=">">&gt;</option><option value="<">&lt;</option><option value=">=">≥</option><option value="<=">≤</option></select><input id="range-number" class="coord" inputmode="decimal" aria-label="Range boundary number"><button id="check-range">Check range</button></div>
+            <div class="domain-row"><strong>y</strong><select id="range-symbol" aria-label="Range inequality symbol"><option value="">choose</option><option value=">">&gt;</option><option value="<">&lt;</option><option value=">=">≥</option><option value="<=">≤</option></select><input id="range-number" class="coord" inputmode="text" aria-label="Range boundary number"><button id="check-range">Check range</button></div>
             <p class="feedback" id="range-feedback" aria-live="polite"></p>
           </div>
         </div>
@@ -138,7 +138,7 @@
         <div class="step" id="step-7">
           <h2>7. Find the y-intercept</h2>
           <p class="muted">Use x = 0 in f(x). Complete the y-intercept as an ordered pair.</p>
-          <div class="answer-row">(0, <input class="coord" id="y-intercept" inputmode="decimal" aria-label="Y-intercept y-coordinate">)<button id="check-intercept">Check y-intercept</button></div>
+          <div class="answer-row">(0, <input class="coord" id="y-intercept" inputmode="text" aria-label="Y-intercept y-coordinate">)<button id="check-intercept">Check y-intercept</button></div>
           <p class="feedback" id="intercept-feedback" aria-live="polite"></p>
         </div>
         <div class="step" id="step-8">

@@ -32,15 +32,15 @@
           <div class="custom-equation-row">
             <label class="custom-field">
               <span class="custom-field-name">a =</span>
-              <input id="custom-a" type="text" inputmode="numeric" placeholder="e.g. 1" autocomplete="off" required />
+              <input id="custom-a" type="text" inputmode="text" placeholder="e.g. 1" autocomplete="off" required />
             </label>
             <label class="custom-field">
               <span class="custom-field-name">b =</span>
-              <input id="custom-b" type="text" inputmode="numeric" placeholder="e.g. -5" autocomplete="off" required />
+              <input id="custom-b" type="text" inputmode="text" placeholder="e.g. -5" autocomplete="off" required />
             </label>
             <label class="custom-field">
               <span class="custom-field-name">c =</span>
-              <input id="custom-c" type="text" inputmode="numeric" placeholder="e.g. 6" autocomplete="off" required />
+              <input id="custom-c" type="text" inputmode="text" placeholder="e.g. 6" autocomplete="off" required />
             </label>
           </div>
           <div class="custom-buttons-row">
@@ -64,7 +64,7 @@
             <p class="muted">Enter the values of b, a, and c in the matching blanks.</p>
             <form id="substitution-form">
               <div class="q12-expression" aria-label="b squared minus 4 times a times c">
-                <span>(</span><input id="sub-b" inputmode="numeric" aria-label="Value of b" /><span>)<sup>2</sup> − 4(</span><input id="sub-a" inputmode="numeric" aria-label="Value of a" /><span>)(</span><input id="sub-c" inputmode="numeric" aria-label="Value of c" /><span>)</span>
+                <span>(</span><input id="sub-b" inputmode="text" aria-label="Value of b" /><span>)<sup>2</sup> − 4(</span><input id="sub-a" inputmode="text" aria-label="Value of a" /><span>)(</span><input id="sub-c" inputmode="text" aria-label="Value of c" /><span>)</span>
               </div>
               <button type="submit">Check substitution</button>
               <p id="substitution-feedback" class="feedback" aria-live="polite"></p>

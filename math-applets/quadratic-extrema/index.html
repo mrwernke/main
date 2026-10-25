@@ -51,11 +51,11 @@
             <div class="q9-answer-row q9-math-row">
               <span class="math">x =</span>
               <span class="fraction q9-fraction" aria-label="negative b over two a">
-                <span class="numerator"><span>&minus;(</span><input class="q9-number" id="standard-b" inputmode="decimal" autocomplete="off" aria-label="Signed b-value" /><span>)</span></span>
-                <span class="denominator">2(<input class="q9-number" id="standard-a" inputmode="decimal" autocomplete="off" aria-label="Signed a-value" />)</span>
+                <span class="numerator"><span>&minus;(</span><input class="q9-number" id="standard-b" inputmode="text" autocomplete="off" aria-label="Signed b-value" /><span>)</span></span>
+                <span class="denominator">2(<input class="q9-number" id="standard-a" inputmode="text" autocomplete="off" aria-label="Signed a-value" />)</span>
               </span>
               <span class="math">=</span>
-              <input class="q9-number" id="standard-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the vertex" />
+              <input class="q9-number" id="standard-x" inputmode="text" autocomplete="off" aria-label="x-coordinate of the vertex" />
               <button type="submit">Check</button>
             </div>
             <p class="feedback" id="standard-x-feedback" aria-live="polite"></p>
@@ -80,8 +80,8 @@
           <p class="muted">Solve the two equations you wrote in the previous step.</p>
           <form id="roots-form" class="q9-form">
             <div class="q9-root-equations">
-              <label><span class="math">x =</span><input class="q9-number" id="root-one" inputmode="decimal" autocomplete="off" aria-label="First x-intercept" /></label>
-              <label><span class="math">x =</span><input class="q9-number" id="root-two" inputmode="decimal" autocomplete="off" aria-label="Second x-intercept" /></label>
+              <label><span class="math">x =</span><input class="q9-number" id="root-one" inputmode="text" autocomplete="off" aria-label="First x-intercept" /></label>
+              <label><span class="math">x =</span><input class="q9-number" id="root-two" inputmode="text" autocomplete="off" aria-label="Second x-intercept" /></label>
               <button type="submit">Check</button>
             </div>
             <p class="feedback" id="roots-feedback" aria-live="polite"></p>
@@ -95,11 +95,11 @@
             <div class="q9-answer-row q9-math-row">
               <span class="math">x =</span>
               <span class="fraction q9-fraction" aria-label="the sum of the x-intercepts divided by two">
-                <span class="numerator"><input class="q9-number" id="average-one" inputmode="decimal" autocomplete="off" aria-label="First x-intercept in the average" /><span>+</span><input class="q9-number" id="average-two" inputmode="decimal" autocomplete="off" aria-label="Second x-intercept in the average" /></span>
+                <span class="numerator"><input class="q9-number" id="average-one" inputmode="text" autocomplete="off" aria-label="First x-intercept in the average" /><span>+</span><input class="q9-number" id="average-two" inputmode="text" autocomplete="off" aria-label="Second x-intercept in the average" /></span>
                 <span class="denominator">2</span>
               </span>
               <span class="math">=</span>
-              <input class="q9-number" id="factored-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the vertex" />
+              <input class="q9-number" id="factored-x" inputmode="text" autocomplete="off" aria-label="x-coordinate of the vertex" />
               <button type="submit">Check</button>
             </div>
             <p class="feedback" id="factored-x-feedback" aria-live="polite"></p>
@@ -121,7 +121,7 @@
           <p class="muted">Now evaluate the function using the substituted x-value.</p>
           <form id="evaluate-y-form" class="q9-form">
             <p class="q9-substitution math" id="substituted-expression" aria-live="polite"></p>
-            <div class="q9-answer-row"><label for="vertex-y" class="math">y =</label><input class="q9-number" id="vertex-y" inputmode="decimal" autocomplete="off" aria-label="y-coordinate after evaluating the function" /><button type="submit">Check y-value</button></div>
+            <div class="q9-answer-row"><label for="vertex-y" class="math">y =</label><input class="q9-number" id="vertex-y" inputmode="text" autocomplete="off" aria-label="y-coordinate after evaluating the function" /><button type="submit">Check y-value</button></div>
             <p class="feedback" id="evaluate-y-feedback" aria-live="polite"></p>
           </form>
         </section>
@@ -130,7 +130,7 @@
           <h2>2. Read the x-coordinate from vertex form</h2>
           <p class="muted">In <span class="math">f(x) = a(x &minus; h)<sup>2</sup> + k</span>, the vertex is <span class="math">(h, k)</span>. Enter <span class="math">h</span>.</p>
           <form id="vertex-x-form" class="q9-form">
-            <div class="q9-answer-row"><span class="math">x =</span><input class="q9-number" id="vertex-x" inputmode="decimal" autocomplete="off" aria-label="h, the x-coordinate of the vertex" /><button type="submit">Check x-value</button></div>
+            <div class="q9-answer-row"><span class="math">x =</span><input class="q9-number" id="vertex-x" inputmode="text" autocomplete="off" aria-label="h, the x-coordinate of the vertex" /><button type="submit">Check x-value</button></div>
             <p class="feedback" id="vertex-x-feedback" aria-live="polite"></p>
           </form>
         </section>
@@ -139,7 +139,7 @@
           <h2>3. Read the y-coordinate from vertex form</h2>
           <p class="muted">The <span class="math">k</span>-value is the vertex's y-coordinate.</p>
           <form id="vertex-y-form" class="q9-form">
-            <div class="q9-answer-row"><span class="math">y =</span><input class="q9-number" id="vertex-form-y" inputmode="decimal" autocomplete="off" aria-label="k, the y-coordinate of the vertex" /><button type="submit">Check y-value</button></div>
+            <div class="q9-answer-row"><span class="math">y =</span><input class="q9-number" id="vertex-form-y" inputmode="text" autocomplete="off" aria-label="k, the y-coordinate of the vertex" /><button type="submit">Check y-value</button></div>
             <p class="feedback" id="vertex-form-y-feedback" aria-live="polite"></p>
           </form>
         </section>
@@ -152,7 +152,7 @@
               <option value="">Choose one</option>
               <option value="maximum">Maximum</option>
               <option value="minimum">Minimum</option>
-            </select> of <span class="math">y =</span> <input class="q9-number" id="final-y" inputmode="decimal" autocomplete="off" aria-label="Extreme y-value" /> <span>at</span> <span class="math">x =</span> <input class="q9-number" id="final-x" inputmode="decimal" autocomplete="off" aria-label="x-coordinate of the extremum" />.</div>
+            </select> of <span class="math">y =</span> <input class="q9-number" id="final-y" inputmode="text" autocomplete="off" aria-label="Extreme y-value" /> <span>at</span> <span class="math">x =</span> <input class="q9-number" id="final-x" inputmode="text" autocomplete="off" aria-label="x-coordinate of the extremum" />.</div>
             <button type="submit">Check statement</button>
             <p class="feedback" id="final-feedback" aria-live="polite"></p>
           </form>

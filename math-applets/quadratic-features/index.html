@@ -47,7 +47,7 @@
                     <option value="&lt;">&lt;</option>
                     <option value="≤">≤</option>
                   </select>
-                  <input class="coord" id="range-value" inputmode="decimal" autocomplete="off" aria-label="Range boundary value" />
+                  <input class="coord" id="range-value" inputmode="text" autocomplete="off" aria-label="Range boundary value" />
                   <button type="submit">Check</button>
                 </div>
                 <p class="feedback" id="range-feedback" aria-live="polite"></p>
@@ -59,7 +59,7 @@
                 <div class="fq-row">
                   <span class="fq-label">Line of Symmetry:</span>
                   <span class="math">x =</span>
-                  <input class="coord" id="symmetry-value" inputmode="decimal" autocomplete="off" aria-label="Line of symmetry x value" />
+                  <input class="coord" id="symmetry-value" inputmode="text" autocomplete="off" aria-label="Line of symmetry x value" />
                   <button type="submit">Check</button>
                 </div>
                 <p class="feedback" id="symmetry-feedback" aria-live="polite"></p>
@@ -71,9 +71,9 @@
                 <div class="fq-row">
                   <span class="fq-label">Vertex:</span>
                   <span class="math">(</span>
-                  <input class="coord" id="vertex-x" inputmode="decimal" autocomplete="off" aria-label="Vertex x-coordinate" />
+                  <input class="coord" id="vertex-x" inputmode="text" autocomplete="off" aria-label="Vertex x-coordinate" />
                   <span class="math">,</span>
-                  <input class="coord" id="vertex-y" inputmode="decimal" autocomplete="off" aria-label="Vertex y-coordinate" />
+                  <input class="coord" id="vertex-y" inputmode="text" autocomplete="off" aria-label="Vertex y-coordinate" />
                   <span class="math">)</span>
                   <button type="submit">Check</button>
                 </div>
@@ -92,9 +92,9 @@
                     <option value="minimum">minimum</option>
                   </select>
                   <span>of</span>
-                  <span class="group"><span class="math">y =</span><input class="coord" id="extremum-y" inputmode="decimal" autocomplete="off" aria-label="Extreme y value" /></span>
+                  <span class="group"><span class="math">y =</span><input class="coord" id="extremum-y" inputmode="text" autocomplete="off" aria-label="Extreme y value" /></span>
                   <span>at</span>
-                  <span class="group"><span class="math">x =</span><input class="coord" id="extremum-x" inputmode="decimal" autocomplete="off" aria-label="x value of the extremum" /></span>
+                  <span class="group"><span class="math">x =</span><input class="coord" id="extremum-x" inputmode="text" autocomplete="off" aria-label="x value of the extremum" /></span>
                   <button type="submit">Check</button>
                 </div>
                 <p class="feedback" id="extremum-feedback" aria-live="polite"></p>
@@ -105,9 +105,9 @@
               <form id="xint-pair">
                 <div class="fq-row">
                   <span class="fq-label">x-intercepts:</span>
-                  <span class="group"><span class="math">(</span><input class="coord" id="xint-first" inputmode="decimal" autocomplete="off" aria-label="First x-intercept" /><span class="math">, 0)</span></span>
+                  <span class="group"><span class="math">(</span><input class="coord" id="xint-first" inputmode="text" autocomplete="off" aria-label="First x-intercept" /><span class="math">, 0)</span></span>
                   <span>and</span>
-                  <span class="group"><span class="math">(</span><input class="coord" id="xint-second" inputmode="decimal" autocomplete="off" aria-label="Second x-intercept" /><span class="math">, 0)</span></span>
+                  <span class="group"><span class="math">(</span><input class="coord" id="xint-second" inputmode="text" autocomplete="off" aria-label="Second x-intercept" /><span class="math">, 0)</span></span>
                   <button type="submit">Check</button>
                 </div>
               </form>
@@ -121,7 +121,7 @@
               </form>
               <form id="xint-single" hidden>
                 <div class="fq-row">
-                  <span class="group"><span class="math">(</span><input class="coord" id="xint-only" inputmode="decimal" autocomplete="off" aria-label="The x-intercept" /><span class="math">, 0)</span></span>
+                  <span class="group"><span class="math">(</span><input class="coord" id="xint-only" inputmode="text" autocomplete="off" aria-label="The x-intercept" /><span class="math">, 0)</span></span>
                   <button type="submit">Check</button>
                 </div>
               </form>
@@ -133,7 +133,7 @@
                 <div class="fq-row">
                   <span class="fq-label">y-intercept:</span>
                   <span class="math">(0,</span>
-                  <input class="coord" id="yint-value" inputmode="decimal" autocomplete="off" aria-label="y-intercept value" />
+                  <input class="coord" id="yint-value" inputmode="text" autocomplete="off" aria-label="y-intercept value" />
                   <span class="math">)</span>
                   <button type="submit">Check</button>
                 </div>

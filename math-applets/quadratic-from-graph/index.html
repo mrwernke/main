@@ -22,28 +22,28 @@
           <section class="stage" id="stage-1">
             <h2>1. Read the vertex and a-value</h2>
             <p class="muted">Enter the vertex. To find a, compare its y-coordinate with a marked point one unit left or right: a is the change in y.</p>
-            <div class="answer-row">(<input class="coord" id="vx" inputmode="decimal" aria-label="Vertex x-coordinate">, <input class="coord" id="vy" inputmode="decimal" aria-label="Vertex y-coordinate">)</div>
-            <div class="answer-row"><label>a = <input class="coord" id="vertex-a" inputmode="decimal" aria-label="Vertex a-value"></label><button id="check-vertex">Check vertex and a</button></div>
+            <div class="answer-row">(<input class="coord" id="vx" inputmode="text" aria-label="Vertex x-coordinate">, <input class="coord" id="vy" inputmode="text" aria-label="Vertex y-coordinate">)</div>
+            <div class="answer-row"><label>a = <input class="coord" id="vertex-a" inputmode="text" aria-label="Vertex a-value"></label><button id="check-vertex">Check vertex and a</button></div>
             <p class="feedback" id="vertex-feedback" aria-live="polite"></p>
           </section>
           <section class="stage" id="stage-2" hidden>
             <h2>2. Write vertex form</h2>
             <p class="muted">Use y = a(x − h)² + k. Enter signed numbers in the blanks; for example, x − (−2) means x + 2.</p>
-            <div class="math-answer"><span>y =</span><input class="coord" id="form-va" inputmode="decimal" aria-label="Vertex form a"><span>(x −</span><input class="coord" id="form-h" inputmode="decimal" aria-label="Vertex form h"><span>)² +</span><input class="coord" id="form-k" inputmode="decimal" aria-label="Vertex form k"></div>
+            <div class="math-answer"><span>y =</span><input class="coord" id="form-va" inputmode="text" aria-label="Vertex form a"><span>(x −</span><input class="coord" id="form-h" inputmode="text" aria-label="Vertex form h"><span>)² +</span><input class="coord" id="form-k" inputmode="text" aria-label="Vertex form k"></div>
             <button id="check-vertex-form">Check vertex form</button>
             <p class="feedback" id="vertex-form-feedback" aria-live="polite"></p>
           </section>
           <section class="stage" id="stage-3" hidden>
             <h2>3. Read the x-intercepts and a-value</h2>
             <p class="muted">Enter both x-intercepts in either order and the same a-value.</p>
-            <div class="answer-row">(<input class="coord" id="root-1" inputmode="decimal" aria-label="First x-intercept">, 0) and (<input class="coord" id="root-2" inputmode="decimal" aria-label="Second x-intercept">, 0)</div>
-            <div class="answer-row"><label>a = <input class="coord" id="factored-a" inputmode="decimal" aria-label="Factored a-value"></label><button id="check-roots">Check intercepts and a</button></div>
+            <div class="answer-row">(<input class="coord" id="root-1" inputmode="text" aria-label="First x-intercept">, 0) and (<input class="coord" id="root-2" inputmode="text" aria-label="Second x-intercept">, 0)</div>
+            <div class="answer-row"><label>a = <input class="coord" id="factored-a" inputmode="text" aria-label="Factored a-value"></label><button id="check-roots">Check intercepts and a</button></div>
             <p class="feedback" id="roots-feedback" aria-live="polite"></p>
           </section>
           <section class="stage" id="stage-4" hidden>
             <h2>4. Write factored form</h2>
             <p class="muted">Use y = a(x − r₁)(x − r₂). Enter both roots and the a-value.</p>
-            <div class="math-answer"><span>y =</span><input class="coord" id="form-fa" inputmode="decimal" aria-label="Factored form a"><span>(x −</span><input class="coord" id="form-r1" inputmode="decimal" aria-label="Factored form first root"><span>)(x −</span><input class="coord" id="form-r2" inputmode="decimal" aria-label="Factored form second root"><span>)</span></div>
+            <div class="math-answer"><span>y =</span><input class="coord" id="form-fa" inputmode="text" aria-label="Factored form a"><span>(x −</span><input class="coord" id="form-r1" inputmode="text" aria-label="Factored form first root"><span>)(x −</span><input class="coord" id="form-r2" inputmode="text" aria-label="Factored form second root"><span>)</span></div>
             <button id="check-factored-form">Check factored form</button>
             <p class="feedback" id="factored-form-feedback" aria-live="polite"></p>
           </section>
@@ -55,7 +55,7 @@
               <thead><tr><td></td><th scope="col">x</th><th scope="col" id="top-constant"></th></tr></thead>
               <tbody>
                 <tr><th scope="row">x</th><td class="given">x²</td><td><input id="box-tr" aria-label="Top right box product" autocomplete="off" spellcheck="false"></td></tr>
-                <tr><th scope="row" id="side-constant"></th><td><input id="box-bl" aria-label="Bottom left box product" autocomplete="off" spellcheck="false"></td><td><input id="box-br" aria-label="Bottom right box product" inputmode="decimal"></td></tr>
+                <tr><th scope="row" id="side-constant"></th><td><input id="box-bl" aria-label="Bottom left box product" autocomplete="off" spellcheck="false"></td><td><input id="box-br" aria-label="Bottom right box product" inputmode="text"></td></tr>
               </tbody>
             </table>
             <button id="check-box">Check box products</button>
@@ -64,7 +64,7 @@
           <section class="stage" id="stage-6" hidden>
             <h2>6. Combine like terms</h2>
             <p class="muted">Add the two x-terms from the box. Keep a outside the parentheses. Enter signed coefficients in the blanks.</p>
-            <div class="math-answer"><span id="outside-a"></span><span>(x² +</span><input class="coord" id="inside-b" inputmode="decimal" aria-label="Combined x coefficient inside parentheses"><span>x +</span><input class="coord" id="inside-c" inputmode="decimal" aria-label="Constant inside parentheses"><span>)</span></div>
+            <div class="math-answer"><span id="outside-a"></span><span>(x² +</span><input class="coord" id="inside-b" inputmode="text" aria-label="Combined x coefficient inside parentheses"><span>x +</span><input class="coord" id="inside-c" inputmode="text" aria-label="Constant inside parentheses"><span>)</span></div>
             <button id="check-combined">Check combined terms</button>
             <p class="feedback" id="combined-feedback" aria-live="polite"></p>
           </section>
@@ -72,7 +72,7 @@
             <h2>7. Write standard form</h2>
             <p class="muted" id="distribution-instructions"></p>
             <p class="result-equation" id="combined-equation"></p>
-            <div class="math-answer"><span>y =</span><input class="coord" id="standard-a" inputmode="decimal" aria-label="Standard form a"><span>x² +</span><input class="coord" id="standard-b" inputmode="decimal" aria-label="Standard form b"><span>x +</span><input class="coord" id="standard-c" inputmode="decimal" aria-label="Standard form c"></div>
+            <div class="math-answer"><span>y =</span><input class="coord" id="standard-a" inputmode="text" aria-label="Standard form a"><span>x² +</span><input class="coord" id="standard-b" inputmode="text" aria-label="Standard form b"><span>x +</span><input class="coord" id="standard-c" inputmode="text" aria-label="Standard form c"></div>
             <button id="check-standard">Check standard form</button>
             <p class="feedback" id="standard-feedback" aria-live="polite"></p>
           </section>
