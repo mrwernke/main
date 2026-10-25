@@ -75,7 +75,7 @@ export function linearFactorText({ coefficient, constant }) {
 
 export function parseNormalizedFactor(value) {
   const text = String(value).trim().replace(/\u2212/g, '-').replace(/\s/g, '');
-  const match = /^x(?:([+-])((?:\d+\/\d+)|(?:\d+(?:\.\d*)?|\.\d+)))?$/.exec(text);
+  const match = /^x(?:([+-])((?:\d+\/\d+)|(?:\d+(?:\.\d*)?|\.\d+)))?$/i.exec(text);
   if (!match) return null;
   if (match[1] === undefined) return { coefficient: 1, constant: 0, isFraction: false, simplified: true };
   const sign = match[1] === '-' ? -1 : 1;

@@ -54,7 +54,7 @@ export function parseFactor(value) {
 
 export function parseCompleteFactor(value) {
   const text = String(value).trim().replaceAll('−', '-').replace(/\s/g, '');
-  const match = /^(\d*)x([+-]\d+)?$/.exec(text);
+  const match = /^(\d*)x([+-]\d+)?$/i.exec(text);
   if (!match) return null;
   const coefficient = match[1] === '' ? 1 : parseInteger(match[1]);
   const constant = match[2] === undefined ? 0 : parseInteger(match[2]);
