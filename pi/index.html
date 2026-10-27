@@ -132,7 +132,6 @@
             background-size: 10px 10px;
         }
 
-        /* Tooltip style for Matrix */
         .has-tooltip {
             position: relative;
             cursor: pointer;
@@ -232,7 +231,7 @@
                     <select id="t1p2" required></select>
                     <div class="form-group">
                         <label>Score</label>
-                        <input type="number" id="t1-score" min="0" required placeholder="0">
+                        <input type="number" id="t1-score" min="0" max="10" required placeholder="0">
                     </div>
                 </div>
 
@@ -243,7 +242,7 @@
                     <select id="t2p2" required></select>
                     <div class="form-group">
                         <label>Score</label>
-                        <input type="number" id="t2-score" min="0" required placeholder="0">
+                        <input type="number" id="t2-score" min="0" max="10" required placeholder="0">
                     </div>
                 </div>
             </div>
@@ -347,7 +346,6 @@
 </div>
 
 <script>
-    // Initial Default Data
     const defaultPlayers = [
         "Henry H", "Henry K", "Adam Z", "Brody J", 
         "Austin H", "Mitchell M", "Micah G", "Dylan B"
@@ -374,7 +372,6 @@
         }
     ];
 
-    // State Management
     let players = JSON.parse(localStorage.getItem('euchre_players')) || defaultPlayers;
     let matches = JSON.parse(localStorage.getItem('euchre_matches')) || defaultMatches;
 
@@ -481,10 +478,10 @@
 
         players.forEach(p => {
             indStats[p] = { wins: 0, losses: 0, pf: 0, pa: 0 };
-            eloRatings[p] = 1000; // Starting Elo rating
+            eloRatings[p] = 1000;
         });
 
-        const K = 32;
+        const BASE_K = 32;
 
         matches.forEach(m => {
             const team1 = [m.t1p1, m.t1p2];
@@ -497,13 +494,20 @@
 
             const t1Win = m.t1Score > m.t2Score;
 
-            // Calculate Elo rating changes
+            // Rating calculations for Team 1 & Team 2
             const r1 = ((eloRatings[m.t1p1] || 1000) + (eloRatings[m.t1p2] || 1000)) / 2;
             const r2 = ((eloRatings[m.t2p1] || 1000) + (eloRatings[m.t2p2] || 1000)) / 2;
 
             const expectedT1 = 1 / (1 + Math.pow(10, (r2 - r1) / 400));
             const actualT1 = t1Win ? 1 : 0;
-            const delta = K * (actualT1 - expectedT1);
+
+            // Margin of Victory Multiplier (suited for 10-point Euchre)
+            const margin = Math.abs(m.t1Score - m.t2Score);
+            const winnerRating = t1Win ? r1 : r2;
+            const loserRating = t1Win ? r2 : r1;
+            const movMultiplier = Math.log(margin + 1) * (2.2 / ((winnerRating - loserRating) * 0.001 + 2.2));
+
+            const delta = BASE_K * movMultiplier * (actualT1 - expectedT1);
 
             team1.forEach(p => {
                 if (eloRatings[p] !== undefined) eloRatings[p] += delta;
@@ -512,7 +516,7 @@
                 if (eloRatings[p] !== undefined) eloRatings[p] -= delta;
             });
 
-            // Update Individual
+            // Update Individual stats
             team1.forEach(p => {
                 if (indStats[p]) {
                     indStats[p].pf += m.t1Score;
@@ -567,16 +571,15 @@
         const probT1 = 1 / (1 + Math.pow(10, (r2 - r1) / 400));
         const probT2 = 1 - probT1;
 
-        // Estimate score out of 10 points
-        let score1 = Math.round(probT1 * 12);
-        let score2 = Math.round(probT2 * 12);
-
+        // Predict Euchre 10-point score based on rating difference
+        let score1, score2;
         if (probT1 >= 0.5) {
             score1 = 10;
-            score2 = Math.min(9, Math.max(0, Math.round(10 * (probT2 / probT1))));
+            // Scale loser score down from 9 depending on dominance
+            score2 = Math.max(0, Math.min(9, Math.round(10 * Math.pow(probT2 / probT1, 0.7))));
         } else {
             score2 = 10;
-            score1 = Math.min(9, Math.max(0, Math.round(10 * (probT1 / probT2))));
+            score1 = Math.max(0, Math.min(9, Math.round(10 * Math.pow(probT1 / probT2, 0.7))));
         }
 
         const t1WinPct = (probT1 * 100).toFixed(1);
