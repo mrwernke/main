@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Grade Processor v2</title>
+    <title>Canvas Grade Processor v3</title>
     <style>
         :root { --primary-color: #1b5e20; --bg-color: #f4f6f8; --border-color: #ddd; }
         body { font-family: system-ui, sans-serif; background: var(--bg-color); margin: 0; padding: 20px; color: #333; }
@@ -15,24 +15,25 @@
         input, select, button, textarea { padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; }
         button { background: var(--primary-color); color: #fff; border: none; cursor: pointer; font-weight: bold; }
         button:hover { opacity: 0.9; }
-        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px; }
         th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
         th { background: #e8f5e9; color: var(--primary-color); position: sticky; top: 0; }
         .student-name { text-align: left; font-weight: bold; }
         .hidden { display: none !important; }
+        .status-tag { font-size: 0.75rem; color: #666; margin-top: 2px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
 <div class="container">
-    <h1 style="color: var(--primary-color); margin:0;">Canvas Grade Processor v2</h1>
+    <h1 style="color: var(--primary-color); margin:0;">Canvas Grade Processor</h1>
 
     <div class="card">
         <div class="form-row">
             <div class="form-group">
-                <label>Unit</label>
+                <label>Unit Select</label>
                 <select id="unit-select">
                     <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
                     <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
@@ -40,16 +41,18 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Section</label>
+                <label>Section Filter</label>
                 <select id="section-select"><option value="ALL">All Sections</option></select>
             </div>
             <div class="form-group">
-                <label>Grades CSV</label>
+                <label>Grades CSV (Selected Unit)</label>
                 <input type="file" id="grades-csv" accept=".csv">
+                <span class="status-tag" id="grades-status">No file uploaded for Unit 1</span>
             </div>
             <div class="form-group">
-                <label>Late Assignments CSV</label>
+                <label>Late Assignments CSV (Selected Unit)</label>
                 <input type="file" id="late-csv" accept=".csv">
+                <span class="status-tag" id="late-status">No file uploaded for Unit 1</span>
             </div>
             <div class="form-group" style="justify-content: flex-end;">
                 <button id="toggle-view">Switch to Skill Checks View</button>
@@ -62,23 +65,27 @@
         <h3>Homework Configuration</h3>
         <div class="form-row">
             <div class="form-group" style="flex: 2;">
-                <label>Select HW Columns from Gradebook</label>
-                <div class="checkbox-grid" id="hw-columns-container"></div>
+                <label>Select Homework Columns for this Unit</label>
+                <div class="checkbox-grid" id="hw-columns-container">Upload Grades CSV to view columns</div>
             </div>
             <div class="form-group" style="flex: 1;">
-                <label>HW Conversion Scale (Min Sum = Grade)</label>
+                <label>HW Conversion Scale (Min Sum = Grade out of 100)</label>
                 <textarea id="hw-scale" rows="6" style="font-family: monospace;">11=100&#10;10.5=95&#10;10=90&#10;9=85&#10;8=80&#10;7=75&#10;6=70&#10;5=60&#10;4=50&#10;3=40&#10;2=30&#10;1=20&#10;0.1=10&#10;0=0</textarea>
             </div>
         </div>
-        <button onclick="renderTable()">Update HW Table</button>
+        <button onclick="renderTable()">Update Homework Table</button>
     </div>
 
     <!-- Skill Checks Configuration -->
     <div class="card hidden" id="sc-config">
         <h3>Skill Checks Configuration</h3>
         <div class="form-row">
-            <div class="form-group">
-                <label>Late Submission Penalty (Points out of 50)</label>
+            <div class="form-group" style="flex: 2;">
+                <label>Select Skill Check Columns for this Unit</label>
+                <div class="checkbox-grid" id="sc-columns-container">Upload Grades CSV to view columns</div>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Late Submission Penalty (Points deducted per late check out of 50)</label>
                 <input type="number" id="late-penalty" value="5" step="0.5">
             </div>
         </div>
@@ -86,7 +93,7 @@
     </div>
 
     <div class="card">
-        <h2 id="view-title">Homework Grades</h2>
+        <h2 id="view-title">Homework Grades - Unit 1</h2>
         <div style="overflow-x: auto;">
             <table id="grades-table">
                 <thead id="table-header"></thead>
@@ -97,47 +104,77 @@
 </div>
 
 <script>
-    let gradesData = [];
-    let lateData = [];
-    let allHeaders = [];
-    let currentView = 'HW'; // 'HW' or 'SC'
-    
+    // Data structure holding per-unit information
+    const unitsData = {};
+    for (let i = 1; i <= 8; i++) {
+        unitsData[i] = {
+            grades: [],
+            late: [],
+            headers: [],
+            hwCols: [],
+            scCols: []
+        };
+    }
+
+    let currentUnit = 1;
+    let currentView = 'HW';
+
     document.getElementById('toggle-view').addEventListener('click', (e) => {
         if (currentView === 'HW') {
             currentView = 'SC';
             e.target.textContent = 'Switch to HW View';
             document.getElementById('hw-config').classList.add('hidden');
             document.getElementById('sc-config').classList.remove('hidden');
-            document.getElementById('view-title').textContent = 'Skill Checks Grades';
         } else {
             currentView = 'HW';
             e.target.textContent = 'Switch to Skill Checks View';
             document.getElementById('hw-config').classList.remove('hidden');
             document.getElementById('sc-config').classList.add('hidden');
-            document.getElementById('view-title').textContent = 'Homework Grades';
         }
+        updateViewTitle();
+        renderTable();
+    });
+
+    document.getElementById('unit-select').addEventListener('change', (e) => {
+        currentUnit = parseInt(e.target.value);
+        updateUIForUnit();
         renderTable();
     });
 
     document.getElementById('grades-csv').addEventListener('change', (e) => {
-        Papa.parse(e.target.files[0], { header: true, skipEmptyLines: true, complete: res => {
-            allHeaders = res.meta.fields;
-            gradesData = res.data.filter(r => r.Student && r.Student !== "Points Possible" && !r.Student.includes("Student, Test"));
+        const file = e.target.files[0];
+        if (!file) return;
+        Papa.parse(file, { header: true, skipEmptyLines: true, complete: res => {
+            const u = unitsData[currentUnit];
+            u.headers = res.meta.fields;
+            // Filter out 'Points Possible' and 'Test Student'
+            u.grades = res.data.filter(r => r.Student && 
+                r.Student !== "Points Possible" && 
+                !r.Student.includes("Points Possible") && 
+                !r.Student.includes("Student, Test"));
+            
+            // Auto-select defaults on initial load
+            u.hwCols = u.headers.filter(h => h.includes("HW") || h.includes("Analysis") || h.includes("Review"));
+            u.scCols = u.headers.filter(h => h.includes("Skill Check"));
+
             populateSections();
-            populateHWColumns();
+            populateColumnCheckboxes();
+            updateFileStatuses();
             renderTable();
         }});
     });
 
     document.getElementById('late-csv').addEventListener('change', (e) => {
-        Papa.parse(e.target.files[0], { header: true, skipEmptyLines: true, complete: res => {
-            lateData = res.data;
+        const file = e.target.files[0];
+        if (!file) return;
+        Papa.parse(file, { header: true, skipEmptyLines: true, complete: res => {
+            unitsData[currentUnit].late = res.data;
+            updateFileStatuses();
             renderTable();
         }});
     });
 
     document.getElementById('section-select').addEventListener('change', renderTable);
-    document.getElementById('unit-select').addEventListener('change', renderTable);
 
     function cleanSection(sec) {
         if (!sec) return "Unknown";
@@ -146,25 +183,70 @@
         return m ? `${m[2]}${m[1]}` : sec;
     }
 
+    function updateViewTitle() {
+        document.getElementById('view-title').textContent = 
+            `${currentView === 'HW' ? 'Homework' : 'Skill Checks'} Grades - Unit ${currentUnit}`;
+    }
+
+    function updateFileStatuses() {
+        const u = unitsData[currentUnit];
+        document.getElementById('grades-status').textContent = u.grades.length ? `Loaded (${u.grades.length} students)` : `No file uploaded for Unit ${currentUnit}`;
+        document.getElementById('late-status').textContent = u.late.length ? `Loaded (${u.late.length} records)` : `No file uploaded for Unit ${currentUnit}`;
+    }
+
+    function updateUIForUnit() {
+        updateViewTitle();
+        updateFileStatuses();
+        document.getElementById('grades-csv').value = '';
+        document.getElementById('late-csv').value = '';
+        populateSections();
+        populateColumnCheckboxes();
+    }
+
     function populateSections() {
-        const sections = [...new Set(gradesData.map(r => cleanSection(r.Section)))].sort();
+        const u = unitsData[currentUnit];
+        const sections = [...new Set(u.grades.map(r => cleanSection(r.Section)))].sort();
         const sel = document.getElementById('section-select');
         sel.innerHTML = '<option value="ALL">All Sections</option>';
         sections.forEach(s => sel.innerHTML += `<option value="${s}">${s}</option>`);
     }
 
-    function populateHWColumns() {
-        const container = document.getElementById('hw-columns-container');
-        container.innerHTML = '';
-        allHeaders.forEach(h => {
-            if (['Student', 'ID', 'SIS User ID', 'SIS Login ID', 'Section'].includes(h) || h.includes("Current") || h.includes("Final")) return;
-            const isChecked = h.includes("HW") || h.includes("Analysis") || h.includes("Review") ? "checked" : "";
-            container.innerHTML += `<label><input type="checkbox" class="hw-col-cb" value="${h}" ${isChecked}> ${h}</label>`;
-        });
-    }
+    function populateColumnCheckboxes() {
+        const u = unitsData[currentUnit];
+        const hwContainer = document.getElementById('hw-columns-container');
+        const scContainer = document.getElementById('sc-columns-container');
 
-    function getSelectedHWColumns() {
-        return Array.from(document.querySelectorAll('.hw-col-cb:checked')).map(cb => cb.value);
+        hwContainer.innerHTML = '';
+        scContainer.innerHTML = '';
+
+        if (!u.headers.length) {
+            hwContainer.innerHTML = 'Upload Grades CSV to view columns';
+            scContainer.innerHTML = 'Upload Grades CSV to view columns';
+            return;
+        }
+
+        const selectableHeaders = u.headers.filter(h => !['Student', 'ID', 'SIS User ID', 'SIS Login ID', 'Section'].includes(h) && !h.includes("Current") && !h.includes("Final"));
+
+        selectableHeaders.forEach(h => {
+            const isHwChecked = u.hwCols.includes(h) ? "checked" : "";
+            hwContainer.innerHTML += `<label><input type="checkbox" class="hw-col-cb" value="${h}" ${isHwChecked}> ${h}</label>`;
+
+            const isScChecked = u.scCols.includes(h) ? "checked" : "";
+            scContainer.innerHTML += `<label><input type="checkbox" class="sc-col-cb" value="${h}" ${isScChecked}> ${h}</label>`;
+        });
+
+        // Add change listeners to sync unit state
+        document.querySelectorAll('.hw-col-cb').forEach(cb => {
+            cb.addEventListener('change', () => {
+                u.hwCols = Array.from(document.querySelectorAll('.hw-col-cb:checked')).map(c => c.value);
+            });
+        });
+
+        document.querySelectorAll('.sc-col-cb').forEach(cb => {
+            cb.addEventListener('change', () => {
+                u.scCols = Array.from(document.querySelectorAll('.sc-col-cb:checked')).map(c => c.value);
+            });
+        });
     }
 
     function getHWScale() {
@@ -183,18 +265,20 @@
     }
 
     function renderTable() {
-        if (!gradesData.length) return;
+        const u = unitsData[currentUnit];
         const thead = document.getElementById('table-header');
         const tbody = document.getElementById('table-body');
         thead.innerHTML = ''; tbody.innerHTML = '';
 
+        if (!u.grades.length) return;
+
         const selectedSec = document.getElementById('section-select').value;
-        let students = gradesData;
+        let students = u.grades;
         if (selectedSec !== 'ALL') students = students.filter(r => cleanSection(r.Section) === selectedSec);
         students.sort((a, b) => a.Student.localeCompare(b.Student));
 
         if (currentView === 'HW') {
-            const hwCols = getSelectedHWColumns();
+            const hwCols = u.hwCols;
             const scale = getHWScale();
             
             thead.innerHTML = `<tr><th>Student Name</th><th>Section</th><th>Final HW Grade</th><th>Sum of Scores</th>${hwCols.map(c => `<th>${c}</th>`).join('')}</tr>`;
@@ -207,15 +291,18 @@
                     return '-';
                 });
                 const grade = calculateHWGrade(sum, scale);
-                tbody.innerHTML += `<tr><td class="student-name">${s.Student}</td><td>${cleanSection(s.Section)}</td><td><strong>${grade}</strong></td><td>${sum}</td>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
+                tbody.innerHTML += `<tr><td class="student-name">${s.Student}</td><td>${cleanSection(s.Section)}</td><td><strong>${grade}%</strong></td><td>${sum}</td>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
             });
         } else {
             // Skill Checks Logic
-            const scCols = allHeaders.filter(h => h.includes("Skill Check"));
+            const scCols = u.scCols;
             const penalty = parseFloat(document.getElementById('late-penalty').value) || 0;
             const totalChecks = scCols.length;
 
             thead.innerHTML = `<tr><th>Student Name</th><th>Section</th><th>Skill Checks Score (out of 50)</th><th>Submitted Count</th><th>Total Points</th><th>Late Count</th>${scCols.map(c => `<th>${c}</th>`).join('')}</tr>`;
+
+            // Standardize column names for late checking
+            const cleanScColNames = scCols.map(c => c.split(' (')[0].trim());
 
             students.forEach(s => {
                 let subCount = 0;
@@ -233,15 +320,20 @@
                     return '-';
                 });
 
-                // Count Late Submissions for this student
+                // Count Late Submissions strictly matching this Unit's checked Skill Check columns
                 let lateCount = 0;
-                if (lateData.length > 0) {
-                    lateCount = lateData.filter(l => l["Student ID"] === s["ID"] && l["Assignment Name"].includes("Skill Check")).length;
+                if (u.late.length > 0) {
+                    lateCount = u.late.filter(l => {
+                        const isStudent = l["Student ID"] === s["ID"];
+                        const assignName = (l["Assignment Name"] || "").trim();
+                        const isCheckedUnitSC = cleanScColNames.some(scName => assignName.includes(scName));
+                        return isStudent && isCheckedUnitSC;
+                    }).length;
                 }
 
-                // Calculate base score out of 50, then apply penalty
+                // Base score out of 50 minus unit penalty
                 let score = totalChecks > 0 ? (subCount / totalChecks) * 50 : 0;
-                score = Math.max(0, score - (lateCount * penalty)); // Floor at 0
+                score = Math.max(0, score - (lateCount * penalty));
 
                 tbody.innerHTML += `<tr>
                     <td class="student-name">${s.Student}</td>
