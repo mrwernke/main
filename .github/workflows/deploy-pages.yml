@@ -49,6 +49,7 @@ jobs:
           find dist/math-applets -name "README.md" -delete
           cp -R sat-math-prep/dist dist/sat-math-prep
           cp -R pi dist/pi
+          cp -R grades dist/grades
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
