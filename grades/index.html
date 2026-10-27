@@ -155,7 +155,7 @@
     let currentView = 'HW';
 
     // Pre-computed SHA-256 passcode hash
-    cconst EXPECTED_HASH = "45801015f01768e8defcf6da14b98a6ab3e94062d50427db6041df06158f53b8";
+    const EXPECTED_HASH = "45801015f01768e8defcf6da14b98a6ab3e94062d50427db6041df06158f53b8";
     async function hashText(text) {
         const msgUint8 = new TextEncoder().encode(text);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
