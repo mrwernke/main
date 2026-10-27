@@ -247,7 +247,6 @@
         statusEl.style.color = "blue";
 
         try {
-            // Append access_token directly in query parameters to avoid proxy authorization header stripping
             const assignTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments?per_page=100&access_token=${encodeURIComponent(token)}`;
             const assignResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(assignTargetUrl)}`);
 
