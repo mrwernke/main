@@ -175,40 +175,54 @@
     let currentUnit = 1;
     let currentView = 'HW';
 
-// Pre-computed SHA-256 hash of "******"
-const EXPECTED_HASH = "d47a2f558a3ee2888df7cf2d4e8dd6eead5ea1f93026bd637ef652a26569ec18";
+    // Pre-computed SHA-256 passcode hash
+    const EXPECTED_HASH = "78b404d02eb7ee604e38fb502a5c4cf4dd740ffbfa69fa74d473ca5932560ef7";
 
-async function hashText(text) {
-    const msgUint8 = new TextEncoder().encode(text);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function checkAuth() {
-    const input = document.getElementById('passcode-input').value.trim();
-    const statusError = document.getElementById('auth-error');
-
-    if (!input) {
-        statusError.style.display = 'block';
-        statusError.textContent = "Please enter a passcode.";
-        return;
+    async function hashText(text) {
+        const msgUint8 = new TextEncoder().encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    const inputHash = await hashText(input);
+    async function checkAuth() {
+        const input = document.getElementById('passcode-input').value.trim();
+        const statusError = document.getElementById('auth-error');
 
-    if (inputHash === EXPECTED_HASH) {
-        document.getElementById('auth-overlay').style.display = 'none';
-        statusError.style.display = 'none';
-        if (typeof loadFromStorage === 'function') {
-            loadFromStorage();
+        if (!input) {
+            statusError.style.display = 'block';
+            statusError.textContent = "Please enter a passcode.";
+            return;
         }
-    } else {
-        statusError.style.color = '#d32f2f';
-        statusError.style.display = 'block';
-        statusError.textContent = "Incorrect passcode.";
+
+        const inputHash = await hashText(input);
+
+        if (inputHash === EXPECTED_HASH) {
+            document.getElementById('auth-overlay').style.display = 'none';
+            statusError.style.display = 'none';
+            if (typeof loadFromStorage === 'function') {
+                loadFromStorage();
+            }
+        } else {
+            statusError.style.color = '#d32f2f';
+            statusError.style.display = 'block';
+            statusError.textContent = "Incorrect passcode.";
+        }
     }
-}
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const authBtn = document.getElementById('auth-btn');
+        const passcodeBtn = document.getElementById('passcode-input');
+
+        if (authBtn) {
+            authBtn.addEventListener('click', checkAuth);
+        }
+        if (passcodeBtn) {
+            passcodeBtn.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkAuth();
+            });
+        }
+    });
 
     // LocalStorage Persistence
     function saveToStorage() {
