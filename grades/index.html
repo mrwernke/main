@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Grade Processor v3</title>
+    <title>Canvas Grade Processor v4</title>
     <style>
         :root { --primary-color: #1b5e20; --bg-color: #f4f6f8; --border-color: #ddd; }
         body { font-family: system-ui, sans-serif; background: var(--bg-color); margin: 0; padding: 20px; color: #333; }
@@ -15,29 +15,54 @@
         input, select, button, textarea { padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; }
         button { background: var(--primary-color); color: #fff; border: none; cursor: pointer; font-weight: bold; }
         button:hover { opacity: 0.9; }
-        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; }
+        button.btn-danger { background: #d32f2f; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 160px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px; }
         th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
         th { background: #e8f5e9; color: var(--primary-color); position: sticky; top: 0; }
         .student-name { text-align: left; font-weight: bold; }
         .hidden { display: none !important; }
         .status-tag { font-size: 0.75rem; color: #666; margin-top: 2px; }
+        
+        /* Modal Overlay */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .auth-box { background: white; padding: 30px; border-radius: 8px; text-align: center; max-width: 350px; width: 90%; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
+<!-- Passcode Protection Modal -->
+<div id="auth-overlay">
+    <div class="auth-box">
+        <h2 style="color: var(--primary-color); margin-top:0;">Access Restricted</h2>
+        <p style="font-size: 0.9rem; color: #555;">Enter authorization passcode to view grades:</p>
+        <input type="password" id="passcode-input" placeholder="Passcode" style="width: 80%; margin-bottom: 12px; text-align: center;">
+        <br>
+        <button id="auth-btn" style="width: 85%;">Unlock Gradebook</button>
+        <p id="auth-error" style="color: red; font-size: 0.8rem; margin-top: 8px; display: none;">Incorrect passcode.</p>
+    </div>
+</div>
+
 <div class="container">
-    <h1 style="color: var(--primary-color); margin:0;">Canvas Grade Processor</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="color: var(--primary-color); margin:0;">Canvas Grade Processor</h1>
+        <button class="btn-danger" id="clear-cache-btn">Clear All Saved Data</button>
+    </div>
 
     <div class="card">
         <div class="form-row">
             <div class="form-group">
                 <label>Unit Select</label>
                 <select id="unit-select">
-                    <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-                    <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-                    <option value="7">Unit 7</option><option value="8">Unit 8</option>
+                    <option value="1">Unit 1 (S#)</option>
+                    <option value="2">Unit 2 (FT#)</option>
+                    <option value="3">Unit 3 (Q#)</option>
+                    <option value="4">Unit 4 (P#)</option>
+                    <option value="5">Unit 5 (R#)</option>
+                    <option value="6">Unit 6 (FR#)</option>
+                    <option value="7">Unit 7 (EL#)</option>
+                    <option value="8">Unit 8 (PS#)</option>
                 </select>
             </div>
             <div class="form-group">
@@ -73,7 +98,7 @@
                 <textarea id="hw-scale" rows="6" style="font-family: monospace;">11=100&#10;10.5=95&#10;10=90&#10;9=85&#10;8=80&#10;7=75&#10;6=70&#10;5=60&#10;4=50&#10;3=40&#10;2=30&#10;1=20&#10;0.1=10&#10;0=0</textarea>
             </div>
         </div>
-        <button onclick="renderTable()">Update Homework Table</button>
+        <button onclick="saveAndRender()">Update Homework Table</button>
     </div>
 
     <!-- Skill Checks Configuration -->
@@ -89,7 +114,7 @@
                 <input type="number" id="late-penalty" value="5" step="0.5">
             </div>
         </div>
-        <button onclick="renderTable()">Update Skill Checks Table</button>
+        <button onclick="saveAndRender()">Update Skill Checks Table</button>
     </div>
 
     <div class="card">
@@ -104,20 +129,76 @@
 </div>
 
 <script>
-    // Data structure holding per-unit information
-    const unitsData = {};
-    for (let i = 1; i <= 8; i++) {
-        unitsData[i] = {
-            grades: [],
-            late: [],
-            headers: [],
-            hwCols: [],
-            scCols: []
-        };
+    // Unit prefix mapping strictly defining valid Skill Checks per unit
+    const unitPrefixes = {
+        1: /^S\d+/i,
+        2: /^FT\d+/i,
+        3: /^Q\d+/i,
+        4: /^P\d+/i,
+        5: /^R\d+/i,
+        6: /^FR\d+/i,
+        7: /^EL\d+/i,
+        8: /^PS\d+/i
+    };
+
+    // State initialization
+    let unitsData = {};
+    function initUnitsData() {
+        for (let i = 1; i <= 8; i++) {
+            unitsData[i] = { grades: [], late: [], headers: [], hwCols: [], scCols: [] };
+        }
     }
+    initUnitsData();
 
     let currentUnit = 1;
     let currentView = 'HW';
+
+    // Passcode Verification
+    function checkAuth() {
+        const input = document.getElementById('passcode-input').value;
+        const expected = "NPP6Sig";
+        if (input === expected) {
+            document.getElementById('auth-overlay').style.display = 'none';
+            loadFromStorage();
+        } else {
+            document.getElementById('auth-error').style.display = 'block';
+        }
+    }
+    document.getElementById('auth-btn').addEventListener('click', checkAuth);
+    document.getElementById('passcode-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkAuth();
+    });
+
+    // LocalStorage Persistence
+    function saveToStorage() {
+        localStorage.setItem('canvas_units_data', JSON.stringify(unitsData));
+        localStorage.setItem('canvas_hw_scale', document.getElementById('hw-scale').value);
+        localStorage.setItem('canvas_late_penalty', document.getElementById('late-penalty').value);
+    }
+
+    function loadFromStorage() {
+        const stored = localStorage.getItem('canvas_units_data');
+        if (stored) {
+            try { unitsData = JSON.parse(stored); } catch(e){}
+        }
+        const savedScale = localStorage.getItem('canvas_hw_scale');
+        if (savedScale) document.getElementById('hw-scale').value = savedScale;
+        
+        const savedPenalty = localStorage.getItem('canvas_late_penalty');
+        if (savedPenalty) document.getElementById('late-penalty').value = savedPenalty;
+
+        updateUIForUnit();
+        renderTable();
+    }
+
+    document.getElementById('clear-cache-btn').addEventListener('click', () => {
+        if (confirm("Are you sure you want to clear all stored gradebook data?")) {
+            localStorage.removeItem('canvas_units_data');
+            initUnitsData();
+            updateUIForUnit();
+            renderTable();
+        }
+    });
 
     document.getElementById('toggle-view').addEventListener('click', (e) => {
         if (currentView === 'HW') {
@@ -147,16 +228,23 @@
         Papa.parse(file, { header: true, skipEmptyLines: true, complete: res => {
             const u = unitsData[currentUnit];
             u.headers = res.meta.fields;
-            // Filter out 'Points Possible' and 'Test Student'
             u.grades = res.data.filter(r => r.Student && 
                 r.Student !== "Points Possible" && 
                 !r.Student.includes("Points Possible") && 
                 !r.Student.includes("Student, Test"));
             
-            // Auto-select defaults on initial load
+            // Auto-filter defaults
             u.hwCols = u.headers.filter(h => h.includes("HW") || h.includes("Analysis") || h.includes("Review"));
-            u.scCols = u.headers.filter(h => h.includes("Skill Check"));
+            
+            // Filter SC columns strictly by Unit Prefix and exclude summary fields
+            const prefixRegex = unitPrefixes[currentUnit];
+            u.scCols = u.headers.filter(h => {
+                const cleanHeader = h.trim();
+                const isSummary = cleanHeader.includes("Current") || cleanHeader.includes("Final") || cleanHeader.includes("Score") || cleanHeader.includes("Points");
+                return prefixRegex.test(cleanHeader) && !isSummary;
+            });
 
+            saveToStorage();
             populateSections();
             populateColumnCheckboxes();
             updateFileStatuses();
@@ -169,6 +257,7 @@
         if (!file) return;
         Papa.parse(file, { header: true, skipEmptyLines: true, complete: res => {
             unitsData[currentUnit].late = res.data;
+            saveToStorage();
             updateFileStatuses();
             renderTable();
         }});
@@ -225,26 +314,36 @@
             return;
         }
 
-        const selectableHeaders = u.headers.filter(h => !['Student', 'ID', 'SIS User ID', 'SIS Login ID', 'Section'].includes(h) && !h.includes("Current") && !h.includes("Final"));
+        const selectableHeaders = u.headers.filter(h => 
+            !['Student', 'ID', 'SIS User ID', 'SIS Login ID', 'Section'].includes(h) && 
+            !h.includes("Current") && !h.includes("Final") && !h.includes("Unposted")
+        );
+
+        const prefixRegex = unitPrefixes[currentUnit];
 
         selectableHeaders.forEach(h => {
+            // HW checkboxes
             const isHwChecked = u.hwCols.includes(h) ? "checked" : "";
             hwContainer.innerHTML += `<label><input type="checkbox" class="hw-col-cb" value="${h}" ${isHwChecked}> ${h}</label>`;
 
-            const isScChecked = u.scCols.includes(h) ? "checked" : "";
+            // SC checkboxes - pre-check if matches unit prefix
+            const matchesPrefix = prefixRegex.test(h.trim());
+            const isScChecked = u.scCols.includes(h) || (u.scCols.length === 0 && matchesPrefix) ? "checked" : "";
             scContainer.innerHTML += `<label><input type="checkbox" class="sc-col-cb" value="${h}" ${isScChecked}> ${h}</label>`;
         });
 
-        // Add change listeners to sync unit state
+        // Event listeners to sync state
         document.querySelectorAll('.hw-col-cb').forEach(cb => {
             cb.addEventListener('change', () => {
                 u.hwCols = Array.from(document.querySelectorAll('.hw-col-cb:checked')).map(c => c.value);
+                saveToStorage();
             });
         });
 
         document.querySelectorAll('.sc-col-cb').forEach(cb => {
             cb.addEventListener('change', () => {
                 u.scCols = Array.from(document.querySelectorAll('.sc-col-cb:checked')).map(c => c.value);
+                saveToStorage();
             });
         });
     }
@@ -262,6 +361,11 @@
     function calculateHWGrade(sum, scale) {
         for (let s of scale) { if (sum >= s.sum) return s.grade; }
         return 0;
+    }
+
+    function saveAndRender() {
+        saveToStorage();
+        renderTable();
     }
 
     function renderTable() {
@@ -301,7 +405,6 @@
 
             thead.innerHTML = `<tr><th>Student Name</th><th>Section</th><th>Skill Checks Score (out of 50)</th><th>Submitted Count</th><th>Total Points</th><th>Late Count</th>${scCols.map(c => `<th>${c}</th>`).join('')}</tr>`;
 
-            // Standardize column names for late checking
             const cleanScColNames = scCols.map(c => c.split(' (')[0].trim());
 
             students.forEach(s => {
@@ -320,7 +423,7 @@
                     return '-';
                 });
 
-                // Count Late Submissions strictly matching this Unit's checked Skill Check columns
+                // Count Late Submissions matching checked columns
                 let lateCount = 0;
                 if (u.late.length > 0) {
                     lateCount = u.late.filter(l => {
@@ -331,7 +434,7 @@
                     }).length;
                 }
 
-                // Base score out of 50 minus unit penalty
+                // Score out of 50 minus unit penalty
                 let score = totalChecks > 0 ? (subCount / totalChecks) * 50 : 0;
                 score = Math.max(0, score - (lateCount * penalty));
 
