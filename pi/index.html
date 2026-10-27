@@ -379,6 +379,16 @@
         }
     }
 
+    // Helper to format full name (e.g. "Henry H") to First + Last Initial (e.g. "Henry H.")
+    function formatInitials(name) {
+        if (!name) return '';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length === 1) return parts[0];
+        const firstName = parts[0];
+        const lastInitial = parts[parts.length - 1][0].toUpperCase();
+        return `${firstName} ${lastInitial}.`;
+    }
+
     function getPairKey(p1, p2) {
         return [p1, p2].sort().join(" & ");
     }
@@ -561,20 +571,13 @@
         thead.innerHTML = '';
         tbody.innerHTML = '';
 
-        // Header
-        const headerRow = document.createElement('tr');
-        headerRow.appendChild(document.createElement('th'));
-        players.forEach(p => {
-            const th = document.createElement('th');
-            th.textContent = p;
-            headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-
         // Matrix Data Mapping
         const matrixData = {};
+        const totalPlayedByPlayer = {};
+
         players.forEach(p1 => {
             matrixData[p1] = {};
+            totalPlayedByPlayer[p1] = 0;
             players.forEach(p2 => {
                 matrixData[p1][p2] = { wins: 0, losses: 0, details: [] };
             });
@@ -585,29 +588,50 @@
 
             if (matrixData[m.t1p1] && matrixData[m.t1p1][m.t1p2]) {
                 if (t1Win) matrixData[m.t1p1][m.t1p2].wins++; else matrixData[m.t1p1][m.t1p2].losses++;
-                matrixData[m.t1p1][m.t1p2].details.push(`${m.t1Score}-${m.t2Score} vs ${m.t2p1} & ${m.t2p2}`);
+                matrixData[m.t1p1][m.t1p2].details.push(`${m.t1Score}-${m.t2Score} vs ${formatInitials(m.t2p1)} & ${formatInitials(m.t2p2)}`);
                 
                 if (t1Win) matrixData[m.t1p2][m.t1p1].wins++; else matrixData[m.t1p2][m.t1p1].losses++;
-                matrixData[m.t1p2][m.t1p1].details.push(`${m.t1Score}-${m.t2Score} vs ${m.t2p1} & ${m.t2p2}`);
+                matrixData[m.t1p2][m.t1p1].details.push(`${m.t1Score}-${m.t2Score} vs ${formatInitials(m.t2p1)} & ${formatInitials(m.t2p2)}`);
+
+                totalPlayedByPlayer[m.t1p1]++;
+                totalPlayedByPlayer[m.t1p2]++;
             }
 
             if (matrixData[m.t2p1] && matrixData[m.t2p1][m.t2p2]) {
                 if (!t1Win) matrixData[m.t2p1][m.t2p2].wins++; else matrixData[m.t2p1][m.t2p2].losses++;
-                matrixData[m.t2p1][m.t2p2].details.push(`${m.t2Score}-${m.t1Score} vs ${m.t1p1} & ${m.t1p2}`);
+                matrixData[m.t2p1][m.t2p2].details.push(`${m.t2Score}-${m.t1Score} vs ${formatInitials(m.t1p1)} & ${formatInitials(m.t1p2)}`);
                 
                 if (!t1Win) matrixData[m.t2p2][m.t2p1].wins++; else matrixData[m.t2p2][m.t2p1].losses++;
-                matrixData[m.t2p2][m.t2p1].details.push(`${m.t2Score}-${m.t1Score} vs ${m.t1p1} & ${m.t1p2}`);
+                matrixData[m.t2p2][m.t2p1].details.push(`${m.t2Score}-${m.t1Score} vs ${formatInitials(m.t1p1)} & ${formatInitials(m.t1p2)}`);
+
+                totalPlayedByPlayer[m.t2p1]++;
+                totalPlayedByPlayer[m.t2p2]++;
             }
         });
 
+        // Sort players by total matches played (most played to least played)
+        const sortedPlayers = [...players].sort((a, b) => {
+            return (totalPlayedByPlayer[b] || 0) - (totalPlayedByPlayer[a] || 0) || a.localeCompare(b);
+        });
+
+        // Header
+        const headerRow = document.createElement('tr');
+        headerRow.appendChild(document.createElement('th'));
+        sortedPlayers.forEach(p => {
+            const th = document.createElement('th');
+            th.textContent = formatInitials(p);
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
         // Build Rows
-        players.forEach(p1 => {
+        sortedPlayers.forEach(p1 => {
             const row = document.createElement('tr');
             const rowHeader = document.createElement('th');
-            rowHeader.textContent = p1;
+            rowHeader.textContent = formatInitials(p1);
             row.appendChild(rowHeader);
 
-            players.forEach(p2 => {
+            sortedPlayers.forEach(p2 => {
                 const td = document.createElement('td');
                 if (p1 === p2) {
                     td.className = 'cell-disabled';
