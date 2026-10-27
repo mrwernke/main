@@ -175,21 +175,51 @@
     let currentUnit = 1;
     let currentView = 'HW';
 
-    // Passcode Verification
-    function checkAuth() {
-        const input = document.getElementById('passcode-input').value;
-        const expected = "NPP6Sig";
-        if (input === expected) {
+  // Paste your copied Apps Script Web App URL inside the quotes
+const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwFfujouLTT5jl9F6tUcnzT1fOnzTXrJgytRdFkDb1eoWu4AjrzAvvNQAMQVlIxhxYJNw/exec";
+
+async function checkAuth() {
+    const input = document.getElementById('passcode-input').value.trim();
+    const statusError = document.getElementById('auth-error');
+
+    if (!input) {
+        statusError.style.display = 'block';
+        statusError.textContent = "Please enter a passcode.";
+        return;
+    }
+
+    statusError.style.display = 'block';
+    statusError.style.color = '#1976d2';
+    statusError.textContent = "Verifying...";
+
+    try {
+        const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "verifyPasscode",
+                passcode: input
+            })
+        });
+
+        const resData = await response.json();
+
+        if (resData.success) {
+            // Correct passcode - unlock access
             document.getElementById('auth-overlay').style.display = 'none';
+            statusError.style.display = 'none';
             loadFromStorage();
         } else {
-            document.getElementById('auth-error').style.display = 'block';
+            statusError.style.color = '#d32f2f';
+            statusError.style.display = 'block';
+            statusError.textContent = resData.error || "Incorrect passcode.";
         }
+    } catch (err) {
+        console.error(err);
+        statusError.style.color = '#d32f2f';
+        statusError.style.display = 'block';
+        statusError.textContent = "Verification failed. Please check your connection.";
     }
-    document.getElementById('auth-btn').addEventListener('click', checkAuth);
-    document.getElementById('passcode-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') checkAuth();
-    });
+}
 
     // LocalStorage Persistence
     function saveToStorage() {
