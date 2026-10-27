@@ -175,8 +175,15 @@
     let currentUnit = 1;
     let currentView = 'HW';
 
-  // Paste your copied Apps Script Web App URL inside the quotes
-const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwFfujouLTT5jl9F6tUcnzT1fOnzTXrJgytRdFkDb1eoWu4AjrzAvvNQAMQVlIxhxYJNw/exec";
+// Pre-computed SHA-256 hash of "******"
+const EXPECTED_HASH = "d47a2f558a3ee2888df7cf2d4e8dd6eead5ea1f93026bd637ef652a26569ec18";
+
+async function hashText(text) {
+    const msgUint8 = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 async function checkAuth() {
     const input = document.getElementById('passcode-input').value.trim();
@@ -188,36 +195,18 @@ async function checkAuth() {
         return;
     }
 
-    statusError.style.display = 'block';
-    statusError.style.color = '#1976d2';
-    statusError.textContent = "Verifying...";
+    const inputHash = await hashText(input);
 
-    try {
-        const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
-            method: "POST",
-            body: JSON.stringify({
-                action: "verifyPasscode",
-                passcode: input
-            })
-        });
-
-        const resData = await response.json();
-
-        if (resData.success) {
-            // Correct passcode - unlock access
-            document.getElementById('auth-overlay').style.display = 'none';
-            statusError.style.display = 'none';
+    if (inputHash === EXPECTED_HASH) {
+        document.getElementById('auth-overlay').style.display = 'none';
+        statusError.style.display = 'none';
+        if (typeof loadFromStorage === 'function') {
             loadFromStorage();
-        } else {
-            statusError.style.color = '#d32f2f';
-            statusError.style.display = 'block';
-            statusError.textContent = resData.error || "Incorrect passcode.";
         }
-    } catch (err) {
-        console.error(err);
+    } else {
         statusError.style.color = '#d32f2f';
         statusError.style.display = 'block';
-        statusError.textContent = "Verification failed. Please check your connection.";
+        statusError.textContent = "Incorrect passcode.";
     }
 }
 
