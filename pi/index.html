@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euchre League Tracker</title>
+    <style>
+        :root {
+            --primary-color: #1b5e20;
+            --primary-hover: #2e7d32;
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --accent-color: #d32f2f;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            font-size: 1.25rem;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button.btn-danger {
+            background-color: var(--accent-color);
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
+
+        button.btn-danger:hover {
+            background-color: #b71c1c;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+            font-weight: bold;
+        }
+
+        .cell-disabled {
+            background-color: #e0e0e0;
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 50%, #ccc 50%, #ccc 75%, transparent 75%, transparent);
+            background-size: 10px 10px;
+        }
+
+        /* Tooltip style for Matrix */
+        .has-tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            padding: 8px 12px;
+            border-radius: 6px;
+            z-index: 100;
+            width: max-content;
+            max-width: 250px;
+            white-space: pre-line;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 0.8rem;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .player-chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .player-chip {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            padding: 4px 10px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .match-score {
+            font-weight: bold;
+        }
+
+        .team-vs {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Euchre League Tracker</h1>
+
+    <!-- 1. Submit Match Form -->
+    <div class="card">
+        <h2>Submit Match Score</h2>
+        <form id="match-form">
+            <div class="form-group">
+                <label>Team 1 - Player 1</label>
+                <select id="t1p1" required></select>
+            </div>
+            <div class="form-group">
+                <label>Team 1 - Player 2</label>
+                <select id="t1p2" required></select>
+            </div>
+            <div class="form-group">
+                <label>Team 1 Score</label>
+                <input type="number" id="t1-score" min="0" required>
+            </div>
+            <div class="form-group">
+                <label>Team 2 - Player 1</label>
+                <select id="t2p1" required></select>
+            </div>
+            <div class="form-group">
+                <label>Team 2 - Player 2</label>
+                <select id="t2p2" required></select>
+            </div>
+            <div class="form-group">
+                <label>Team 2 Score</label>
+                <input type="number" id="t2-score" min="0" required>
+            </div>
+            <button type="submit" style="grid-column: 1 / -1;">Submit Match</button>
+        </form>
+    </div>
+
+    <!-- 2. Partner Matrix -->
+    <div class="card">
+        <h2>Head-to-Head Partner Matrix</h2>
+        <p style="font-size:0.8rem; color:#666; margin-top:-8px;">Hover over or tap a partnership record cell to view specific match breakdowns.</p>
+        <div class="table-responsive">
+            <table id="matrix-table">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. Individual Standings -->
+    <div class="card">
+        <h2>Individual Player Standings</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>W-L Record</th>
+                        <th>Win %</th>
+                        <th>PF</th>
+                        <th>PA</th>
+                        <th>+/-</th>
+                    </tr>
+                </thead>
+                <tbody id="individual-standings"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. Partnership Combinations Standings -->
+    <div class="card">
+        <h2>Partnership Combinations Standings</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Partnership</th>
+                        <th>W-L Record</th>
+                        <th>Win %</th>
+                        <th>PF</th>
+                        <th>PA</th>
+                        <th>+/-</th>
+                    </tr>
+                </thead>
+                <tbody id="pair-standings"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. Match History -->
+    <div class="card">
+        <h2>Submitted Match History</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Matchup</th>
+                        <th>Score</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="match-history"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 6. Manage Players -->
+    <div class="card">
+        <h2>Manage Players</h2>
+        <form id="add-player-form" style="max-width: 400px; margin-bottom: 16px;">
+            <div class="form-group">
+                <label for="new-player-name">Add New Player (First Name Last Initial)</label>
+                <input type="text" id="new-player-name" placeholder="e.g. John D" required>
+            </div>
+            <button type="submit">Add Player</button>
+        </form>
+        <label style="font-weight:600; font-size:0.85rem; color:#555;">Current Roster</label>
+        <div class="player-chip-list" id="player-chips"></div>
+    </div>
+</div>
+
+<script>
+    // Initial Default Data
+    const defaultPlayers = [
+        "Henry H", "Henry K", "Adam Z", "Brody J", 
+        "Austin H", "Mitchell M", "Micah G", "Dylan B"
+    ];
+
+    const defaultMatches = [
+        {
+            id: 1,
+            date: new Date().toLocaleDateString(),
+            t1p1: "Henry H", t1p2: "Henry K", t1Score: 10,
+            t2p1: "Adam Z", t2p2: "Brody J", t2Score: 0
+        },
+        {
+            id: 2,
+            date: new Date().toLocaleDateString(),
+            t1p1: "Henry K", t1p2: "Mitchell M", t1Score: 10,
+            t2p1: "Henry H", t2p2: "Austin H", t2Score: 3
+        },
+        {
+            id: 3,
+            date: new Date().toLocaleDateString(),
+            t1p1: "Austin H", t1p2: "Henry K", t1Score: 10,
+            t2p1: "Mitchell M", t2p2: "Henry H", t2Score: 3
+        }
+    ];
+
+    // State Management
+    let players = JSON.parse(localStorage.getItem('euchre_players')) || defaultPlayers;
+    let matches = JSON.parse(localStorage.getItem('euchre_matches')) || defaultMatches;
+
+    function saveData() {
+        localStorage.setItem('euchre_players', JSON.stringify(players));
+        localStorage.setItem('euchre_matches', JSON.stringify(matches));
+    }
+
+    function verifyPasscode() {
+        const input = prompt("Enter passcode required to authorize deletion:");
+        if (input === null) return false;
+        
+        // Passcode verification logic constructed dynamically to keep explicit text hidden
+        const expected = String.fromCharCode(78, 80, 80);
+        if (input === expected) {
+            return true;
+        } else {
+            alert("Incorrect passcode.");
+            return false;
+        }
+    }
+
+    function getPairKey(p1, p2) {
+        return [p1, p2].sort().join(" & ");
+    }
+
+    function populateSelects() {
+        const selects = ['t1p1', 't1p2', 't2p1', 't2p2'];
+        selects.forEach(id => {
+            const select = document.getElementById(id);
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">Select Player</option>';
+            players.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = p;
+                select.appendChild(opt);
+            });
+            select.value = currentVal;
+        });
+    }
+
+    function renderPlayerManagement() {
+        const chipContainer = document.getElementById('player-chips');
+        chipContainer.innerHTML = '';
+        players.forEach(player => {
+            const chip = document.createElement('div');
+            chip.className = 'player-chip';
+            chip.innerHTML = `
+                <span>${player}</span>
+                <button class="btn-danger" onclick="deletePlayer('${player}')">✕</button>
+            `;
+            chipContainer.appendChild(chip);
+        });
+    }
+
+    function deletePlayer(playerName) {
+        if (!verifyPasscode()) return;
+        
+        // Prevent deleting player tied to existing matches
+        const isInMatch = matches.some(m => 
+            m.t1p1 === playerName || m.t1p2 === playerName || 
+            m.t2p1 === playerName || m.t2p2 === playerName
+        );
+
+        if (isInMatch) {
+            alert(`Cannot delete ${playerName} because they are part of existing match records. Clear their matches first.`);
+            return;
+        }
+
+        players = players.filter(p => p !== playerName);
+        saveData();
+        renderAll();
+    }
+
+    function deleteMatch(matchId) {
+        if (!verifyPasscode()) return;
+        matches = matches.filter(m => m.id !== matchId);
+        saveData();
+        renderAll();
+    }
+
+    function calculateStats() {
+        const indStats = {};
+        const pairStats = {};
+
+        players.forEach(p => {
+            indStats[p] = { wins: 0, losses: 0, pf: 0, pa: 0 };
+        });
+
+        matches.forEach(m => {
+            const team1 = [m.t1p1, m.t1p2];
+            const team2 = [m.t2p1, m.t2p2];
+            const p1Key = getPairKey(m.t1p1, m.t1p2);
+            const p2Key = getPairKey(m.t2p1, m.t2p2);
+
+            if (!pairStats[p1Key]) pairStats[p1Key] = { wins: 0, losses: 0, pf: 0, pa: 0 };
+            if (!pairStats[p2Key]) pairStats[p2Key] = { wins: 0, losses: 0, pf: 0, pa: 0 };
+
+            const t1Win = m.t1Score > m.t2Score;
+
+            // Update Team 1 Individual
+            team1.forEach(p => {
+                if (indStats[p]) {
+                    indStats[p].pf += m.t1Score;
+                    indStats[p].pa += m.t2Score;
+                    if (t1Win) indStats[p].wins++; else indStats[p].losses++;
+                }
+            });
+
+            // Update Team 2 Individual
+            team2.forEach(p => {
+                if (indStats[p]) {
+                    indStats[p].pf += m.t2Score;
+                    indStats[p].pa += m.t1Score;
+                    if (!t1Win) indStats[p].wins++; else indStats[p].losses++;
+                }
+            });
+
+            // Update Pair Stats
+            pairStats[p1Key].pf += m.t1Score;
+            pairStats[p1Key].pa += m.t2Score;
+            pairStats[p2Key].pf += m.t2Score;
+            pairStats[p2Key].pa += m.t1Score;
+
+            if (t1Win) {
+                pairStats[p1Key].wins++;
+                pairStats[p2Key].losses++;
+            } else {
+                pairStats[p2Key].wins++;
+                pairStats[p1Key].losses++;
+            }
+        });
+
+        return { indStats, pairStats };
+    }
+
+    function renderIndividualStandings(indStats) {
+        const tbody = document.getElementById('individual-standings');
+        tbody.innerHTML = '';
+
+        const sorted = Object.keys(indStats).map(p => {
+            const s = indStats[p];
+            const total = s.wins + s.losses;
+            const winPct = total > 0 ? (s.wins / total) : 0;
+            const diff = s.pf - s.pa;
+            return { name: p, ...s, winPct, diff };
+        }).sort((a, b) => b.winPct - a.winPct || b.diff - a.diff || b.pf - a.pf);
+
+        sorted.forEach(s => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${s.name}</strong></td>
+                <td>${s.wins}-${s.losses}</td>
+                <td>${(s.winPct * 100).toFixed(1)}%</td>
+                <td>${s.pf}</td>
+                <td>${s.pa}</td>
+                <td>${s.diff > 0 ? '+' + s.diff : s.diff}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function renderPairStandings(pairStats) {
+        const tbody = document.getElementById('pair-standings');
+        tbody.innerHTML = '';
+
+        const sorted = Object.keys(pairStats).map(pair => {
+            const s = pairStats[pair];
+            const total = s.wins + s.losses;
+            const winPct = total > 0 ? (s.wins / total) : 0;
+            const diff = s.pf - s.pa;
+            return { pair, ...s, winPct, diff };
+        }).sort((a, b) => b.winPct - a.winPct || b.diff - a.diff || b.pf - a.pf);
+
+        sorted.forEach(s => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${s.pair}</strong></td>
+                <td>${s.wins}-${s.losses}</td>
+                <td>${(s.winPct * 100).toFixed(1)}%</td>
+                <td>${s.pf}</td>
+                <td>${s.pa}</td>
+                <td>${s.diff > 0 ? '+' + s.diff : s.diff}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function renderMatrix() {
+        const thead = document.querySelector('#matrix-table thead');
+        const tbody = document.querySelector('#matrix-table tbody');
+        
+        thead.innerHTML = '';
+        tbody.innerHTML = '';
+
+        // Header
+        const headerRow = document.createElement('tr');
+        headerRow.appendChild(document.createElement('th')); // Top-left blank
+        players.forEach(p => {
+            const th = document.createElement('th');
+            th.textContent = p;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        // Matrix Data Mapping
+        const matrixData = {};
+        players.forEach(p1 => {
+            matrixData[p1] = {};
+            players.forEach(p2 => {
+                matrixData[p1][p2] = { wins: 0, losses: 0, details: [] };
+            });
+        });
+
+        matches.forEach(m => {
+            const t1 = [m.t1p1, m.t1p2];
+            const t2 = [m.t2p1, m.t2p2];
+            const t1Win = m.t1Score > m.t2Score;
+
+            // Record for Team 1 Pair
+            if (matrixData[m.t1p1] && matrixData[m.t1p1][m.t1p2]) {
+                if (t1Win) matrixData[m.t1p1][m.t1p2].wins++; else matrixData[m.t1p1][m.t1p2].losses++;
+                matrixData[m.t1p1][m.t1p2].details.push(`${m.t1Score}-${m.t2Score} vs ${m.t2p1} & ${m.t2p2}`);
+                
+                // Symmetric pair entry
+                if (t1Win) matrixData[m.t1p2][m.t1p1].wins++; else matrixData[m.t1p2][m.t1p1].losses++;
+                matrixData[m.t1p2][m.t1p1].details.push(`${m.t1Score}-${m.t2Score} vs ${m.t2p1} & ${m.t2p2}`);
+            }
+
+            // Record for Team 2 Pair
+            if (matrixData[m.t2p1] && matrixData[m.t2p1][m.t2p2]) {
+                if (!t1Win) matrixData[m.t2p1][m.t2p2].wins++; else matrixData[m.t2p1][m.t2p2].losses++;
+                matrixData[m.t2p1][m.t2p2].details.push(`${m.t2Score}-${m.t1Score} vs ${m.t1p1} & ${m.t1p2}`);
+                
+                // Symmetric pair entry
+                if (!t1Win) matrixData[m.t2p2][m.t2p1].wins++; else matrixData[m.t2p2][m.t2p1].losses++;
+                matrixData[m.t2p2][m.t2p1].details.push(`${m.t2Score}-${m.t1Score} vs ${m.t1p1} & ${m.t1p2}`);
+            }
+        });
+
+        // Build Body Rows
+        players.forEach(p1 => {
+            const row = document.createElement('tr');
+            const rowHeader = document.createElement('th');
+            rowHeader.textContent = p1;
+            row.appendChild(rowHeader);
+
+            players.forEach(p2 => {
+                const td = document.createElement('td');
+                if (p1 === p2) {
+                    td.className = 'cell-disabled';
+                } else {
+                    const cellInfo = matrixData[p1][p2];
+                    td.textContent = `${cellInfo.wins}-${cellInfo.losses}`;
+                    
+                    if (cellInfo.details.length > 0) {
+                        td.classList.add('has-tooltip');
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip';
+                        tooltip.textContent = `Matches as partners:\n` + cellInfo.details.join('\n');
+                        td.appendChild(tooltip);
+                    }
+                }
+                row.appendChild(td);
+            });
+            tbody.appendChild(row);
+        });
+    }
+
+    function renderMatchHistory() {
+        const tbody = document.getElementById('match-history');
+        tbody.innerHTML = '';
+
+        [...matches].reverse().forEach(m => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${m.date}</td>
+                <td>
+                    ${m.t1p1} & ${m.t1p2} 
+                    <span class="team-vs">vs</span> 
+                    ${m.t2p1} & ${m.t2p2}
+                </td>
+                <td class="match-score">${m.t1Score} - ${m.t2Score}</td>
+                <td>
+                    <button class="btn-danger" onclick="deleteMatch(${m.id})">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function renderAll() {
+        populateSelects();
+        renderPlayerManagement();
+        const { indStats, pairStats } = calculateStats();
+        renderIndividualStandings(indStats);
+        renderPairStandings(pairStats);
+        renderMatrix();
+        renderMatchHistory();
+    }
+
+    // Form Event Listeners
+    document.getElementById('match-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const t1p1 = document.getElementById('t1p1').value;
+        const t1p2 = document.getElementById('t1p2').value;
+        const t2p1 = document.getElementById('t2p1').value;
+        const t2p2 = document.getElementById('t2p2').value;
+        const t1Score = parseInt(document.getElementById('t1-score').value);
+        const t2Score = parseInt(document.getElementById('t2-score').value);
+
+        // Input validation: unique players check
+        const selected = [t1p1, t1p2, t2p1, t2p2];
+        const unique = new Set(selected);
+        if (unique.size !== 4) {
+            alert('All 4 players in a match must be unique!');
+            return;
+        }
+
+        const newMatch = {
+            id: Date.now(),
+            date: new Date().toLocaleDateString(),
+            t1p1, t1p2, t1Score,
+            t2p1, t2p2, t2Score
+        };
+
+        matches.push(newMatch);
+        saveData();
+        renderAll();
+
+        // Reset form scores
+        document.getElementById('t1-score').value = '';
+        document.getElementById('t2-score').value = '';
+    } );
+
+    document.getElementById('add-player-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('new-player-name');
+        const name = input.value.trim();
+
+        if (players.includes(name)) {
+            alert('A player with this name already exists.');
+            return;
+        }
+
+        players.push(name);
+        saveData();
+        renderAll();
+        input.value = '';
+    });
+
+    // Initial Load
+    renderAll();
+</script>
+
+</body>
+</html>
