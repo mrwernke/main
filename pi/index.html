@@ -54,10 +54,9 @@
         }
 
         form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 16px;
-            align-items: end;
         }
 
         .form-group {
@@ -215,31 +214,43 @@
     <div class="card">
         <h2>Submit Match Score</h2>
         <form id="match-form">
-            <div class="form-group">
-                <label>Team 1 - Player 1</label>
-                <select id="t1p1" required></select>
+            <div style="display: flex; gap: 24px; width: 100%; flex-wrap: wrap;">
+                <!-- Team 1 Box -->
+                <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 16px; border-radius: 6px; border: 1px solid #e0e0e0; display: flex; flex-direction: column; gap: 12px;">
+                    <h3 style="margin: 0; color: var(--primary-color); font-size: 1.05rem;">Team 1</h3>
+                    <div class="form-group">
+                        <label>Player 1</label>
+                        <select id="t1p1" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Player 2</label>
+                        <select id="t1p2" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Team 1 Score</label>
+                        <input type="number" id="t1-score" min="0" required placeholder="0">
+                    </div>
+                </div>
+
+                <!-- Team 2 Box -->
+                <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 16px; border-radius: 6px; border: 1px solid #e0e0e0; display: flex; flex-direction: column; gap: 12px;">
+                    <h3 style="margin: 0; color: var(--primary-color); font-size: 1.05rem;">Team 2</h3>
+                    <div class="form-group">
+                        <label>Player 1</label>
+                        <select id="t2p1" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Player 2</label>
+                        <select id="t2p2" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Team 2 Score</label>
+                        <input type="number" id="t2-score" min="0" required placeholder="0">
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Team 1 - Player 2</label>
-                <select id="t1p2" required></select>
-            </div>
-            <div class="form-group">
-                <label>Team 1 Score</label>
-                <input type="number" id="t1-score" min="0" required>
-            </div>
-            <div class="form-group">
-                <label>Team 2 - Player 1</label>
-                <select id="t2p1" required></select>
-            </div>
-            <div class="form-group">
-                <label>Team 2 - Player 2</label>
-                <select id="t2p2" required></select>
-            </div>
-            <div class="form-group">
-                <label>Team 2 Score</label>
-                <input type="number" id="t2-score" min="0" required>
-            </div>
-            <button type="submit" style="grid-column: 1 / -1;">Submit Match</button>
+
+            <button type="submit" style="margin-top: 8px;">Submit Match</button>
         </form>
     </div>
 
@@ -369,7 +380,7 @@
         const input = prompt("Enter passcode required to authorize deletion:");
         if (input === null) return false;
         
-        // Passcode verification logic constructed dynamically to keep explicit text hidden
+        // Passcode verification logic constructed dynamically
         const expected = String.fromCharCode(78, 80, 80);
         if (input === expected) {
             return true;
@@ -385,16 +396,26 @@
 
     function populateSelects() {
         const selects = ['t1p1', 't1p2', 't2p1', 't2p2'];
+        const selectedValues = selects.map(id => document.getElementById(id).value);
+
         selects.forEach(id => {
             const select = document.getElementById(id);
             const currentVal = select.value;
             select.innerHTML = '<option value="">Select Player</option>';
+            
             players.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = p;
                 opt.textContent = p;
+                
+                // Disable if selected in another dropdown
+                if (selectedValues.includes(p) && p !== currentVal) {
+                    opt.disabled = true;
+                }
+                
                 select.appendChild(opt);
             });
+            
             select.value = currentVal;
         });
     }
@@ -416,7 +437,6 @@
     function deletePlayer(playerName) {
         if (!verifyPasscode()) return;
         
-        // Prevent deleting player tied to existing matches
         const isInMatch = matches.some(m => 
             m.t1p1 === playerName || m.t1p2 === playerName || 
             m.t2p1 === playerName || m.t2p2 === playerName
@@ -555,7 +575,7 @@
 
         // Header
         const headerRow = document.createElement('tr');
-        headerRow.appendChild(document.createElement('th')); // Top-left blank
+        headerRow.appendChild(document.createElement('th'));
         players.forEach(p => {
             const th = document.createElement('th');
             th.textContent = p;
@@ -573,32 +593,26 @@
         });
 
         matches.forEach(m => {
-            const t1 = [m.t1p1, m.t1p2];
-            const t2 = [m.t2p1, m.t2p2];
             const t1Win = m.t1Score > m.t2Score;
 
-            // Record for Team 1 Pair
             if (matrixData[m.t1p1] && matrixData[m.t1p1][m.t1p2]) {
                 if (t1Win) matrixData[m.t1p1][m.t1p2].wins++; else matrixData[m.t1p1][m.t1p2].losses++;
                 matrixData[m.t1p1][m.t1p2].details.push(`${m.t1Score}-${m.t2Score} vs ${m.t2p1} & ${m.t2p2}`);
                 
-                // Symmetric pair entry
                 if (t1Win) matrixData[m.t1p2][m.t1p1].wins++; else matrixData[m.t1p2][m.t1p1].losses++;
                 matrixData[m.t1p2][m.t1p1].details.push(`${m.t1Score}-${m.t2Score} vs ${m.t2p1} & ${m.t2p2}`);
             }
 
-            // Record for Team 2 Pair
             if (matrixData[m.t2p1] && matrixData[m.t2p1][m.t2p2]) {
                 if (!t1Win) matrixData[m.t2p1][m.t2p2].wins++; else matrixData[m.t2p1][m.t2p2].losses++;
                 matrixData[m.t2p1][m.t2p2].details.push(`${m.t2Score}-${m.t1Score} vs ${m.t1p1} & ${m.t1p2}`);
                 
-                // Symmetric pair entry
                 if (!t1Win) matrixData[m.t2p2][m.t2p1].wins++; else matrixData[m.t2p2][m.t2p1].losses++;
                 matrixData[m.t2p2][m.t2p1].details.push(`${m.t2Score}-${m.t1Score} vs ${m.t1p1} & ${m.t1p2}`);
             }
         });
 
-        // Build Body Rows
+        // Build Rows
         players.forEach(p1 => {
             const row = document.createElement('tr');
             const rowHeader = document.createElement('th');
@@ -659,7 +673,12 @@
         renderMatchHistory();
     }
 
-    // Form Event Listeners
+    // Attach listeners to update choices dynamically when selection changes
+    ['t1p1', 't1p2', 't2p1', 't2p2'].forEach(id => {
+        document.getElementById(id).addEventListener('change', populateSelects);
+    });
+
+    // Form Submissions
     document.getElementById('match-form').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -670,7 +689,6 @@
         const t1Score = parseInt(document.getElementById('t1-score').value);
         const t2Score = parseInt(document.getElementById('t2-score').value);
 
-        // Input validation: unique players check
         const selected = [t1p1, t1p2, t2p1, t2p2];
         const unique = new Set(selected);
         if (unique.size !== 4) {
@@ -689,10 +707,9 @@
         saveData();
         renderAll();
 
-        // Reset form scores
         document.getElementById('t1-score').value = '';
         document.getElementById('t2-score').value = '';
-    } );
+    });
 
     document.getElementById('add-player-form').addEventListener('submit', function(e) {
         e.preventDefault();
