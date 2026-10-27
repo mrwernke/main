@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Grade Processor v4</title>
+    <title>Canvas Grade Processor v5</title>
     <style>
         :root { --primary-color: #1b5e20; --bg-color: #f4f6f8; --border-color: #ddd; }
         body { font-family: system-ui, sans-serif; background: var(--bg-color); margin: 0; padding: 20px; color: #333; }
@@ -50,6 +50,28 @@
         <button class="btn-danger" id="clear-cache-btn">Clear All Saved Data</button>
     </div>
 
+    <!-- Canvas API Quiz Fetcher Card -->
+    <div class="card">
+        <h3 style="margin-top:0; color: var(--primary-color);">Fetch Quiz Submission Times (Canvas API)</h3>
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label>Canvas Domain URL</label>
+                <input type="text" id="canvas-domain" placeholder="https://your-school.instructure.com">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Course ID</label>
+                <input type="text" id="canvas-course-id" placeholder="e.g. 180212">
+            </div>
+            <div class="form-group" style="flex: 2;">
+                <label>Personal Access Token</label>
+                <input type="password" id="canvas-api-token" placeholder="Paste Token Here">
+            </div>
+        </div>
+        <button id="fetch-quizzes-btn">Fetch & Export Submission Times CSV</button>
+        <div id="api-status" class="status-tag" style="margin-top: 8px;"></div>
+    </div>
+
+    <!-- Controls Card -->
     <div class="card">
         <div class="form-row">
             <div class="form-group">
@@ -174,6 +196,8 @@
         localStorage.setItem('canvas_units_data', JSON.stringify(unitsData));
         localStorage.setItem('canvas_hw_scale', document.getElementById('hw-scale').value);
         localStorage.setItem('canvas_late_penalty', document.getElementById('late-penalty').value);
+        localStorage.setItem('canvas_domain', document.getElementById('canvas-domain').value);
+        localStorage.setItem('canvas_course_id', document.getElementById('canvas-course-id').value);
     }
 
     function loadFromStorage() {
@@ -187,6 +211,12 @@
         const savedPenalty = localStorage.getItem('canvas_late_penalty');
         if (savedPenalty) document.getElementById('late-penalty').value = savedPenalty;
 
+        const savedDomain = localStorage.getItem('canvas_domain');
+        if (savedDomain) document.getElementById('canvas-domain').value = savedDomain;
+
+        const savedCourseId = localStorage.getItem('canvas_course_id');
+        if (savedCourseId) document.getElementById('canvas-course-id').value = savedCourseId;
+
         updateUIForUnit();
         renderTable();
     }
@@ -197,6 +227,95 @@
             initUnitsData();
             updateUIForUnit();
             renderTable();
+        }
+    });
+
+    // Canvas API Quiz Submission Times Fetcher
+    document.getElementById('fetch-quizzes-btn').addEventListener('click', async () => {
+        const domain = document.getElementById('canvas-domain').value.replace(/\/$/, "");
+        const courseId = document.getElementById('canvas-course-id').value.trim();
+        const token = document.getElementById('canvas-api-token').value.trim();
+        const statusEl = document.getElementById('api-status');
+
+        if (!domain || !courseId || !token) {
+            alert("Please enter your Canvas Domain, Course ID, and API Access Token.");
+            return;
+        }
+
+        saveToStorage();
+        statusEl.textContent = "Connecting to Canvas API...";
+        statusEl.style.color = "blue";
+
+        try {
+            const assignResponse = await fetch(`${domain}/api/v1/courses/${courseId}/assignments?per_page=100`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!assignResponse.ok) throw new Error(`HTTP Error ${assignResponse.status}`);
+            const assignments = await assignResponse.json();
+
+            const quizAssignments = assignments.filter(a => 
+                a.submission_types.includes('online_quiz') || 
+                a.submission_types.includes('external_tool') ||
+                (a.quiz_id !== undefined)
+            );
+
+            if (quizAssignments.length === 0) {
+                statusEl.textContent = "No quiz assignments found in this course.";
+                statusEl.style.color = "orange";
+                return;
+            }
+
+            const submissionRecords = [];
+
+            for (const quiz of quizAssignments) {
+                statusEl.textContent = `Fetching submissions for: ${quiz.name}...`;
+
+                const subResponse = await fetch(`${domain}/api/v1/courses/${courseId}/assignments/${quiz.id}/submissions?include[]=user&per_page=100`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!subResponse.ok) continue;
+                const submissions = await subResponse.json();
+
+                submissions.forEach(sub => {
+                    if (sub.submitted_at) {
+                        submissionRecords.push({
+                            "Quiz Name": quiz.name,
+                            "Student Name": sub.user ? sub.user.name : "Unknown",
+                            "Student ID": sub.user_id,
+                            "Attempt": sub.attempt,
+                            "Submitted At": sub.submitted_at,
+                            "Late": sub.late ? "Yes" : "No",
+                            "Score": sub.score
+                        });
+                    }
+                });
+            }
+
+            if (submissionRecords.length === 0) {
+                statusEl.textContent = "No completed quiz submissions found.";
+                statusEl.style.color = "orange";
+                return;
+            }
+
+            const csvContent = Papa.unparse(submissionRecords);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Quiz_Submission_Times_Course_${courseId}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            statusEl.textContent = `Successfully exported ${submissionRecords.length} submission records!`;
+            statusEl.style.color = "green";
+
+        } catch (err) {
+            console.error(err);
+            statusEl.textContent = `Error: ${err.message}. Ensure your domain and API token are valid and CORS is allowed.`;
+            statusEl.style.color = "red";
         }
     });
 
@@ -233,10 +352,8 @@
                 !r.Student.includes("Points Possible") && 
                 !r.Student.includes("Student, Test"));
             
-            // Auto-filter defaults
             u.hwCols = u.headers.filter(h => h.includes("HW") || h.includes("Analysis") || h.includes("Review"));
             
-            // Filter SC columns strictly by Unit Prefix and exclude summary fields
             const prefixRegex = unitPrefixes[currentUnit];
             u.scCols = u.headers.filter(h => {
                 const cleanHeader = h.trim();
@@ -322,17 +439,14 @@
         const prefixRegex = unitPrefixes[currentUnit];
 
         selectableHeaders.forEach(h => {
-            // HW checkboxes
             const isHwChecked = u.hwCols.includes(h) ? "checked" : "";
             hwContainer.innerHTML += `<label><input type="checkbox" class="hw-col-cb" value="${h}" ${isHwChecked}> ${h}</label>`;
 
-            // SC checkboxes - pre-check if matches unit prefix
             const matchesPrefix = prefixRegex.test(h.trim());
             const isScChecked = u.scCols.includes(h) || (u.scCols.length === 0 && matchesPrefix) ? "checked" : "";
             scContainer.innerHTML += `<label><input type="checkbox" class="sc-col-cb" value="${h}" ${isScChecked}> ${h}</label>`;
         });
 
-        // Event listeners to sync state
         document.querySelectorAll('.hw-col-cb').forEach(cb => {
             cb.addEventListener('change', () => {
                 u.hwCols = Array.from(document.querySelectorAll('.hw-col-cb:checked')).map(c => c.value);
@@ -398,7 +512,6 @@
                 tbody.innerHTML += `<tr><td class="student-name">${s.Student}</td><td>${cleanSection(s.Section)}</td><td><strong>${grade}%</strong></td><td>${sum}</td>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
             });
         } else {
-            // Skill Checks Logic
             const scCols = u.scCols;
             const penalty = parseFloat(document.getElementById('late-penalty').value) || 0;
             const totalChecks = scCols.length;
@@ -423,7 +536,6 @@
                     return '-';
                 });
 
-                // Count Late Submissions matching checked columns
                 let lateCount = 0;
                 if (u.late.length > 0) {
                     lateCount = u.late.filter(l => {
@@ -434,7 +546,6 @@
                     }).length;
                 }
 
-                // Score out of 50 minus unit penalty
                 let score = totalChecks > 0 ? (subCount / totalChecks) * 50 : 0;
                 score = Math.max(0, score - (lateCount * penalty));
 
