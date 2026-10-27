@@ -48,6 +48,7 @@ jobs:
           find dist/math-applets -name "*.test.mjs" -delete
           find dist/math-applets -name "README.md" -delete
           cp -R sat-math-prep/dist dist/sat-math-prep
+          cp -R pi dist/pi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
