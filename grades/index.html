@@ -230,7 +230,7 @@
         }
     });
 
-    // Canvas API Quiz Submission Times Fetcher (Using CORS Proxy)
+    // Canvas API Quiz Submission Times Fetcher
     document.getElementById('fetch-quizzes-btn').addEventListener('click', async () => {
         const domain = document.getElementById('canvas-domain').value.replace(/\/$/, "");
         const courseId = document.getElementById('canvas-course-id').value.trim();
@@ -243,15 +243,13 @@
         }
 
         saveToStorage();
-        statusEl.textContent = "Connecting to Canvas API via Proxy...";
+        statusEl.textContent = "Connecting to Canvas API...";
         statusEl.style.color = "blue";
 
         try {
-            // Proxied fetch for assignments
-            const assignTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments?per_page=100`;
-            const assignResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(assignTargetUrl)}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            // Append access_token directly in query parameters to avoid proxy authorization header stripping
+            const assignTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments?per_page=100&access_token=${encodeURIComponent(token)}`;
+            const assignResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(assignTargetUrl)}`);
 
             if (!assignResponse.ok) throw new Error(`HTTP Error ${assignResponse.status}`);
             const assignments = await assignResponse.json();
@@ -273,11 +271,8 @@
             for (const quiz of quizAssignments) {
                 statusEl.textContent = `Fetching submissions for: ${quiz.name}...`;
 
-                // Proxied fetch for quiz submissions
-                const subTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments/${quiz.id}/submissions?include[]=user&per_page=100`;
-                const subResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(subTargetUrl)}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const subTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments/${quiz.id}/submissions?include[]=user&per_page=100&access_token=${encodeURIComponent(token)}`;
+                const subResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(subTargetUrl)}`);
 
                 if (!subResponse.ok) continue;
                 const submissions = await subResponse.json();
@@ -318,7 +313,7 @@
 
         } catch (err) {
             console.error(err);
-            statusEl.textContent = `Error: ${err.message}. Ensure your domain and API token are valid.`;
+            statusEl.textContent = `Error: ${err.message}. Ensure your domain, course ID, and API token are valid.`;
             statusEl.style.color = "red";
         }
     });
