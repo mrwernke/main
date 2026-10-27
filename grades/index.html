@@ -230,7 +230,7 @@
         }
     });
 
-    // Canvas API Quiz Submission Times Fetcher
+    // Canvas API Quiz Submission Times Fetcher (Using CORS Proxy)
     document.getElementById('fetch-quizzes-btn').addEventListener('click', async () => {
         const domain = document.getElementById('canvas-domain').value.replace(/\/$/, "");
         const courseId = document.getElementById('canvas-course-id').value.trim();
@@ -243,11 +243,13 @@
         }
 
         saveToStorage();
-        statusEl.textContent = "Connecting to Canvas API...";
+        statusEl.textContent = "Connecting to Canvas API via Proxy...";
         statusEl.style.color = "blue";
 
         try {
-            const assignResponse = await fetch(`${domain}/api/v1/courses/${courseId}/assignments?per_page=100`, {
+            // Proxied fetch for assignments
+            const assignTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments?per_page=100`;
+            const assignResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(assignTargetUrl)}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -271,7 +273,9 @@
             for (const quiz of quizAssignments) {
                 statusEl.textContent = `Fetching submissions for: ${quiz.name}...`;
 
-                const subResponse = await fetch(`${domain}/api/v1/courses/${courseId}/assignments/${quiz.id}/submissions?include[]=user&per_page=100`, {
+                // Proxied fetch for quiz submissions
+                const subTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments/${quiz.id}/submissions?include[]=user&per_page=100`;
+                const subResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(subTargetUrl)}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -314,7 +318,7 @@
 
         } catch (err) {
             console.error(err);
-            statusEl.textContent = `Error: ${err.message}. Ensure your domain and API token are valid and CORS is allowed.`;
+            statusEl.textContent = `Error: ${err.message}. Ensure your domain and API token are valid.`;
             statusEl.style.color = "red";
         }
     });
