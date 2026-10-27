@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Grade Processor</title>
+    <style>
+        :root {
+            --primary-color: #1b5e20;
+            --primary-hover: #2e7d32;
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        input[type="file"], select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            background: #fff;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        td.student-name {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .badge-score {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #e8f5e9;
+            color: var(--primary-color);
+        }
+
+        .missing-cell {
+            color: #999;
+        }
+    </style>
+    <!-- PapaParse for robust CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Canvas Grade Processor</h1>
+
+    <!-- Controls Card -->
+    <div class="card">
+        <div class="controls">
+            <div class="form-group">
+                <label for="csv-file">Upload Canvas Gradebook CSV</label>
+                <input type="file" id="csv-file" accept=".csv">
+            </div>
+
+            <div class="form-group" id="section-select-group" style="display: none;">
+                <label for="section-select">Select Class Section</label>
+                <select id="section-select">
+                    <option value="ALL">All Sections</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Table Card -->
+    <div class="card" id="table-card" style="display: none;">
+        <h2 id="section-title" style="margin-top:0; color: var(--primary-color); font-size: 1.1rem;">Grades Breakdown</h2>
+        <div class="table-responsive">
+            <table id="grades-table">
+                <thead>
+                    <tr id="table-header"></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Target columns to track and extract by name prefix
+    const targetAssignments = [
+        "9/28-29 HW",
+        "9/30-10/1 HW",
+        "10/5-6 HW",
+        "10/7-8 HW",
+        "10/20-21 HW",
+        "10/23-26 HW",
+        "10/27-28 HW",
+        "10/29-30 HW",
+        "11/2-3 HW",
+        "Unit 2 Test Analysis",
+        "Mid-Unit Review"
+    ];
+
+    let parsedData = [];
+    let detectedHeaders = [];
+
+    // Scale mapping for Final HW Grade
+    function calculateFinalGrade(sum) {
+        if (sum >= 11) return 100;
+        if (sum >= 10.5) return 95;
+        if (sum >= 10.0) return 90;
+        if (sum >= 9.0) return 85;
+        if (sum >= 8.0) return 80;
+        if (sum >= 7.0) return 75;
+        if (sum >= 6.0) return 70;
+        if (sum >= 5.0) return 60;
+        if (sum >= 4.0) return 50;
+        if (sum >= 3.0) return 40;
+        if (sum >= 2.0) return 30;
+        if (sum >= 1.0) return 20;
+        if (sum >= 0.1) return 10;
+        return 0;
+    }
+
+    // Standardize Canvas Section Names to concise labels (e.g., B2, B3, G3, G4, G4 ENL)
+    function cleanSectionName(sectionStr) {
+        if (!sectionStr) return "Unknown";
+        if (sectionStr.includes("ENL")) {
+            const match = sectionStr.match(/(\d\([BG]\))/);
+            return match ? `${match[1].replace('(', '').replace(')', '')} ENL` : "ENL";
+        }
+        const match = sectionStr.match(/(\d)\(([BG])\)/);
+        if (match) {
+            return `${match[2]}${match[1]}`; // e.g. 2(B) -> B2
+        }
+        return sectionStr;
+    }
+
+    document.getElementById('csv-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                processCSV(results.data, results.meta.fields);
+            }
+        });
+    });
+
+    function processCSV(data, fields) {
+        // Find specific full column headers corresponding to target assignments
+        detectedHeaders = targetAssignments.map(target => {
+            return fields.find(f => f.startsWith(target)) || null;
+        });
+
+        // Filter out header metadata rows (e.g. Points Possible)
+        parsedData = data.filter(row => row.Student && row.Student !== "Points Possible" && !row.Student.includes("Student, Test"));
+
+        // Extract unique section names
+        const sections = new Set();
+        parsedData.forEach(row => {
+            const sec = cleanSectionName(row.Section);
+            if (sec) sections.add(sec);
+        });
+
+        // Populate dropdown menu
+        const select = document.getElementById('section-select');
+        select.innerHTML = '<option value="ALL">All Sections</option>';
+        Array.from(sections).sort().forEach(sec => {
+            const opt = document.createElement('option');
+            opt.value = sec;
+            opt.textContent = sec;
+            select.appendChild(opt);
+        });
+
+        document.getElementById('section-select-group').style.display = 'flex';
+        document.getElementById('table-card').style.display = 'block';
+
+        renderTable('ALL');
+    }
+
+    document.getElementById('section-select').addEventListener('change', function(e) {
+        renderTable(e.target.value);
+    });
+
+    function renderTable(selectedSection) {
+        const headerRow = document.getElementById('table-header');
+        const tbody = document.getElementById('table-body');
+        
+        headerRow.innerHTML = '';
+        tbody.innerHTML = '';
+
+        // Build Table Headers
+        const headers = ['Student Name', 'Section', 'Final HW Grade', 'Sum of Scores', ...targetAssignments];
+        headers.forEach(h => {
+            const th = document.createElement('th');
+            th.textContent = h;
+            headerRow.appendChild(th);
+        });
+
+        // Filter & Sort Students Alphabetically
+        let filtered = parsedData;
+        if (selectedSection !== 'ALL') {
+            filtered = parsedData.filter(row => cleanSectionName(row.Section) === selectedSection);
+        }
+
+        filtered.sort((a, b) => a.Student.localeCompare(b.Student));
+
+        // Build Rows
+        filtered.forEach(row => {
+            let sum = 0;
+            const scores = detectedHeaders.map(col => {
+                if (!col || row[col] === undefined || row[col] === "" || row[col] === null) {
+                    return null;
+                }
+                const val = parseFloat(row[col]);
+                if (!isNaN(val)) {
+                    sum += val;
+                    return val;
+                }
+                return null;
+            });
+
+            const finalGrade = calculateFinalGrade(sum);
+            const sectionLabel = cleanSectionName(row.Section);
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="student-name">${row.Student}</td>
+                <td>${sectionLabel}</td>
+                <td><span class="badge-score">${finalGrade}%</span></td>
+                <td><strong>${sum.toFixed(2).replace(/\.00$/, '')} / 11</strong></td>
+                ${scores.map(s => s !== null ? `<td>${s}</td>` : `<td class="missing-cell">-</td>`).join('')}
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('section-title').textContent = 
+            selectedSection === 'ALL' ? 'All Sections' : `Section ${selectedSection}`;
+    }
+</script>
+
+</body>
+</html>
