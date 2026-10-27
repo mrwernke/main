@@ -891,7 +891,9 @@ async function loadCloudData() {
     status.style.color = '#664d03';
 
     try {
-        const response = await fetch(API_URL);
+       const response = await fetch(API_URL, {
+    signal: AbortSignal.timeout(10000)
+});
 
         if (!response.ok) {
             throw new Error('HTTP status: ' + response.status);
