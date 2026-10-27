@@ -380,12 +380,22 @@
         localStorage.setItem('euchre_matches', JSON.stringify(matches));
     }
 
-    function verifyPasscode() {
+    // Pre-computed SHA-256 passcode hash
+    const PI_EXPECTED_HASH = "41381389e7e7a8e7e1ef0cc58253a54d688cf7366b2d1808b8bbfebbf8a6e4d0";
+
+    async function hashText(text) {
+        const msgUint8 = new TextEncoder().encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function verifyPasscode() {
         const input = prompt("Enter passcode required to authorize deletion:");
-        if (input === null) return false;
+        if (input === null || input.trim() === "") return false;
         
-        const expected = String.fromCharCode(78, 80, 80);
-        if (input === expected) {
+        const inputHash = await hashText(input.trim());
+        if (inputHash === PI_EXPECTED_HASH) {
             return true;
         } else {
             alert("Incorrect passcode.");
@@ -446,8 +456,9 @@
         });
     }
 
-    function deletePlayer(playerName) {
-        if (!verifyPasscode()) return;
+    async function deletePlayer(playerName) {
+        const isAuthorized = await verifyPasscode();
+        if (!isAuthorized) return;
         
         const isInMatch = matches.some(m => 
             m.t1p1 === playerName || m.t1p2 === playerName || 
@@ -464,8 +475,9 @@
         renderAll();
     }
 
-    function deleteMatch(matchId) {
-        if (!verifyPasscode()) return;
+    async function deleteMatch(matchId) {
+        const isAuthorized = await verifyPasscode();
+        if (!isAuthorized) return;
         matches = matches.filter(m => m.id !== matchId);
         saveData();
         renderAll();
