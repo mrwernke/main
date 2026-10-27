@@ -50,27 +50,6 @@
         <button class="btn-danger" id="clear-cache-btn">Clear All Saved Data</button>
     </div>
 
-    <!-- Canvas API Quiz Fetcher Card -->
-    <div class="card">
-        <h3 style="margin-top:0; color: var(--primary-color);">Fetch Quiz Submission Times (Canvas API)</h3>
-        <div class="form-row">
-            <div class="form-group" style="flex: 2;">
-                <label>Canvas Domain URL</label>
-                <input type="text" id="canvas-domain" placeholder="https://your-school.instructure.com">
-            </div>
-            <div class="form-group" style="flex: 1;">
-                <label>Course ID</label>
-                <input type="text" id="canvas-course-id" placeholder="e.g. 180212">
-            </div>
-            <div class="form-group" style="flex: 2;">
-                <label>Personal Access Token</label>
-                <input type="password" id="canvas-api-token" placeholder="Paste Token Here">
-            </div>
-        </div>
-        <button id="fetch-quizzes-btn">Fetch & Export Submission Times CSV</button>
-        <div id="api-status" class="status-tag" style="margin-top: 8px;"></div>
-    </div>
-
     <!-- Controls Card -->
     <div class="card">
         <div class="form-row">
@@ -175,7 +154,7 @@
     let currentUnit = 1;
     let currentView = 'HW';
 
-    // Pre-computed SHA-256 passcode hash for "123456"
+    // Pre-computed SHA-256 passcode hash for "NPPsig"
     const EXPECTED_HASH = "78b404d02eb7ee604e38fb502a5c4cf4dd740ffbfa69fa74d473ca5932560ef7";
 
     async function hashText(text) {
@@ -229,8 +208,6 @@
         localStorage.setItem('canvas_units_data', JSON.stringify(unitsData));
         localStorage.setItem('canvas_hw_scale', document.getElementById('hw-scale').value);
         localStorage.setItem('canvas_late_penalty', document.getElementById('late-penalty').value);
-        localStorage.setItem('canvas_domain', document.getElementById('canvas-domain').value);
-        localStorage.setItem('canvas_course_id', document.getElementById('canvas-course-id').value);
     }
 
     function loadFromStorage() {
@@ -244,12 +221,6 @@
         const savedPenalty = localStorage.getItem('canvas_late_penalty');
         if (savedPenalty) document.getElementById('late-penalty').value = savedPenalty;
 
-        const savedDomain = localStorage.getItem('canvas_domain');
-        if (savedDomain) document.getElementById('canvas-domain').value = savedDomain;
-
-        const savedCourseId = localStorage.getItem('canvas_course_id');
-        if (savedCourseId) document.getElementById('canvas-course-id').value = savedCourseId;
-
         updateUIForUnit();
         renderTable();
     }
@@ -260,93 +231,6 @@
             initUnitsData();
             updateUIForUnit();
             renderTable();
-        }
-    });
-
-    // Canvas API Quiz Submission Times Fetcher
-    document.getElementById('fetch-quizzes-btn').addEventListener('click', async () => {
-        const domain = document.getElementById('canvas-domain').value.replace(/\/$/, "");
-        const courseId = document.getElementById('canvas-course-id').value.trim();
-        const token = document.getElementById('canvas-api-token').value.trim();
-        const statusEl = document.getElementById('api-status');
-
-        if (!domain || !courseId || !token) {
-            alert("Please enter your Canvas Domain, Course ID, and API Access Token.");
-            return;
-        }
-
-        saveToStorage();
-        statusEl.textContent = "Connecting to Canvas API...";
-        statusEl.style.color = "blue";
-
-        try {
-            const assignTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments?per_page=100&access_token=${encodeURIComponent(token)}`;
-            const assignResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(assignTargetUrl)}`);
-
-            if (!assignResponse.ok) throw new Error(`HTTP Error ${assignResponse.status}`);
-            const assignments = await assignResponse.json();
-
-            const quizAssignments = assignments.filter(a => 
-                a.submission_types.includes('online_quiz') || 
-                a.submission_types.includes('external_tool') ||
-                (a.quiz_id !== undefined)
-            );
-
-            if (quizAssignments.length === 0) {
-                statusEl.textContent = "No quiz assignments found in this course.";
-                statusEl.style.color = "orange";
-                return;
-            }
-
-            const submissionRecords = [];
-
-            for (const quiz of quizAssignments) {
-                statusEl.textContent = `Fetching submissions for: ${quiz.name}...`;
-
-                const subTargetUrl = `${domain}/api/v1/courses/${courseId}/assignments/${quiz.id}/submissions?include[]=user&per_page=100&access_token=${encodeURIComponent(token)}`;
-                const subResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(subTargetUrl)}`);
-
-                if (!subResponse.ok) continue;
-                const submissions = await subResponse.json();
-
-                submissions.forEach(sub => {
-                    if (sub.submitted_at) {
-                        submissionRecords.push({
-                            "Quiz Name": quiz.name,
-                            "Student Name": sub.user ? sub.user.name : "Unknown",
-                            "Student ID": sub.user_id,
-                            "Attempt": sub.attempt,
-                            "Submitted At": sub.submitted_at,
-                            "Late": sub.late ? "Yes" : "No",
-                            "Score": sub.score
-                        });
-                    }
-                });
-            }
-
-            if (submissionRecords.length === 0) {
-                statusEl.textContent = "No completed quiz submissions found.";
-                statusEl.style.color = "orange";
-                return;
-            }
-
-            const csvContent = Papa.unparse(submissionRecords);
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Quiz_Submission_Times_Course_${courseId}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            statusEl.textContent = `Successfully exported ${submissionRecords.length} submission records!`;
-            statusEl.style.color = "green";
-
-        } catch (err) {
-            console.error(err);
-            statusEl.textContent = `Error: ${err.message}. Ensure your domain, course ID, and API token are valid.`;
-            statusEl.style.color = "red";
         }
     });
 
