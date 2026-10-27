@@ -205,6 +205,14 @@
             color: #666;
             margin: 0 4px;
         }
+
+        .predictor-box {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -244,6 +252,14 @@
         </form>
     </div>
 
+    <!-- Predictor Card -->
+    <div class="card">
+        <h2>Match Predictor</h2>
+        <div id="prediction-output" class="predictor-box">
+            Select 4 distinct players in the form above to see the match prediction.
+        </div>
+    </div>
+
     <!-- 2. Partner Matrix -->
     <div class="card">
         <h2>Head-to-Head Partner Matrix</h2>
@@ -264,6 +280,7 @@
                 <thead>
                     <tr>
                         <th>Player</th>
+                        <th>Rating (Elo)</th>
                         <th>W-L Record</th>
                         <th>Win %</th>
                         <th>PF</th>
@@ -379,7 +396,6 @@
         }
     }
 
-    // Helper to format full name (e.g. "Henry H") to First + Last Initial (e.g. "Henry H.")
     function formatInitials(name) {
         if (!name) return '';
         const parts = name.trim().split(/\s+/);
@@ -416,6 +432,7 @@
             
             select.value = currentVal;
         });
+        updatePrediction();
     }
 
     function renderPlayerManagement() {
@@ -460,10 +477,14 @@
     function calculateStats() {
         const indStats = {};
         const pairStats = {};
+        const eloRatings = {};
 
         players.forEach(p => {
             indStats[p] = { wins: 0, losses: 0, pf: 0, pa: 0 };
+            eloRatings[p] = 1000; // Starting Elo rating
         });
+
+        const K = 32;
 
         matches.forEach(m => {
             const team1 = [m.t1p1, m.t1p2];
@@ -476,7 +497,22 @@
 
             const t1Win = m.t1Score > m.t2Score;
 
-            // Update Team 1 Individual
+            // Calculate Elo rating changes
+            const r1 = ((eloRatings[m.t1p1] || 1000) + (eloRatings[m.t1p2] || 1000)) / 2;
+            const r2 = ((eloRatings[m.t2p1] || 1000) + (eloRatings[m.t2p2] || 1000)) / 2;
+
+            const expectedT1 = 1 / (1 + Math.pow(10, (r2 - r1) / 400));
+            const actualT1 = t1Win ? 1 : 0;
+            const delta = K * (actualT1 - expectedT1);
+
+            team1.forEach(p => {
+                if (eloRatings[p] !== undefined) eloRatings[p] += delta;
+            });
+            team2.forEach(p => {
+                if (eloRatings[p] !== undefined) eloRatings[p] -= delta;
+            });
+
+            // Update Individual
             team1.forEach(p => {
                 if (indStats[p]) {
                     indStats[p].pf += m.t1Score;
@@ -485,7 +521,6 @@
                 }
             });
 
-            // Update Team 2 Individual
             team2.forEach(p => {
                 if (indStats[p]) {
                     indStats[p].pf += m.t2Score;
@@ -509,10 +544,55 @@
             }
         });
 
-        return { indStats, pairStats };
+        return { indStats, pairStats, eloRatings };
     }
 
-    function renderIndividualStandings(indStats) {
+    function updatePrediction() {
+        const t1p1 = document.getElementById('t1p1').value;
+        const t1p2 = document.getElementById('t1p2').value;
+        const t2p1 = document.getElementById('t2p1').value;
+        const t2p2 = document.getElementById('t2p2').value;
+        const output = document.getElementById('prediction-output');
+
+        const selected = [t1p1, t1p2, t2p1, t2p2];
+        if (selected.some(p => !p) || new Set(selected).size !== 4) {
+            output.innerHTML = "Select 4 distinct players in the form above to see the match prediction.";
+            return;
+        }
+
+        const { eloRatings } = calculateStats();
+        const r1 = (eloRatings[t1p1] + eloRatings[t1p2]) / 2;
+        const r2 = (eloRatings[t2p1] + eloRatings[t2p2]) / 2;
+
+        const probT1 = 1 / (1 + Math.pow(10, (r2 - r1) / 400));
+        const probT2 = 1 - probT1;
+
+        // Estimate score out of 10 points
+        let score1 = Math.round(probT1 * 12);
+        let score2 = Math.round(probT2 * 12);
+
+        if (probT1 >= 0.5) {
+            score1 = 10;
+            score2 = Math.min(9, Math.max(0, Math.round(10 * (probT2 / probT1))));
+        } else {
+            score2 = 10;
+            score1 = Math.min(9, Math.max(0, Math.round(10 * (probT1 / probT2))));
+        }
+
+        const t1WinPct = (probT1 * 100).toFixed(1);
+        const t2WinPct = (probT2 * 100).toFixed(1);
+
+        output.innerHTML = `
+            <div style="font-size: 1.1rem; font-weight: bold; color: var(--primary-color); margin-bottom: 6px;">
+                ${t1WinPct}% Team 1 vs ${t2WinPct}% Team 2
+            </div>
+            <div style="font-size: 0.95rem; color: #444;">
+                <strong>Predicted Score:</strong> Team 1 (${score1}) - Team 2 (${score2})
+            </div>
+        `;
+    }
+
+    function renderIndividualStandings(indStats, eloRatings) {
         const tbody = document.getElementById('individual-standings');
         tbody.innerHTML = '';
 
@@ -521,13 +601,15 @@
             const total = s.wins + s.losses;
             const winPct = total > 0 ? (s.wins / total) : 0;
             const diff = s.pf - s.pa;
-            return { name: p, ...s, winPct, diff };
-        }).sort((a, b) => b.winPct - a.winPct || b.diff - a.diff || b.pf - a.pf);
+            const rating = Math.round(eloRatings[p] || 1000);
+            return { name: p, ...s, winPct, diff, rating };
+        }).sort((a, b) => b.rating - a.rating || b.winPct - a.winPct || b.diff - a.diff);
 
         sorted.forEach(s => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td><strong>${s.name}</strong></td>
+                <td><strong>${s.rating}</strong></td>
                 <td>${s.wins}-${s.losses}</td>
                 <td>${(s.winPct * 100).toFixed(1)}%</td>
                 <td>${s.pf}</td>
@@ -571,7 +653,6 @@
         thead.innerHTML = '';
         tbody.innerHTML = '';
 
-        // Matrix Data Mapping
         const matrixData = {};
         const totalPlayedByPlayer = {};
 
@@ -609,12 +690,10 @@
             }
         });
 
-        // Sort players by total matches played (most played to least played)
         const sortedPlayers = [...players].sort((a, b) => {
             return (totalPlayedByPlayer[b] || 0) - (totalPlayedByPlayer[a] || 0) || a.localeCompare(b);
         });
 
-        // Header
         const headerRow = document.createElement('tr');
         headerRow.appendChild(document.createElement('th'));
         sortedPlayers.forEach(p => {
@@ -624,7 +703,6 @@
         });
         thead.appendChild(headerRow);
 
-        // Build Rows
         sortedPlayers.forEach(p1 => {
             const row = document.createElement('tr');
             const rowHeader = document.createElement('th');
@@ -646,7 +724,6 @@
                         tooltip.textContent = `Matches as partners:\n` + cellInfo.details.join('\n');
                         td.appendChild(tooltip);
 
-                        // Tap toggle event listener for mobile devices
                         td.addEventListener('click', (e) => {
                             e.stopPropagation();
                             document.querySelectorAll('.has-tooltip.active').forEach(el => {
@@ -687,24 +764,21 @@
     function renderAll() {
         populateSelects();
         renderPlayerManagement();
-        const { indStats, pairStats } = calculateStats();
-        renderIndividualStandings(indStats);
+        const { indStats, pairStats, eloRatings } = calculateStats();
+        renderIndividualStandings(indStats, eloRatings);
         renderPairStandings(pairStats);
         renderMatrix();
         renderMatchHistory();
     }
 
-    // Dismiss active mobile tooltips when clicking outside
     document.addEventListener('click', () => {
         document.querySelectorAll('.has-tooltip.active').forEach(el => el.classList.remove('active'));
     });
 
-    // Attach listeners to update choices dynamically when selection changes
     ['t1p1', 't1p2', 't2p1', 't2p2'].forEach(id => {
         document.getElementById(id).addEventListener('change', populateSelects);
     });
 
-    // Form Submissions
     document.getElementById('match-form').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -753,7 +827,6 @@
         input.value = '';
     });
 
-    // Initial Load
     renderAll();
 </script>
 
