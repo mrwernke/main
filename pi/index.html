@@ -136,9 +136,11 @@
         .has-tooltip {
             position: relative;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .has-tooltip:hover .tooltip {
+        .has-tooltip:hover .tooltip,
+        .has-tooltip.active .tooltip {
             visibility: visible;
             opacity: 1;
         }
@@ -218,16 +220,10 @@
                 <!-- Team 1 Box -->
                 <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 16px; border-radius: 6px; border: 1px solid #e0e0e0; display: flex; flex-direction: column; gap: 12px;">
                     <h3 style="margin: 0; color: var(--primary-color); font-size: 1.05rem;">Team 1</h3>
+                    <select id="t1p1" required></select>
+                    <select id="t1p2" required></select>
                     <div class="form-group">
-                        <label>Player 1</label>
-                        <select id="t1p1" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Player 2</label>
-                        <select id="t1p2" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Team 1 Score</label>
+                        <label>Score</label>
                         <input type="number" id="t1-score" min="0" required placeholder="0">
                     </div>
                 </div>
@@ -235,16 +231,10 @@
                 <!-- Team 2 Box -->
                 <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 16px; border-radius: 6px; border: 1px solid #e0e0e0; display: flex; flex-direction: column; gap: 12px;">
                     <h3 style="margin: 0; color: var(--primary-color); font-size: 1.05rem;">Team 2</h3>
+                    <select id="t2p1" required></select>
+                    <select id="t2p2" required></select>
                     <div class="form-group">
-                        <label>Player 1</label>
-                        <select id="t2p1" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Player 2</label>
-                        <select id="t2p2" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Team 2 Score</label>
+                        <label>Score</label>
                         <input type="number" id="t2-score" min="0" required placeholder="0">
                     </div>
                 </div>
@@ -380,7 +370,6 @@
         const input = prompt("Enter passcode required to authorize deletion:");
         if (input === null) return false;
         
-        // Passcode verification logic constructed dynamically
         const expected = String.fromCharCode(78, 80, 80);
         if (input === expected) {
             return true;
@@ -408,7 +397,6 @@
                 opt.value = p;
                 opt.textContent = p;
                 
-                // Disable if selected in another dropdown
                 if (selectedValues.includes(p) && p !== currentVal) {
                     opt.disabled = true;
                 }
@@ -633,6 +621,15 @@
                         tooltip.className = 'tooltip';
                         tooltip.textContent = `Matches as partners:\n` + cellInfo.details.join('\n');
                         td.appendChild(tooltip);
+
+                        // Tap toggle event listener for mobile devices
+                        td.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            document.querySelectorAll('.has-tooltip.active').forEach(el => {
+                                if (el !== td) el.classList.remove('active');
+                            });
+                            td.classList.toggle('active');
+                        });
                     }
                 }
                 row.appendChild(td);
@@ -672,6 +669,11 @@
         renderMatrix();
         renderMatchHistory();
     }
+
+    // Dismiss active mobile tooltips when clicking outside
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.has-tooltip.active').forEach(el => el.classList.remove('active'));
+    });
 
     // Attach listeners to update choices dynamically when selection changes
     ['t1p1', 't1p2', 't2p1', 't2p2'].forEach(id => {
