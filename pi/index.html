@@ -372,14 +372,8 @@
         }
     ];
 
-    let players = JSON.parse(localStorage.getItem('euchre_players')) || defaultPlayers;
-    let matches = JSON.parse(localStorage.getItem('euchre_matches')) || defaultMatches;
-
-    function saveData() {
-        localStorage.setItem('euchre_players', JSON.stringify(players));
-        localStorage.setItem('euchre_matches', JSON.stringify(matches));
-    }
-
+let players = defaultPlayers;
+    let matches = defaultMatches;
     // Pre-computed SHA-256 passcode hash
     const PI_EXPECTED_HASH = "45801015f01768e8defcf6da14b98a6ab3e94062d50427db6041df06158f53b8";
 
@@ -470,16 +464,16 @@
             return;
         }
 
-        players = players.filter(p => p !== playerName);
-        saveData();
+players = players.filter(p => p !== playerName);
+        savePlayersToCloud();
         renderAll();
     }
 
     async function deleteMatch(matchId) {
         const isAuthorized = await verifyPasscode();
         if (!isAuthorized) return;
-        matches = matches.filter(m => m.id !== matchId);
-        saveData();
+matches = matches.filter(m => m.id !== matchId);
+        saveAllMatchesToCloud();
         renderAll();
     }
 
@@ -818,32 +812,82 @@
             t2p1, t2p2, t2Score
         };
 
-        matches.push(newMatch);
-        saveData();
-        renderAll();
-
-        document.getElementById('t1-score').value = '';
-        document.getElementById('t2-score').value = '';
-    });
-
-    document.getElementById('add-player-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const input = document.getElementById('new-player-name');
-        const name = input.value.trim();
-
-        if (players.includes(name)) {
-            alert('A player with this name already exists.');
-            return;
-        }
-
-        players.push(name);
-        saveData();
-        renderAll();
-        input.value = '';
-    });
-
+matches.push(newMatch);
     renderAll();
-</script>
+    saveMatchToCloud(newMatch); // Replaces the old saveData()
+
+    document.getElementById('t1-score').value = '';
+    document.getElementById('t2-score').value = '';
+});
+
+document.getElementById('add-player-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('new-player-name');
+    const name = input.value.trim();
+
+    if (players.includes(name)) {
+        alert('A player with this name already exists.');
+        return;
+    }
+
+    players.push(name);
+    renderAll();
+    savePlayersToCloud(); // Replaces the old saveData()
+    input.value = '';
+});
+
+// --- GOOGLE SHEETS CLOUD FUNCTIONS ---
+const API_URL = "https://script.google.com/macros/s/AKfycbzAOuvxCcpOuWX_8mohnw6EJ1NlClZ169ih6k2s8d7nnoaT6k3xitCjnph8FZrBs6dp/exec"; 
+
+async function savePlayersToCloud() {
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'updatePlayers', players: players })
+        });
+    } catch (e) {
+        console.error("Cloud save failed:", e);
+    }
+}
+
+async function saveMatchToCloud(newMatch) {
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'addMatch', match: newMatch })
+        });
+    } catch (e) {
+        console.error("Cloud save failed:", e);
+    }
+}
+
+// Paste the new function right here!
+async function saveAllMatchesToCloud() {
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'updateMatches', matches: matches })
+        });
+    } catch (e) {
+        console.error("Cloud save failed:", e);
+    }
+}
+
+// Replaces your initial renderAll() at the very bottom
+async function loadCloudData() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        if (data.players && data.players.length > 0) players = data.players;
+        if (data.matches && data.matches.length > 0) matches = data.matches;
+        renderAll();
+    } catch (error) {
+        console.error("Error loading from Sheets:", error);
+        renderAll(); // Fallback to empty/default if offline
+    }
+}
+
+loadCloudData();       
 
 </body>
 </html>
