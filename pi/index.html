@@ -219,6 +219,12 @@
 <div class="container">
     <h1>Pi League Tracker</h1>
 
+    
+<div id="cloud-status" style="padding:12px; margin-bottom:12px; background:#fff3cd; color:#664d03; border-radius:6px;">
+  Connecting to Google Sheets...
+</div>
+
+    
     <!-- 1. Submit Match Form -->
     <div class="card">
         <h2>Submit Match Score</h2>
@@ -873,20 +879,62 @@ async function saveAllMatchesToCloud() {
 }
 
 // Replaces your initial renderAll() at the very bottom
+
+
+
+
 async function loadCloudData() {
+    const status = document.getElementById('cloud-status');
+
+    status.textContent = 'Connecting to Google Sheets...';
+    status.style.background = '#fff3cd';
+    status.style.color = '#664d03';
+
     try {
         const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error('HTTP status: ' + response.status);
+        }
+
         const data = await response.json();
-        if (data.players && data.players.length > 0) players = data.players;
-        if (data.matches && data.matches.length > 0) matches = data.matches;
+
+        if (!Array.isArray(data.players) ||
+            !Array.isArray(data.matches)) {
+            throw new Error('Response is missing players or matches arrays.');
+        }
+
+        players = data.players;
+        matches = data.matches;
+
         renderAll();
+
+        status.textContent =
+            'Connected to Google Sheets successfully. ' +
+            players.length + ' players and ' +
+            matches.length + ' matches loaded.';
+
+        status.style.background = '#d4edda';
+        status.style.color = '#155724';
+
     } catch (error) {
-        console.error("Error loading from Sheets:", error);
-        renderAll(); // Fallback to empty/default if offline
+        status.textContent =
+            'GOOGLE SHEETS ERROR: ' +
+            (error.message || String(error)) +
+            '. Showing default data instead.';
+
+        status.style.background = '#f8d7da';
+        status.style.color = '#721c24';
+
+        console.error('Error loading from Sheets:', error);
+        renderAll();
     }
 }
 
-loadCloudData();       
+loadCloudData();
+
+
+    
 
 </body>
 </html>
