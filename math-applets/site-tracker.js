@@ -6,6 +6,24 @@ const SESSION_GAP_MS = 30 * 60 * 1000; // 30 minutes of inactivity starts a new 
 
 let hasLoggedThisPage = false;
 
+function getDeviceAndBrowser() {
+  const ua = navigator.userAgent || '';
+  const uaData = navigator.userAgentData;
+  const browser = uaData?.brands?.find(({ brand }) => !/not.?a.?brand/i.test(brand))?.brand
+    || (/Edg\//.test(ua) ? 'Edge'
+      : /Firefox\//.test(ua) ? 'Firefox'
+        : /Chrome\//.test(ua) ? 'Chrome'
+          : /Safari\//.test(ua) && !/Chrome\//.test(ua) ? 'Safari'
+            : 'Unknown');
+  const device = uaData?.mobile ? 'mobile'
+    : /iPad|Tablet|PlayBook|Silk/i.test(ua) ? 'tablet'
+      : /Mobi|Android/i.test(ua) && !/Android.*\bMobile\b/i.test(ua) ? 'tablet'
+        : /Mobi|iPhone|Android.*\bMobile\b/i.test(ua) ? 'mobile'
+          : 'desktop';
+
+  return { device, browser };
+}
+
 export function logVisit() {
   if (hasLoggedThisPage) return;
 
@@ -52,12 +70,17 @@ export function logVisit() {
     const cleanPath = location.pathname.replace(/^\/main\//, '/');
     const pageLabel = rawTitle ? `${rawTitle} (${cleanPath})` : cleanPath;
 
+    const { device, browser } = getDeviceAndBrowser();
+
     // 5. Send payload in the background
     const payload = JSON.stringify({
       userId: uid,
       page: pageLabel,
       visitCount: visitCount,
-      referrer: referrerLabel
+      referrer: referrerLabel,
+      isCanvas: isIframe && /canvas/i.test(referrerHost),
+      device,
+      browser
     });
 
     hasLoggedThisPage = true;
