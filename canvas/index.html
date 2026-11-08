@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canvas Skill Check Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 16px;
+      background: #f7f9fc;
+    }
+    button, a {
+      display: inline-block;
+      padding: 12px 16px;
+      margin: 5px 5px 12px 0;
+      font-size: 16px;
+    }
+    #viewer {
+      width: 100%;
+      height: 750px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid #ccc;
+    }
+    #viewer iframe {
+      width: 100%;
+      height: 820px;
+      border: 0;
+      position: relative;
+      top: -70px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Canvas New Quiz Test</h2>
+  <p>Click below to load one quiz.</p>
+
+  <button onclick="loadQuiz()">Load Test Quiz</button>
+
+  <a id="directLink"
+     href="https://carmel.instructure.com/courses/180212/assignments/1983841"
+     target="_blank" rel="noopener">
+    Open directly in Canvas
+  </a>
+
+  <div id="viewer">
+    <p>The quiz has not loaded yet.</p>
+  </div>
+
+  <script>
+    const quizURL =
+      "https://carmel.instructure.com/courses/180212/assignments/1983841";
+
+    function loadQuiz() {
+      const viewer = document.getElementById("viewer");
+      viewer.replaceChildren();
+
+      const iframe = document.createElement("iframe");
+      iframe.src = quizURL;
+      iframe.title = "Canvas Skill Check";
+      iframe.setAttribute("loading", "eager");
+
+      viewer.appendChild(iframe);
+    }
+  </script>
+
+</body>
+</html>
