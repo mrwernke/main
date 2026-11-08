@@ -50,6 +50,7 @@ jobs:
           cp -R sat-math-prep/dist dist/sat-math-prep
           cp -R pi dist/pi
           cp -R grades dist/grades
+          cp -R canvas dist/canvas
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
