@@ -16,6 +16,7 @@
         button { background: var(--primary-color); color: #fff; border: none; cursor: pointer; font-weight: bold; }
         button:hover { opacity: 0.9; }
         button.btn-danger { background: #d32f2f; }
+        button:disabled { opacity: 0.5; cursor: default; }
         .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 160px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px; }
         th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
@@ -23,7 +24,16 @@
         .student-name { text-align: left; font-weight: bold; }
         .hidden { display: none !important; }
         .status-tag { font-size: 0.75rem; color: #666; margin-top: 2px; }
-        
+        .sync-bar { font-size: 0.8rem; padding: 6px 12px; border-radius: 4px; margin-left: 12px; display: inline-block; font-weight: 500; }
+        .sync-bar.ok   { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+        .sync-bar.err  { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+        .sync-bar.busy { background: #fff9c4; color: #f57f17; border: 1px solid #ffe082; }
+
+        /* Dropped student styling */
+        tr.dropped-student { background-color: #fafafa; opacity: 0.75; }
+        tr.dropped-student td.student-name { color: #666; font-style: italic; }
+        .dropped-badge { display: inline-block; background: #e0e0e0; color: #555; font-size: 0.7rem; font-weight: normal; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-style: normal; }
+
         /* Modal Overlay */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 10000; }
         .auth-box { background: white; padding: 30px; border-radius: 8px; text-align: center; max-width: 350px; width: 90%; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
@@ -45,8 +55,11 @@
 </div>
 
 <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="color: var(--primary-color); margin:0;">Canvas Grade Processor</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <h1 style="color: var(--primary-color); margin:0;">Canvas Grade Processor</h1>
+            <span id="sync-status" class="sync-bar hidden"></span>
+        </div>
         <button class="btn-danger" id="clear-cache-btn">Clear All Saved Data</button>
     </div>
 
@@ -69,6 +82,14 @@
             <div class="form-group">
                 <label>Section Filter</label>
                 <select id="section-select"><option value="ALL">All Sections</option></select>
+            </div>
+            <div class="form-group">
+                <label>Roster Status</label>
+                <select id="roster-filter">
+                    <option value="ACTIVE" selected>Active Students</option>
+                    <option value="ALL">All (Include Dropped)</option>
+                    <option value="DROPPED">Dropped Students Only</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>Grades CSV (Selected Unit)</label>
@@ -130,6 +151,9 @@
 </div>
 
 <script>
+    // ── Dedicated Master Spreadsheet Apps Script Endpoint ────────────────────
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlHigdGvJDaYA8WbQ66Ib-prAukyB48waq2dpR3_amJm8-KtAPGORzDF78X3mLP6PdkA/exec';
+
     // Unit prefix mapping strictly defining valid Skill Checks per unit
     const unitPrefixes = {
         1: /^S\d+/i,
@@ -154,7 +178,7 @@
     let currentUnit = 1;
     let currentView = 'HW';
 
-    // Pre-computed SHA-256 passcode hash
+    // ── Passcode auth ────────────────────────────────────────────────────────
     const EXPECTED_HASH = "45801015f01768e8defcf6da14b98a6ab3e94062d50427db6041df06158f53b8";
     async function hashText(text) {
         const msgUint8 = new TextEncoder().encode(text);
@@ -178,9 +202,7 @@
         if (inputHash === EXPECTED_HASH) {
             document.getElementById('auth-overlay').style.display = 'none';
             statusError.style.display = 'none';
-            if (typeof loadFromStorage === 'function') {
-                loadFromStorage();
-            }
+            await loadFromMasterSheet();
         } else {
             statusError.style.color = '#d32f2f';
             statusError.style.display = 'block';
@@ -190,33 +212,55 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const authBtn = document.getElementById('auth-btn');
-        const passcodeBtn = document.getElementById('passcode-input');
-
-        if (authBtn) {
-            authBtn.addEventListener('click', checkAuth);
-        }
-        if (passcodeBtn) {
-            passcodeBtn.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') checkAuth();
-            });
-        }
+        const passcodeInput = document.getElementById('passcode-input');
+        if (authBtn) authBtn.addEventListener('click', checkAuth);
+        if (passcodeInput) passcodeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkAuth();
+        });
     });
 
-    // LocalStorage Persistence
-    function saveToStorage() {
-        localStorage.setItem('canvas_units_data', JSON.stringify(unitsData));
-        localStorage.setItem('canvas_hw_scale', document.getElementById('hw-scale').value);
-        localStorage.setItem('canvas_late_penalty', document.getElementById('late-penalty').value);
+    // ── Sync status indicator ────────────────────────────────────────────────
+    let syncTimeout = null;
+    function setSyncStatus(state, msg, persistent = false) {
+        if (syncTimeout) clearTimeout(syncTimeout);
+        const el = document.getElementById('sync-status');
+        el.className = `sync-bar ${state}`;
+        el.textContent = msg;
+        el.classList.remove('hidden');
+        if (!persistent) {
+            syncTimeout = setTimeout(() => {
+                el.classList.add('hidden');
+            }, 4000);
+        }
     }
 
-    function loadFromStorage() {
-        const stored = localStorage.getItem('canvas_units_data');
-        if (stored) {
-            try { unitsData = JSON.parse(stored); } catch(e){}
+    // ── Master Sheet Sync ────────────────────────────────────────────────────
+    async function loadFromMasterSheet() {
+        setSyncStatus('busy', '⏳ Loading from Google Sheet…', true);
+        try {
+            const url = `${SCRIPT_URL}?action=getAll&t=${Date.now()}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data.ok && data.units) {
+                for (let u = 1; u <= 8; u++) {
+                    if (data.units[u]) {
+                        unitsData[u] = data.units[u];
+                    }
+                }
+                saveToLocalStorage();
+                setSyncStatus('ok', '✓ Master Sheet loaded');
+            } else {
+                loadFromLocalStorage();
+                setSyncStatus('ok', '✓ Loaded local cache');
+            }
+        } catch (err) {
+            loadFromLocalStorage();
+            setSyncStatus('err', '⚠ Sheet unavailable — loaded local cache');
         }
+
         const savedScale = localStorage.getItem('canvas_hw_scale');
         if (savedScale) document.getElementById('hw-scale').value = savedScale;
-        
         const savedPenalty = localStorage.getItem('canvas_late_penalty');
         if (savedPenalty) document.getElementById('late-penalty').value = savedPenalty;
 
@@ -224,12 +268,95 @@
         renderTable();
     }
 
+    async function syncUnitGradesToSheet(unitNum) {
+        setSyncStatus('busy', `⏳ Syncing Unit ${unitNum} to Sheet…`, true);
+        const u = unitsData[unitNum];
+        try {
+            const body = JSON.stringify({
+                action: 'saveUnitGrades',
+                unit: unitNum,
+                students: u.grades,
+                headers: u.headers,
+                hwCols: u.hwCols,
+                scCols: u.scCols
+            });
+
+            const res = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body,
+                redirect: 'follow'
+            });
+            const data = await res.json();
+            if (data.ok) {
+                setSyncStatus('ok', `✓ Unit ${unitNum} saved (${data.activeCount} active, ${data.droppedCount} dropped)`);
+            } else {
+                setSyncStatus('err', '⚠ Error saving to Sheet');
+            }
+        } catch (err) {
+            setSyncStatus('err', '⚠ Sheet offline — saved locally');
+        }
+    }
+
+    async function syncLateRecordsToSheet(unitNum) {
+        setSyncStatus('busy', `⏳ Syncing Late Records Unit ${unitNum}…`, true);
+        const u = unitsData[unitNum];
+        try {
+            const body = JSON.stringify({
+                action: 'saveLateRecords',
+                unit: unitNum,
+                records: u.late
+            });
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body,
+                redirect: 'follow'
+            });
+            setSyncStatus('ok', `✓ Late records Unit ${unitNum} saved`);
+        } catch (err) {
+            setSyncStatus('err', '⚠ Error saving late records');
+        }
+    }
+
+    async function clearAllSheetData() {
+        setSyncStatus('busy', '⏳ Clearing all Sheet data…', true);
+        try {
+            const body = JSON.stringify({ action: 'clearAll' });
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body,
+                redirect: 'follow'
+            });
+            setSyncStatus('ok', '✓ Master Sheet cleared');
+        } catch (err) {
+            setSyncStatus('err', '⚠ Could not clear Sheet');
+        }
+    }
+
+    // ── LocalStorage ─────────────────────────────────────────────────────────
+    function saveToLocalStorage() {
+        localStorage.setItem('canvas_units_data', JSON.stringify(unitsData));
+        localStorage.setItem('canvas_hw_scale', document.getElementById('hw-scale').value);
+        localStorage.setItem('canvas_late_penalty', document.getElementById('late-penalty').value);
+    }
+
+    function loadFromLocalStorage() {
+        const stored = localStorage.getItem('canvas_units_data');
+        if (stored) {
+            try { unitsData = JSON.parse(stored); } catch(e) {}
+        }
+    }
+
+    // ── Event Handlers ───────────────────────────────────────────────────────
     document.getElementById('clear-cache-btn').addEventListener('click', () => {
-        if (confirm("Are you sure you want to clear all stored gradebook data?")) {
+        if (confirm("Are you sure you want to clear all stored gradebook data? This will also clear all tabs on your Google Sheet.")) {
             localStorage.removeItem('canvas_units_data');
             initUnitsData();
             updateUIForUnit();
             renderTable();
+            clearAllSheetData();
         }
     });
 
@@ -255,47 +382,98 @@
         renderTable();
     });
 
+    document.getElementById('section-select').addEventListener('change', renderTable);
+    document.getElementById('roster-filter').addEventListener('change', renderTable);
+
     document.getElementById('grades-csv').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        Papa.parse(file, { header: true, skipEmptyLines: true, complete: res => {
+        Papa.parse(file, { header: true, skipEmptyLines: true, complete: async res => {
             const u = unitsData[currentUnit];
-            u.headers = res.meta.fields;
-            u.grades = res.data.filter(r => r.Student && 
+            
+            // Incoming parsed fields
+            const incomingHeaders = res.meta.fields || [];
+            const incomingStudents = res.data.filter(r => r.Student && 
                 r.Student !== "Points Possible" && 
                 !r.Student.includes("Points Possible") && 
                 !r.Student.includes("Student, Test"));
-            
-            u.hwCols = u.headers.filter(h => h.includes("HW") || h.includes("Analysis") || h.includes("Review"));
-            
-            const prefixRegex = unitPrefixes[currentUnit];
-            u.scCols = u.headers.filter(h => {
-                const cleanHeader = h.trim();
-                const isSummary = cleanHeader.includes("Current") || cleanHeader.includes("Final") || cleanHeader.includes("Score") || cleanHeader.includes("Points");
-                return prefixRegex.test(cleanHeader) && !isSummary;
+
+            // Build map of existing students to preserve dropped students
+            const existingMap = {};
+            u.grades.forEach(s => {
+                const key = String(s.ID || s.Student || '').trim();
+                if (key) existingMap[key] = s;
             });
 
-            saveToStorage();
+            // Merge incoming: incoming are Active
+            const incomingKeySet = new Set();
+            const mergedList = [];
+
+            incomingStudents.forEach(st => {
+                const key = String(st.ID || st.Student || '').trim();
+                if (!key) return;
+                incomingKeySet.add(key);
+
+                const existing = existingMap[key] || {};
+                const studentMerged = Object.assign({}, existing, st);
+                studentMerged.Status = 'Active';
+                mergedList.push(studentMerged);
+            });
+
+            // Preserve previously recorded students who are missing from incoming CSV (mark Dropped)
+            Object.keys(existingMap).forEach(key => {
+                if (!incomingKeySet.has(key)) {
+                    const dropped = existingMap[key];
+                    dropped.Status = 'Dropped';
+                    mergedList.push(dropped);
+                }
+            });
+
+            // Merge headers
+            const headerSet = new Set(u.headers);
+            incomingHeaders.forEach(h => headerSet.add(h));
+            u.headers = Array.from(headerSet);
+            u.grades = mergedList;
+
+            // Update column selections if not already selected
+            if (u.hwCols.length === 0) {
+                u.hwCols = u.headers.filter(h => h.includes("HW") || h.includes("Analysis") || h.includes("Review"));
+            }
+
+            const prefixRegex = unitPrefixes[currentUnit];
+            if (u.scCols.length === 0) {
+                u.scCols = u.headers.filter(h => {
+                    const cleanHeader = h.trim();
+                    const isSummary = cleanHeader.includes("Current") || cleanHeader.includes("Final") || cleanHeader.includes("Score") || cleanHeader.includes("Points");
+                    return prefixRegex.test(cleanHeader) && !isSummary;
+                });
+            }
+
+            saveToLocalStorage();
             populateSections();
             populateColumnCheckboxes();
             updateFileStatuses();
             renderTable();
+
+            // Sync to Google Sheet
+            await syncUnitGradesToSheet(currentUnit);
         }});
     });
 
     document.getElementById('late-csv').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        Papa.parse(file, { header: true, skipEmptyLines: true, complete: res => {
+        Papa.parse(file, { header: true, skipEmptyLines: true, complete: async res => {
             unitsData[currentUnit].late = res.data;
-            saveToStorage();
+            saveToLocalStorage();
             updateFileStatuses();
             renderTable();
+
+            await syncLateRecordsToSheet(currentUnit);
         }});
     });
 
-    document.getElementById('section-select').addEventListener('change', renderTable);
-
+    // ── Display & Helpers ────────────────────────────────────────────────────
     function cleanSection(sec) {
         if (!sec) return "Unknown";
         if (sec.includes("ENL")) return "G4 ENL";
@@ -310,7 +488,13 @@
 
     function updateFileStatuses() {
         const u = unitsData[currentUnit];
-        document.getElementById('grades-status').textContent = u.grades.length ? `Loaded (${u.grades.length} students)` : `No file uploaded for Unit ${currentUnit}`;
+        const activeCount = u.grades.filter(s => s.Status !== 'Dropped').length;
+        const droppedCount = u.grades.filter(s => s.Status === 'Dropped').length;
+        const gradeStatusText = u.grades.length 
+            ? `Loaded (${activeCount} active${droppedCount ? `, ${droppedCount} dropped` : ''})` 
+            : `No file uploaded for Unit ${currentUnit}`;
+
+        document.getElementById('grades-status').textContent = gradeStatusText;
         document.getElementById('late-status').textContent = u.late.length ? `Loaded (${u.late.length} records)` : `No file uploaded for Unit ${currentUnit}`;
     }
 
@@ -346,7 +530,7 @@
         }
 
         const selectableHeaders = u.headers.filter(h => 
-            !['Student', 'ID', 'SIS User ID', 'SIS Login ID', 'Section'].includes(h) && 
+            !['Student', 'ID', 'SIS User ID', 'SIS Login ID', 'Section', 'Status'].includes(h) && 
             !h.includes("Current") && !h.includes("Final") && !h.includes("Unposted")
         );
 
@@ -364,14 +548,14 @@
         document.querySelectorAll('.hw-col-cb').forEach(cb => {
             cb.addEventListener('change', () => {
                 u.hwCols = Array.from(document.querySelectorAll('.hw-col-cb:checked')).map(c => c.value);
-                saveToStorage();
+                saveToLocalStorage();
             });
         });
 
         document.querySelectorAll('.sc-col-cb').forEach(cb => {
             cb.addEventListener('change', () => {
                 u.scCols = Array.from(document.querySelectorAll('.sc-col-cb:checked')).map(c => c.value);
-                saveToStorage();
+                saveToLocalStorage();
             });
         });
     }
@@ -391,9 +575,10 @@
         return 0;
     }
 
-    function saveAndRender() {
-        saveToStorage();
+    async function saveAndRender() {
+        saveToLocalStorage();
         renderTable();
+        await syncUnitGradesToSheet(currentUnit);
     }
 
     function renderTable() {
@@ -405,9 +590,29 @@
         if (!u.grades.length) return;
 
         const selectedSec = document.getElementById('section-select').value;
+        const rosterFilter = document.getElementById('roster-filter').value;
+
         let students = u.grades;
-        if (selectedSec !== 'ALL') students = students.filter(r => cleanSection(r.Section) === selectedSec);
-        students.sort((a, b) => a.Student.localeCompare(b.Student));
+        
+        // Filter by section
+        if (selectedSec !== 'ALL') {
+            students = students.filter(r => cleanSection(r.Section) === selectedSec);
+        }
+
+        // Filter by roster status
+        if (rosterFilter === 'ACTIVE') {
+            students = students.filter(r => r.Status !== 'Dropped');
+        } else if (rosterFilter === 'DROPPED') {
+            students = students.filter(r => r.Status === 'Dropped');
+        }
+
+        // Sort: Active first, then name
+        students.sort((a, b) => {
+            const aDropped = a.Status === 'Dropped';
+            const bDropped = b.Status === 'Dropped';
+            if (aDropped !== bDropped) return aDropped ? 1 : -1;
+            return (a.Student || '').localeCompare(b.Student || '');
+        });
 
         if (currentView === 'HW') {
             const hwCols = u.hwCols;
@@ -417,13 +622,21 @@
             
             students.forEach(s => {
                 let sum = 0;
+                const isDropped = s.Status === 'Dropped';
                 const cells = hwCols.map(c => {
                     const val = parseFloat(s[c]);
                     if (!isNaN(val)) { sum += val; return val; }
                     return '-';
                 });
                 const grade = calculateHWGrade(sum, scale);
-                tbody.innerHTML += `<tr><td class="student-name">${s.Student}</td><td>${cleanSection(s.Section)}</td><td><strong>${grade}%</strong></td><td>${sum}</td>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
+                const badge = isDropped ? '<span class="dropped-badge">Dropped</span>' : '';
+                tbody.innerHTML += `<tr class="${isDropped ? 'dropped-student' : ''}">
+                    <td class="student-name">${s.Student}${badge}</td>
+                    <td>${cleanSection(s.Section)}</td>
+                    <td><strong>${grade}%</strong></td>
+                    <td>${sum}</td>
+                    ${cells.map(c => `<td>${c}</td>`).join('')}
+                </tr>`;
             });
         } else {
             const scCols = u.scCols;
@@ -437,6 +650,7 @@
             students.forEach(s => {
                 let subCount = 0;
                 let points = 0;
+                const isDropped = s.Status === 'Dropped';
                 const cells = scCols.map(c => {
                     const strVal = s[c];
                     if (strVal !== undefined && strVal !== "" && strVal !== null) {
@@ -463,8 +677,9 @@
                 let score = totalChecks > 0 ? (subCount / totalChecks) * 50 : 0;
                 score = Math.max(0, score - (lateCount * penalty));
 
-                tbody.innerHTML += `<tr>
-                    <td class="student-name">${s.Student}</td>
+                const badge = isDropped ? '<span class="dropped-badge">Dropped</span>' : '';
+                tbody.innerHTML += `<tr class="${isDropped ? 'dropped-student' : ''}">
+                    <td class="student-name">${s.Student}${badge}</td>
                     <td>${cleanSection(s.Section)}</td>
                     <td><strong>${score.toFixed(2)}</strong></td>
                     <td>${subCount} / ${totalChecks}</td>
