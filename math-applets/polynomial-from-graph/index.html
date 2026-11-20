@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Write a Polynomial from a Graph</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="./styles.css?v=20261120p6f" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Write a Polynomial from a Graph</h1>
+      <section class="features-work" aria-label="Write a polynomial from its graph">
+        <div class="graph-pane p6-graph">
+          <div class="pane-head">
+            <h2>The graph</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <svg id="plane" viewBox="0 0 520 520" role="img" aria-labelledby="graph-title graph-description"></svg>
+        </div>
+        <div class="question-pane">
+          <h2>Build the equation</h2>
+          <ol class="feature-questions" id="questions"></ol>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <p class="p6-summary"><strong>Factored Form:</strong> <span class="math" id="completed-factored"></span></p>
+            <p class="p6-summary"><strong>Standard Form:</strong> <span class="math" id="completed-standard"></span></p>
+            <button type="button" id="try-again">Try Again</button>
+            <button type="button" id="next-example">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261120p7"></script>
+    <script type="module" src="../back-navigation.js?v=20261120p7"></script>
+  </body>
+</html>

@@ -5,11 +5,12 @@
 .pane-head .picker-label { color: var(--muted); }
 #example-picker { padding: 7px 9px; font-size: .9rem; letter-spacing: normal; text-transform: none; }
 
-#plane { cursor: default; }
+#plane { --curve-color: #1677c8; cursor: default; }
+body:is([data-family="quadratic"], [data-family="polynomial"]) #plane { --curve-color: #a45138; }
 .grid { fill: none; stroke: #dde4ea; stroke-width: 1; }
 .axes { fill: none; stroke: var(--ink); stroke-width: 2; }
-.curve { fill: none; stroke: #1677c8; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-body[data-family="quadratic"] .curve { stroke: #a45138; }
+.curve { fill: none; stroke: var(--curve-color); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.curve-arrow { fill: var(--curve-color); }
 
 .feature-questions { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .fq { display: none; padding: 5px 0; }

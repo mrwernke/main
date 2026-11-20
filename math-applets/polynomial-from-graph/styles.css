@@ -1,0 +1,47 @@
+.p6-graph .picker-label { color: var(--muted); }
+.p6-point { fill: #a45138; stroke: white; stroke-width: 1.5px; }
+.p6-point-label {
+  fill: #713524;
+  font: 700 17px "Trebuchet MS", sans-serif;
+  paint-order: stroke;
+  stroke: white;
+  stroke-width: 4px;
+}
+.p6-expression {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+}
+.p6-expression .group { gap: 4px; }
+.p6-expression .coord { width: 52px; padding-inline: 4px; }
+.p6-expression .factor-field { width: 65px; }
+.p6-expression input { font: 0.95rem "Trebuchet MS", sans-serif; }
+.p6-expression .fraction { flex-shrink: 0; }
+.p6-expression .fraction .numerator { padding-bottom: 4px; }
+.p6-expression .fraction .denominator { padding-top: 4px; }
+.p6-question button { margin-top: 7px; }
+.p6-question .feedback:empty { display: none; }
+.p6-note { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+.p6-summary { margin: 6px 0 10px; }
+.p6-distribution {
+  width: min(100%, 340px);
+  height: auto;
+  margin-top: 4px;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+.foil-first { --foil-color: #b92e2a; }
+.foil-second { --foil-color: #267a5e; }
+.foil-arrow { stroke: var(--foil-color); stroke-width: 2px; fill: none; }
+.foil-head { fill: var(--foil-color); }
+.foil-term { fill: var(--ink); font: 20px Georgia, "Times New Roman", serif; }
+.foil-product { color: var(--foil-color); }
+@media (min-width: 901px) {
+  .p6-graph { position: sticky; top: 16px; }
+}
+@media (max-width: 480px) {
+  .features-work { padding: 12px; }
+}

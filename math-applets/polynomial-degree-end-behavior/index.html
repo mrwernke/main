@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Polynomial Degree and End Behavior</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="../polynomial-features/styles.css" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Polynomial Degree and End Behavior</h1>
+
+      <section class="features-work" aria-label="Polynomial degree and end behavior practice">
+        <div class="graph-pane">
+          <div class="pane-head">
+            <h2>The graph</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <svg id="plane" viewBox="0 0 520 520" role="img" aria-labelledby="graph-title graph-description"></svg>
+          <dialog class="graph-point-dialog" id="root-dialog" aria-labelledby="root-title">
+            <strong id="root-title"></strong>
+            <p>Click each matching point on the x-axis. With the keyboard, use the arrow keys to move and press Enter to select.</p>
+            <p id="root-status" class="feedback" aria-live="polite"></p>
+          </dialog>
+        </div>
+
+        <div class="question-pane">
+          <h2>Analyze the graph</h2>
+          <p>Use the least degree consistent with the turns and how the graph meets the x-axis.</p>
+          <ol class="feature-questions">
+            <li class="fq">
+              <form id="turns-form">
+                <div class="fq-row">
+                  <label class="fq-label" for="turn-count">Number of turns:</label>
+                  <input class="coord" id="turn-count" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="degree-form">
+                <div class="fq-row">
+                  <label class="fq-label" for="degree">Degree:</label>
+                  <input class="coord" id="degree" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="single-roots-form">
+                <div class="fq-row">
+                  <span class="fq-label">Are all the roots shown single roots?</span>
+                  <button type="submit" value="yes">Yes</button>
+                  <button type="submit" value="no">No</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="double-roots-form">
+                <div class="fq-row">
+                  <span class="fq-label">Any Double Roots?</span>
+                  <button type="submit" value="yes">Yes</button>
+                  <button type="submit" value="no">No</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="triple-roots-form">
+                <div class="fq-row">
+                  <span class="fq-label">Any Triple Roots?</span>
+                  <button type="submit" value="yes">Yes</button>
+                  <button type="submit" value="no">No</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="sign-form">
+                <div class="fq-row">
+                  <label class="fq-label" for="leading-sign">Leading Coefficient Sign:</label>
+                  <select id="leading-sign">
+                    <option value="">choose</option>
+                    <option value="positive">Positive</option>
+                    <option value="negative">Negative</option>
+                  </select>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq" id="q-ends">
+              <form id="ends-form">
+                <div class="fq-row">
+                  <span class="fq-label">End Behavior:</span>
+                  <span class="group end-part"><span>As x → −∞, y →</span><select id="left-end" aria-label="Left end behavior"><option value="" selected>choose</option><option value="positive">+∞</option><option value="negative">−∞</option></select></span>
+                  <span class="group end-part"><span>As x → +∞, y →</span><select id="right-end" aria-label="Right end behavior"><option value="" selected>choose</option><option value="positive">+∞</option><option value="negative">−∞</option></select></span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" id="ends-feedback" aria-live="polite"></p>
+              </form>
+            </li>
+          </ol>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <button id="next-example" type="button">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261120c"></script>
+    <script type="module" src="../back-navigation.js?v=20261120p2"></script>
+  </body>
+</html>

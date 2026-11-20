@@ -1,0 +1,8 @@
+#plane.picking-graph-point { cursor: crosshair; }
+.graph-point-marker { fill: #a45138; stroke: #fff; stroke-width: 1.5px; }
+.graph-point-label { fill: #713524; font: bold 15px "Trebuchet MS", sans-serif; paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+.graph-point-cursor { display: none; fill: none; stroke: #a45138; stroke-width: 2px; pointer-events: none; }
+#plane.picking-graph-point:focus-visible .graph-point-cursor { display: block; }
+.graph-point-dialog { position: static; width: auto; margin: 12px 0 0; padding: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+.graph-point-dialog p { margin: 5px 0 0; }
+.graph-point-dialog .feedback:empty { display: none; }

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Polynomial Function Characteristics</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Polynomial Function Characteristics</h1>
+
+      <section class="features-work" aria-label="Polynomial characteristics practice">
+        <div class="graph-pane">
+          <div class="pane-head">
+            <h2>The graph</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <svg id="plane" viewBox="0 0 520 520" role="img" aria-labelledby="graph-title graph-description"></svg>
+          <dialog class="graph-point-dialog" id="extremum-dialog" aria-labelledby="extremum-title">
+            <strong id="extremum-title"></strong>
+            <p>Click each matching point on the graph. With the keyboard, focus the graph, move with the arrow keys, and press Enter.</p>
+            <p id="extremum-status" class="feedback" aria-live="polite"></p>
+          </dialog>
+        </div>
+
+        <div class="question-pane">
+          <h2>Identify the key characteristics</h2>
+          <ol class="feature-questions">
+            <li class="fq">
+              <form id="domain">
+                <div class="fq-row">
+                  <span class="fq-label">Domain:</span>
+                  <span>All Real Numbers</span>
+                  <button type="submit" value="true">True</button>
+                  <button type="submit" value="false">False</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="range">
+                <div class="fq-row" id="range-statement">
+                  <span class="fq-label">Range:</span>
+                  <span>All Real Numbers</span>
+                  <button type="submit" value="true">True</button>
+                  <button type="submit" value="false">False</button>
+                </div>
+                <div class="fq-row" id="range-inequality" hidden>
+                  <span class="fq-label">Range:</span>
+                  <span class="math">y</span>
+                  <select id="range-symbol" aria-label="Inequality symbol">
+                    <option value="" selected>?</option>
+                    <option value="&gt;">&gt;</option>
+                    <option value="≥">≥</option>
+                    <option value="&lt;">&lt;</option>
+                    <option value="≤">≤</option>
+                  </select>
+                  <input class="coord" id="range-value" inputmode="text" autocomplete="off" aria-label="Range boundary value" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="count">
+                <div class="fq-row">
+                  <label class="fq-label" for="zero-count">How many zeros are there?</label>
+                  <input class="coord" id="zero-count" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="zeros">
+                <div class="fq-row">
+                  <span class="fq-label">What are the zeros?</span>
+                  <span class="fq-row" id="zero-inputs"></span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="global-extrema">
+                <div class="fq-row">
+                  <span class="fq-label">Are there any global (absolute) extrema?</span>
+                  <button type="submit" value="yes">Yes</button>
+                  <button type="submit" value="no">No</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="local-extrema">
+                <div class="fq-row">
+                  <span class="fq-label">Are there any other local (relative) extrema?</span>
+                  <button type="submit" value="yes">Yes</button>
+                  <button type="submit" value="no">No</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+          </ol>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <p>You identified every key characteristic of this graph.</p>
+            <button id="next-example" type="button">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261120b"></script>
+    <script type="module" src="../back-navigation.js?v=20261120p2"></script>
+  </body>
+</html>

@@ -38,6 +38,17 @@ const unitApplets = [
       { code: 'Q19', title: 'Solving Systems', path: '/math-applets/quadratic-systems/' },
     ],
   },
+  {
+    name: 'Unit 4: Polynomial Functions',
+    applets: [
+      { code: 'P2', title: 'Graph a Polynomial in Factored Form', path: '/math-applets/polynomial-factored-graphing/' },
+      { code: 'P3', title: 'Polynomial Characteristics', path: '/math-applets/polynomial-features/' },
+      { code: 'P4', title: 'Polynomial Degree and End Behavior', path: '/math-applets/polynomial-degree-end-behavior/' },
+      { code: 'P5', title: 'Solutions from a Polynomial Graph', path: '/math-applets/polynomial-graph-solutions/' },
+      { code: 'P6', title: 'Write a Polynomial from a Graph', path: '/math-applets/polynomial-from-graph/' },
+      { code: 'P7', title: 'Write a Polynomial from Its Roots', path: '/math-applets/polynomial-from-roots/' },
+    ],
+  },
 ];
 
 const normalizePath = path => path.replace(/index\.html$/, '').replace(/\/?$/, '/');

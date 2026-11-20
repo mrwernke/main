@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Solutions from a Polynomial Graph</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Solutions from a Polynomial Graph</h1>
+
+      <section class="features-work" aria-label="Polynomial solutions practice">
+        <div class="graph-pane">
+          <div class="pane-head">
+            <h2>The graph</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <svg id="plane" viewBox="0 0 520 520" role="img" aria-labelledby="graph-title graph-description"></svg>
+        </div>
+
+        <div class="question-pane">
+          <h2>Analyze the graph</h2>
+          <p>Use the least degree consistent with the graph. Count real and nonreal complex zeros separately.</p>
+          <ol class="feature-questions">
+            <li class="fq">
+              <form id="turns-form">
+                <div class="fq-row">
+                  <label class="fq-label" for="turn-count">Number of Turns:</label>
+                  <input class="coord" id="turn-count" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="degree-form">
+                <div class="fq-row">
+                  <label class="fq-label" for="degree">Degree:</label>
+                  <input class="coord" id="degree" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="real-zeros-form">
+                <div class="fq-row">
+                  <label class="fq-label" for="real-zeros">Number of Real Zeros:</label>
+                  <input class="coord" id="real-zeros" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq">
+              <form id="complex-zeros-form">
+                <div class="fq-row">
+                  <label class="fq-label" for="complex-zeros">Number of Complex Zeros:</label>
+                  <input class="coord" id="complex-zeros" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+          </ol>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <button id="next-example" type="button">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="../back-navigation.js?v=20261120p6"></script>
+  </body>
+</html>

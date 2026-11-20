@@ -2,6 +2,7 @@ import {
   families, evaluate, xIntercepts, yIntercept, rangeSymbol, extremumType, parseInteger,
 } from './model.mjs';
 import { clearConfetti, fireConfetti } from '../quadratic-graphing/confetti.js';
+import { drawCurveWithArrows, drawGrid, graphLimit, svgElement, xPixel, yPixel } from './graph.js';
 
 const $ = selector => document.querySelector(selector);
 const family = document.body.dataset.family === 'quadratic' ? 'quadratic' : 'absolute';
@@ -11,17 +12,6 @@ const current = () => bank[index];
 const done = new Set();
 const ORDER = ['domain', 'range', 'symmetry', 'vertex', 'extremum', 'xints', 'yint', 'ends'];
 const TOTAL = ORDER.length;
-
-const SIZE = 520, HALF = SIZE / 2, UNITS = 10, SCALE = (SIZE - 40) / (2 * UNITS);
-const sx = x => HALF + x * SCALE;
-const sy = y => HALF - y * SCALE;
-const NS = 'http://www.w3.org/2000/svg';
-
-function el(name, attrs) {
-  const node = document.createElementNS(NS, name);
-  Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
-  return node;
-}
 
 function feedback(id, text, good = false) {
   const element = $(id);
@@ -37,29 +27,22 @@ function markInput(input, good) {
 function drawGraph() {
   const svg = $('#plane');
   svg.replaceChildren();
-  let gridD = '';
-  for (let i = -UNITS; i <= UNITS; i++) {
-    gridD += `M ${sx(i)} ${sy(-UNITS)} L ${sx(i)} ${sy(UNITS)} M ${sx(-UNITS)} ${sy(i)} L ${sx(UNITS)} ${sy(i)} `;
-  }
-  svg.append(el('path', { d: gridD, class: 'grid' }));
-  svg.append(el('path', {
-    d: `M ${sx(-UNITS)} ${sy(0)} L ${sx(UNITS)} ${sy(0)} M ${sx(0)} ${sy(-UNITS)} L ${sx(0)} ${sy(UNITS)}`,
-    class: 'axes',
-  }));
-  for (let i = -UNITS; i <= UNITS; i += 2) {
-    if (i === 0) continue;
-    const xLabel = el('text', { x: sx(i), y: sy(0) + 16, 'text-anchor': 'middle', class: 'tick' });
-    xLabel.textContent = i;
-    const yLabel = el('text', { x: sx(0) - 7, y: sy(i) + 4, 'text-anchor': 'end', class: 'tick' });
-    yLabel.textContent = i;
-    svg.append(xLabel, yLabel);
+  drawGrid(svg);
+  const fn = current();
+  if (family === 'quadratic') {
+    const tailY = Math.sign(fn.a) * graphLimit;
+    const offset = Math.sqrt((tailY - fn.k) / fn.a);
+    const left = Math.max(-graphLimit, fn.h - offset);
+    const right = Math.min(graphLimit, fn.h + offset);
+    drawCurveWithArrows(svg, x => evaluate(family, fn, x), left, right);
+    return;
   }
   const points = [];
   for (let x = -10.3; x <= 10.3; x += 0.05) {
-    const y = evaluate(family, current(), x);
-    if (y >= -10.4 && y <= 10.4) points.push(`${sx(x).toFixed(1)},${sy(y).toFixed(1)}`);
+    const y = evaluate(family, fn, x);
+    if (y >= -10.4 && y <= 10.4) points.push(`${xPixel(x).toFixed(1)},${yPixel(y).toFixed(1)}`);
   }
-  svg.append(el('polyline', { points: points.join(' '), class: 'curve' }));
+  svg.append(svgElement('polyline', { points: points.join(' '), class: 'curve' }));
 }
 
 function markDone(name, message = '') {

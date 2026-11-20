@@ -1,0 +1,4 @@
+.p7-prompt p { margin: 0; font-size: 1.1rem; }
+@media (min-width: 901px) {
+  .p7-prompt { position: sticky; top: 16px; }
+}

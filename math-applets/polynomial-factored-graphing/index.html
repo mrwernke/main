@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Graph a Polynomial in Factored Form</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="../polynomial-features/styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20261120p2d" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Graph a Polynomial in Factored Form</h1>
+
+      <section class="features-work" aria-label="Polynomial graphing practice">
+        <div class="graph-pane">
+          <div class="pane-head">
+            <h2>The graph</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <div class="p2-plot">
+            <svg id="plane" viewBox="0 0 520 520" role="img" aria-labelledby="graph-title"></svg>
+            <div id="tail-options" hidden role="group" aria-label="End-behavior choices">
+              <button type="button" data-direction="1">↑ Up</button>
+              <button type="button" data-direction="-1">↓ Down</button>
+            </div>
+            <div id="turn-options" hidden role="group" aria-label="Turning point side">
+              <button type="button" data-direction="1">Above</button>
+              <button type="button" data-direction="-1">Below</button>
+            </div>
+          </div>
+          <dialog class="graph-point-dialog" id="plot-dialog" aria-labelledby="plot-title">
+            <strong id="plot-title"></strong>
+            <p>Click the graph, or move with the arrow keys and press Enter.</p>
+            <p class="feedback" id="plot-status" aria-live="polite"></p>
+          </dialog>
+        </div>
+
+        <div class="question-pane">
+          <h2>Build the graph</h2>
+          <p class="p2-equation math" id="equation" aria-live="polite"></p>
+          <ol class="feature-questions" id="questions">
+            <li class="fq" id="q-degree">
+              <form>
+                <div class="fq-row">
+                  <label class="fq-label" for="degree">Degree:</label>
+                  <input class="coord" id="degree" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq" id="q-turns">
+              <form>
+                <div class="fq-row">
+                  <label class="fq-label" for="max-turns">Maximum Possible Turns:</label>
+                  <input class="coord" id="max-turns" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq" id="q-y-intercept">
+              <form>
+                <div class="fq-row">
+                  <span class="fq-label">y-intercept:</span>
+                  <span class="group math">(0, <input class="coord" id="y-intercept" inputmode="text" autocomplete="off" aria-label="y-coordinate of the y-intercept" />)</span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq" id="q-single-roots">
+              <form>
+                <div class="fq-row">
+                  <span class="fq-label">Are all zeros single roots?</span>
+                  <button type="submit" value="yes">Yes</button>
+                  <button type="submit" value="no">No</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq" id="q-repeated-roots">
+              <form>
+                <div class="fq-row">
+                  <label class="fq-label" for="double-count">Double Roots:</label>
+                  <input class="coord" id="double-count" inputmode="numeric" autocomplete="off" />
+                  <label class="fq-label" for="triple-count">Triple Roots:</label>
+                  <input class="coord" id="triple-count" inputmode="numeric" autocomplete="off" />
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq" id="q-zeros">
+              <form>
+                <div class="fq-row">
+                  <span class="fq-label">List each distinct zero once:</span>
+                  <span class="fq-row" id="zero-inputs"></span>
+                  <button type="submit">Check</button>
+                </div>
+                <p class="feedback" aria-live="polite"></p>
+              </form>
+            </li>
+            <li class="fq" id="q-plot-y">
+              <span class="fq-label">Plot the y-intercept.</span>
+              <p class="feedback" aria-live="polite"></p>
+            </li>
+            <li class="fq" id="q-plot-x">
+              <span class="fq-label">Plot all x-intercepts.</span>
+              <p class="feedback" aria-live="polite"></p>
+            </li>
+            <li class="fq" id="q-right-end">
+              <span class="fq-label">Right End Behavior:</span> Choose Up or Down on the right side of the graph.
+              <p class="feedback" aria-live="polite"></p>
+            </li>
+            <li class="fq" id="q-left-end">
+              <span class="fq-label">Left End Behavior:</span> Choose Up or Down on the left side of the graph.
+              <p class="feedback" aria-live="polite"></p>
+            </li>
+            <li class="fq" id="q-turning-points">
+              <span class="fq-label">Turning Points:</span>
+              <p class="turn-instruction" id="turn-instruction"></p>
+              <p class="feedback" aria-live="polite"></p>
+            </li>
+          </ol>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Graph Complete</h2>
+            <button id="next-example" type="button">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261120p2f"></script>
+    <script type="module" src="../back-navigation.js?v=20261120p2"></script>
+  </body>
+</html>
