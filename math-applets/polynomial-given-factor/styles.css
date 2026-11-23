@@ -1,0 +1,26 @@
+.problem-line { font-size: 1.35rem; }
+#given { margin-left: 1rem; }
+.work-area { min-width: 0; }
+.work-area h3 { margin: 0 0 8px; }
+#work-history p { margin: 12px 0; overflow-wrap: anywhere; }
+#work-fields { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+#work-fields:not(:empty) { margin: 12px 0; }
+#work-fields label { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#work-fields input[type="text"] { width: 185px; max-width: 100%; }
+#work-fields .equation-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; width: 100%; }
+#work-fields .equation-row input { width: 125px; }
+#answer-fields .choice-row { display: flex; flex-wrap: wrap; gap: 12px; }
+#answer-fields .choice-row label { display: inline-flex; gap: 5px; align-items: center; }
+#question-note { overflow-wrap: anywhere; }
+#factoring-help aside { margin-top: 12px; }
+#factoring-help h2 { font-size: 1.15rem; }
+#factoring-help .feedback:empty { display: none; }
+#factoring-help .square-root-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0; }
+#factoring-help .square-root-row input { width: 70px; min-width: 0; }
+@media (min-width: 801px) {
+  .practice-layout.wide-work { row-gap: 0; }
+  .wide-work .work-area { display: contents; }
+  .wide-work .division-area { grid-area: 1 / 1; min-width: 0; }
+  .wide-work #question { grid-area: 1 / 2; }
+  .wide-work .written-work { grid-area: 2 / 1 / 3 / -1; min-width: 0; }
+}

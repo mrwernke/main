@@ -47,6 +47,10 @@ const unitApplets = [
       { code: 'P5', title: 'Solutions from a Polynomial Graph', path: '/math-applets/polynomial-graph-solutions/' },
       { code: 'P6', title: 'Write a Polynomial from a Graph', path: '/math-applets/polynomial-from-graph/' },
       { code: 'P7', title: 'Write a Polynomial from Its Roots', path: '/math-applets/polynomial-from-roots/' },
+      { code: 'P8', title: 'Factor and Solve Polynomial Equations', path: '/math-applets/polynomial-factoring/' },
+      { code: 'P9', title: 'Polynomial Long Division', path: '/math-applets/polynomial-long-division/' },
+      { code: 'P10', title: 'Polynomial Synthetic Division', path: '/math-applets/polynomial-synthetic-division/' },
+      { code: 'P11', title: 'Factor and Solve Given a Factor or Zero', path: '/math-applets/polynomial-given-factor/' },
     ],
   },
 ];

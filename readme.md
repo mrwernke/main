@@ -6,7 +6,7 @@ paused) as subdirectories.
 
 ## Projects
 
-- `main-site/` - Wernke's Math Resources homepage: four unit dropdowns listing skills (with applet links where available) above topic-grouped applet collection cards.
+- `main-site/` - Wernke's Math Resources homepage: four unit dropdowns listing skills, with applet links where available.
 - `math-applets/domain-range-helper/` - first math applet, under development.
 - `math-applets/absolute-value-graphing/` - guided absolute-value graphing lab.
 - `math-applets/quadratic-graphing/` - quadratic graphing lab with standard, factored, and vertex form practice.
@@ -24,6 +24,9 @@ paused) as subdirectories.
 - `math-applets/quadratic-story-sketch/` - sketch a quadratic from real-world context using the y-intercept, opening direction, and vertex position.
 - `math-applets/quadratic-modeling/` - build real-world quadratic models from vertices, intercepts, and points.
 - `math-applets/quadratic-systems/` - solve systems containing a quadratic function by setting expressions equal and factoring.
+- `math-applets/polynomial-long-division/` - guided polynomial long division with six examples.
+- `math-applets/polynomial-synthetic-division/` - guided synthetic division with seven examples.
+- `math-applets/polynomial-given-factor/` - factor and solve using a given factor, root, zero, or x-intercept.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
 - `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
 - `math-applets/quadratic-features/` - the same characteristics lab for quadratic graphs.
@@ -41,6 +44,87 @@ Every applet page loads `math-applets/back-navigation.js` for its nearby-applet
 header links. When adding an applet, register its code, title, path, and position
 in the appropriate unit list in that file; the shared header then shows up to
 two previous and two next applets on every page.
+
+The P9 long-division applet places answer blanks in the division work as
+students divide leading terms, multiply, subtract, and bring down the next term.
+Six examples use linear and quadratic divisors; quadratic-divisor subtraction
+steps remind students to include all remaining terms. The summary shows the
+original division equal to the quotient, plus the remainder over the divisor
+when needed.
+
+```bash
+node --test math-applets/polynomial-long-division/model.test.mjs
+```
+
+The P10 synthetic-division applet uses seven linear-divisor examples, including
+the two reference problems. Students first enter the dividend's coefficients in
+the setup, including zeros for missing powers. They then find the synthetic
+number, bring down the leading coefficient, and enter each product and sum in
+the aligned work. The last two examples use non-monic divisors and fractional
+synthetic numbers, with integer products; a reminder beneath the work tells
+students to divide the unboxed coefficients by the divisor's leading coefficient,
+leaving the remainder unchanged. A
+preset box marks where the final remainder belongs. After entering the quotient
+and remainder, students decide whether the divisor is a factor.
+The summary shows the quotient and remainder and the original division equal
+to the answer, with a remainder over the divisor when needed.
+
+```bash
+node --test math-applets/polynomial-synthetic-division/model.test.mjs
+```
+
+The P11 applet has ten examples with the given factor, root, zero, or
+x-intercept displayed alongside the equation. Students use synthetic division,
+write their factoring and solving steps beneath the division work while
+following prompts on the right, and decide whether the quotient
+factors further. Three quotients factor as quadratics, two use grouping followed
+by a difference of squares, three are solved with square roots, and two use
+quadratic form. Optional
+P8-style factoring boxes and grouping displays appear beside the relevant
+steps. Optional square-root help checks isolation and both roots separately
+for each applicable factor before students enter all solutions. When help is
+closed, the written work can use the full practice width.
+Students set factors equal to zero, find all solutions, and count real and
+imaginary complex solutions.
+
+```bash
+node --test math-applets/polynomial-given-factor/model.test.mjs
+```
+
+The P8 polynomial factoring applet separates factor practice from factor-and-solve
+practice. Factor practice starts with three GCF examples: students identify the
+GCF, see each term divided by it, and enter the entire resulting expression
+inside one set of parentheses. Seven examples continue by entering each complete
+factor of the remaining quadratic, including a difference of squares and a
+repeated factor displayed with an exponent; the final example also practices a
+cubic GCF. An optional Q15-style box opens below the factoring step and checks
+the product and sum as students enter its two integers. Factor-and-solve
+practice has five examples each for GCF, grouping, and quadratic form, plus
+four mixed examples combining a GCF with grouping or quadratic form. It uses
+the same factoring steps, asks students to set each distinct
+factor equal to zero, then asks for all distinct zeros. Grouping and
+quadratic-form examples include complex zeros. Equivalent
+radical forms such as `sqrt(1/2)` and `sqrt(2)/2` are accepted;
+mixed practice asks which method to use at each factoring stage and displays
+the expression remaining after the GCF beside the second method's steps.
+
+Factor Only also includes eight grouping examples. Students color and group
+the terms, identify both GCFs, divide each group, and factor out the shared
+binomial. The quadratic factor comes first and remains first if factored
+further. The last four continue by factoring a difference of squares, with
+the same optional box helper.
+
+Quadratic Form practice has ten quartics in x²: five monic, four with prime
+leading coefficients, and one with leading coefficient 6. The first factoring
+step automatically shows a box using x⁴ and x² terms; it accepts x²-coefficients
+for non-monic examples.
+Examples 4, 5, 9, and 10 continue factoring one or both quadratic factors,
+with a separate optional box beside each additional factoring step. When both
+factors need further factoring, the student's left-to-right order is preserved.
+
+```bash
+node --test math-applets/polynomial-factoring/model.test.mjs
+```
 
 The Q17 completing-the-square solver starts with three monic equations and one
 extended equation with a leading coefficient of 2. Students move the constant,

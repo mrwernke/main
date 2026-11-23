@@ -1,4 +1,7 @@
-.p7-prompt p { margin: 0; font-size: 1.1rem; }
-@media (min-width: 901px) {
-  .p7-prompt { position: sticky; top: 16px; }
+.features-work { grid-template-columns: minmax(0, 1fr); }
+.p7-prompt .pane-head { align-items: flex-start; }
+.p7-prompt #problem-statement { flex: 1 1 320px; margin: 0; font-size: 1.1rem; line-height: 1.5; }
+@media (max-width: 600px) {
+  .p7-prompt .picker-label { order: -1; margin-left: auto; }
+  .p7-prompt #problem-statement { flex-basis: 100%; }
 }

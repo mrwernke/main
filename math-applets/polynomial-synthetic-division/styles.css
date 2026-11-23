@@ -1,0 +1,32 @@
+main { max-width: 1100px; }
+.features-work { display: block; }
+.instruction { color: var(--muted); line-height: 1.5; }
+#problem { font-size: 1.35rem; }
+.practice-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(230px, 0.7fr); gap: 24px; align-items: start; margin: 20px 0; }
+.division-scroll { overflow-x: auto; min-width: 0; }
+.division { width: max-content; min-width: 100%; }
+.division-row { display: grid; grid-template-columns: 64px repeat(var(--columns), 64px); min-height: 46px; }
+.division-row > span { display: flex; align-items: center; justify-content: center; padding: 3px; }
+.division-row .root-cell { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); border-bottom-right-radius: 7px; }
+.division-row .result-cell { border-top: 2px solid var(--ink); }
+.division-row .result-cell:last-child { align-items: flex-start; padding-top: 0; }
+.division-row .remainder-value { display: flex; align-items: center; justify-content: center; width: 48px; min-height: 36px; border: 2px solid var(--ink); border-top: 0; }
+.remainder-value .division-input { border: 0; }
+.division-input { width: 100%; min-width: 0; padding: 5px 2px; text-align: center; font: 0.95rem "Trebuchet MS", sans-serif; }
+#question { border-left: 1px solid var(--line); padding-left: 20px; }
+#question-title { margin: 0 0 8px; }
+#answer-fields { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 12px 0; }
+#answer-fields label { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#answer-fields input[type="text"] { width: 185px; max-width: 100%; }
+.fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; text-align: center; line-height: 1.2; }
+.fraction .numerator { border-bottom: 1px solid currentColor; padding: 0 6px 2px; }
+.fraction .denominator { padding: 2px 6px 0; }
+#feedback:empty { display: none; }
+#complete { text-align: left; }
+.summary-pair { display: flex; flex-wrap: wrap; column-gap: 28px; }
+.summary-pair p { margin: 0 0 10px; }
+@media (max-width: 800px) {
+  .practice-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  #question { border-left: 0; border-top: 1px solid var(--line); padding: 16px 0 0; }
+}
+@media (max-width: 480px) { .features-work { padding: 14px; } }

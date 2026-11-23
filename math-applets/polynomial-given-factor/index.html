@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Factor and Solve Given a Factor or Zero</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="../polynomial-synthetic-division/styles.css?v=20261123h" />
+    <link rel="stylesheet" href="../polynomial-factoring/factoring-aids.css?v=20261123a" />
+    <link rel="stylesheet" href="./styles.css?v=20261123g" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Factor and Solve Given a Factor or Zero</h1>
+      <section class="features-work" aria-label="Factor and solve practice">
+        <div class="pane-head">
+          <h2>Factor and solve</h2>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <p class="problem-line math"><span id="problem" aria-live="polite"></span> <span id="given"></span></p>
+        <p class="instruction">Use the given information to divide by a factor, then factor and solve. Use ^ for exponents and i for imaginary numbers. On smaller screens, scroll the synthetic work sideways.</p>
+        <div class="practice-layout">
+          <div class="work-area">
+            <div class="division-area">
+              <h3>Synthetic division</h3>
+              <div class="division-scroll" tabindex="0" aria-label="Scrollable synthetic division work">
+                <div id="division" class="division math" aria-label="Synthetic division work" aria-live="polite"></div>
+              </div>
+            </div>
+            <div class="written-work">
+              <div id="work-history" aria-live="polite"></div>
+              <div id="work-fields"></div>
+            </div>
+          </div>
+          <form id="question" novalidate>
+            <p class="fq-label" id="question-title"></p>
+            <p id="question-note" class="instruction"></p>
+            <div id="answer-fields"></div>
+            <button type="submit">Check</button>
+            <p id="feedback" class="feedback" role="status"></p>
+            <div id="factoring-help"></div>
+          </form>
+        </div>
+        <section id="complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <p><strong>Factored form:</strong> <span id="final-factored" class="math"></span> = 0</p>
+          <p><strong>Roots/Zeros/Solutions:</strong> <span id="final-roots" class="math"></span></p>
+          <p><strong>Number of Real Solutions:</strong> <span id="final-real"></span> &nbsp; <strong>Number of Imaginary Complex Solutions:</strong> <span id="final-complex"></span></p>
+          <button type="button" id="try-again">Try Again</button>
+          <button type="button" id="next-example">Next Example</button>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261123m"></script>
+    <script type="module" src="../back-navigation.js?v=20261123p11"></script>
+  </body>
+</html>

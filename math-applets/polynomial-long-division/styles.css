@@ -1,0 +1,37 @@
+main { max-width: 1100px; }
+.features-work { display: block; }
+.instruction { color: var(--muted); line-height: 1.5; }
+#problem { font-size: 1.35rem; }
+.practice-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(230px, 0.7fr); gap: 24px; align-items: start; margin: 20px 0; }
+.division-scroll { overflow-x: auto; min-width: 0; }
+.division { width: max-content; min-width: 100%; }
+.division-row { display: grid; grid-template-columns: 82px repeat(var(--columns), 64px); align-items: stretch; min-height: 35px; }
+.division-row > span { display: flex; align-items: center; justify-content: center; padding: 5px 2px; white-space: pre; }
+.division-row .divisor { justify-content: flex-end; padding-right: 10px; }
+.division-row .dividend-cell { border-top: 2px solid var(--ink); }
+.division-row .dividend-cell.first { border-left: 2px solid var(--ink); border-top-left-radius: 7px; }
+.division-row .product-cell { border-bottom: 1px solid var(--ink); }
+.division-row .division-input-cell { min-width: 0; padding: 2px; }
+.division-row .division-input-cell.product-cell { gap: 3px; }
+.division-input { width: 100%; min-width: 0; padding: 5px 2px; text-align: center; font: 0.9rem "Trebuchet MS", sans-serif; }
+.division-term { position: relative; }
+.subtract-prefix, .subtract-suffix { position: absolute; }
+.subtract-prefix { right: 100%; }
+.subtract-suffix { left: 100%; }
+#question { border-left: 1px solid var(--line); padding-left: 20px; }
+#question-title { margin: 0 0 8px; }
+#answer-fields { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 12px 0; }
+#answer-fields label { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#answer-fields input { width: 185px; max-width: 100%; }
+.fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; text-align: center; line-height: 1.2; }
+.fraction .numerator { border-bottom: 1px solid currentColor; padding: 0 6px 2px; }
+.fraction .denominator { padding: 2px 6px 0; }
+#feedback:empty { display: none; }
+#complete { text-align: left; }
+.summary-pair { display: flex; flex-wrap: wrap; column-gap: 28px; }
+.summary-pair p { margin: 0 0 10px; }
+@media (max-width: 800px) {
+  .practice-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  #question { border-left: 0; border-top: 1px solid var(--line); padding: 16px 0 0; }
+}
+@media (max-width: 480px) { .features-work { padding: 14px; } }

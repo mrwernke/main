@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Factor and Solve Polynomial Equations</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="./factoring-aids.css?v=20261123a" />
+    <link rel="stylesheet" href="./styles.css?v=20261123g" />
+  </head>
+  <body>
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Factor and Solve Polynomial Equations</h1>
+      <nav id="tracks" aria-label="Practice tracks"></nav>
+      <nav id="sections" aria-label="Factoring methods"></nav>
+      <section class="features-work" aria-label="Polynomial factoring practice">
+        <div class="pane-head p8-header">
+          <h2 id="section-title"></h2>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <div class="question-pane">
+          <h2 id="practice-title"></h2>
+          <p class="math original-equation" id="equation" aria-live="polite"></p>
+          <ol class="feature-questions" id="questions"></ol>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Good Job</h2>
+            <p><strong>Standard Form:</strong> <span class="math" id="final-standard"></span></p>
+            <p><strong>Factored Form:</strong> <span class="math" id="final-factors"></span></p>
+            <p id="roots-summary"><strong>Roots/Zeros/Solutions:</strong> <span class="math" id="final-roots"></span></p>
+            <button type="button" id="try-again">Try Again</button>
+            <button type="button" id="next-example">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261123h"></script>
+    <script type="module" src="../back-navigation.js?v=20261123p9"></script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Polynomial Long Division</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="./styles.css?v=20261123e" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Polynomial Long Division</h1>
+      <section class="features-work" aria-label="Polynomial long division practice">
+        <div class="pane-head">
+          <h2>Long division practice</h2>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <p id="problem" class="math" aria-live="polite"></p>
+        <p class="instruction">Divide, multiply, subtract, and bring down the next term. Use ^ for exponents, such as x^2. On smaller screens, scroll the work sideways to see every term.</p>
+        <div class="practice-layout">
+          <div class="division-scroll" tabindex="0" aria-label="Scrollable long division work">
+            <div id="division" class="division math" aria-label="Long division work" aria-live="polite"></div>
+          </div>
+          <form id="question" novalidate>
+            <p class="fq-label" id="question-title"></p>
+            <p id="question-note" class="instruction"></p>
+            <div id="answer-fields"></div>
+            <button type="submit">Check</button>
+            <p id="feedback" class="feedback" role="status"></p>
+          </form>
+        </div>
+        <section id="complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <div class="summary-pair">
+            <p><strong>Quotient:</strong> <span id="final-quotient" class="math"></span></p>
+            <p><strong>Remainder:</strong> <span id="final-remainder" class="math"></span></p>
+          </div>
+          <p><strong>Answer:</strong> <span id="final-answer" class="math"></span></p>
+          <button type="button" id="try-again">Try Again</button>
+          <button type="button" id="next-example">Next Example</button>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261123f"></script>
+    <script type="module" src="../back-navigation.js?v=20261123p10"></script>
+  </body>
+</html>

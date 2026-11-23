@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Polynomial Synthetic Division</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="./styles.css?v=20261123h" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Polynomial Synthetic Division</h1>
+      <section class="features-work" aria-label="Polynomial synthetic division practice">
+        <div class="pane-head">
+          <h2>Synthetic division practice</h2>
+          <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+        </div>
+        <p id="problem" class="math" aria-live="polite"></p>
+        <p class="instruction">Use the coefficients in descending order, including 0 for any missing term. Enter each answer in the synthetic division work. Use ^ for exponents, such as x^2. On smaller screens, scroll the work sideways to see every number.</p>
+        <div class="practice-layout">
+          <div class="division-scroll" tabindex="0" aria-label="Scrollable synthetic division work">
+            <div id="division" class="division math" aria-label="Synthetic division work" aria-live="polite"></div>
+            <p id="quotient-adjustment" class="instruction" aria-live="polite" hidden></p>
+          </div>
+          <form id="question" novalidate>
+            <p class="fq-label" id="question-title"></p>
+            <p id="question-note" class="instruction"></p>
+            <div id="answer-fields"></div>
+            <button type="submit">Check</button>
+            <p id="feedback" class="feedback" role="status"></p>
+          </form>
+        </div>
+        <section id="complete" hidden aria-live="polite">
+          <h2>Good Job</h2>
+          <div class="summary-pair">
+            <p><strong>Quotient:</strong> <span id="final-quotient" class="math"></span></p>
+            <p><strong>Remainder:</strong> <span id="final-remainder" class="math"></span></p>
+          </div>
+          <p><strong>Answer:</strong> <span id="final-answer" class="math"></span></p>
+          <button type="button" id="try-again">Try Again</button>
+          <button type="button" id="next-example">Next Example</button>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261123m"></script>
+    <script type="module" src="../back-navigation.js?v=20261123p11"></script>
+  </body>
+</html>
