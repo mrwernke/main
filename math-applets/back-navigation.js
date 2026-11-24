@@ -51,6 +51,7 @@ const unitApplets = [
       { code: 'P9', title: 'Polynomial Long Division', path: '/math-applets/polynomial-long-division/' },
       { code: 'P10', title: 'Polynomial Synthetic Division', path: '/math-applets/polynomial-synthetic-division/' },
       { code: 'P11', title: 'Factor and Solve Given a Factor or Zero', path: '/math-applets/polynomial-given-factor/' },
+      { code: 'P12', title: 'Rational Root Theorem', path: '/math-applets/polynomial-rational-roots/' },
     ],
   },
 ];

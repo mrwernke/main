@@ -1,0 +1,10 @@
+#root-setup { margin-bottom: 16px; }
+.root-list { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+.root-list input { width: 250px; max-width: 100%; }
+.root-fraction { min-width: 220px; max-width: 100%; }
+.root-fraction .numerator, .root-fraction .denominator { min-height: 34px; }
+#attempt-history h3 { margin-bottom: 4px; }
+#attempt-history ul { margin: 0 0 16px; padding-left: 24px; }
+#attempt-history li { margin: 4px 0; }
+#work-fields .list-entry { width: 250px; }
+#factoring-help .p8-division { overflow-wrap: anywhere; }

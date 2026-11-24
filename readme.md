@@ -27,6 +27,7 @@ paused) as subdirectories.
 - `math-applets/polynomial-long-division/` - guided polynomial long division with six examples.
 - `math-applets/polynomial-synthetic-division/` - guided synthetic division with seven examples.
 - `math-applets/polynomial-given-factor/` - factor and solve using a given factor, root, zero, or x-intercept.
+- `math-applets/polynomial-rational-roots/` - find possible rational roots, test them, and solve.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
 - `math-applets/absolute-value-features/` - identify key characteristics of absolute value graphs.
 - `math-applets/quadratic-features/` - the same characteristics lab for quadratic graphs.
@@ -89,6 +90,18 @@ imaginary complex solutions.
 
 ```bash
 node --test math-applets/polynomial-given-factor/model.test.mjs
+```
+
+The P12 applet has eight cubic and quartic examples. Students list factors of
+the constant and, for non-monic polynomials, the leading coefficient; they
+combine these into possible rational roots, enter the coefficients once, and
+test any candidate with guided synthetic division. Failed trials remain listed
+when another candidate is tested.
+Successful trials continue into factoring, solving, and counting real and
+imaginary complex solutions, with optional factoring and square-root help.
+
+```bash
+node --test math-applets/polynomial-rational-roots/model.test.mjs
 ```
 
 The P8 polynomial factoring applet separates factor practice from factor-and-solve
