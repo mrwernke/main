@@ -2,7 +2,7 @@ import { checkInteger } from '../polynomial-synthetic-division/model.mjs?v=20261
 import { input } from '../polynomial-synthetic-division/board.mjs?v=20261123a';
 import { checkStep } from '../polynomial-factoring/model.mjs?v=20261123h';
 
-export function addSquareRootHelp({ factor, value, solutions }, index, addHelpToggle, workFields) {
+export function addSquareRootHelp({ factor, value, solutions }, index, addHelpToggle, workFields, checkRoots) {
   const panel = document.createElement('aside');
   panel.id = `square-root-help-${index}`;
   panel.setAttribute('aria-label', `Square root help for ${factor}`);
@@ -53,7 +53,9 @@ export function addSquareRootHelp({ factor, value, solutions }, index, addHelpTo
     first.focus();
   });
   rootsCheck.addEventListener('click', () => {
-    const matches = checkStep({ answers: solutions, roots: true, unordered: true }, [first.value, second.value]);
+    const values = [first.value, second.value];
+    const matches = checkRoots ? checkRoots(values, solutions)
+      : checkStep({ answers: solutions, roots: true, unordered: true }, values);
     [first, second].forEach((element, i) => mark(element, matches[i]));
     const correct = matches.every(Boolean);
     message.textContent = correct ? 'Both solutions are correct.' : 'Enter both square roots, including their signs.';

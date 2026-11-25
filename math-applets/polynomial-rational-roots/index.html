@@ -4,25 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
-    <title>Rational Root Theorem</title>
+    <title>Solve with Rational Root Theorem</title>
     <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
     <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
     <link rel="stylesheet" href="../polynomial-synthetic-division/styles.css?v=20261123h" />
     <link rel="stylesheet" href="../polynomial-factoring/factoring-aids.css?v=20261123a" />
     <link rel="stylesheet" href="../polynomial-given-factor/styles.css?v=20261123g" />
-    <link rel="stylesheet" href="./styles.css?v=20261124a" />
+    <link rel="stylesheet" href="./styles.css?v=20261125f" />
   </head>
   <body data-family="polynomial">
     <main>
       <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
-      <h1>Rational Root Theorem</h1>
+      <h1>Solve with Rational Root Theorem</h1>
       <section class="features-work" aria-label="Rational root theorem practice">
         <div class="pane-head">
           <h2>Factor and solve</h2>
           <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
         </div>
         <p id="problem" class="problem-line math" aria-live="polite"></p>
-        <p class="instruction">Use commas to separate lists. Use ^ for exponents, fractions such as 1/2, i for imaginary numbers, and sqrt(7) for radicals. On smaller screens, scroll synthetic work sideways.</p>
+        <p class="instruction">Use commas to separate lists. Use ^ for exponents, fractions such as 1/2, i for imaginary numbers, and sqrt(7) for radicals (for example, 2sqrt(3)i). On smaller screens, scroll synthetic work sideways.</p>
         <div class="practice-layout">
           <div class="work-area">
             <div class="division-area">
@@ -31,24 +31,33 @@
                 <h3>Failed trials</h3>
                 <ul id="failed-trials"></ul>
               </div>
+              <div id="root-choice"></div>
               <div id="division-area" hidden>
                 <h3>Synthetic division</h3>
                 <div class="division-scroll" tabindex="0" aria-label="Scrollable synthetic division work">
+                  <div id="previous-divisions"></div>
                   <div id="division" class="division math" aria-label="Synthetic division work" aria-live="polite"></div>
                 </div>
+                <div id="division-actions" role="group" aria-label="Synthetic division actions" hidden></div>
                 <p id="quotient-adjustment" class="instruction" hidden></p>
               </div>
             </div>
             <div class="written-work">
               <div id="work-history" aria-live="polite"></div>
               <div id="work-fields"></div>
+              <div id="formula-help"></div>
             </div>
           </div>
           <form id="question" novalidate>
             <p class="fq-label" id="question-title"></p>
             <p id="question-note" class="instruction"></p>
             <div id="answer-fields"></div>
-            <button type="submit">Check</button>
+            <div id="question-actions">
+              <button type="submit" id="check-button" form="question">Check</button>
+              <button type="button" id="skip-trial" hidden></button>
+              <button type="button" id="decision-yes" aria-describedby="question-title question-note feedback" hidden>Yes</button>
+              <button type="button" id="decision-no" aria-describedby="question-title question-note feedback" hidden>No</button>
+            </div>
             <p id="feedback" class="feedback" role="status"></p>
             <div id="factoring-help"></div>
           </form>
@@ -57,13 +66,14 @@
           <h2>Good Job</h2>
           <p><strong>Factored form:</strong> <span id="final-factored" class="math"></span> = 0</p>
           <p><strong>Roots/Zeros/Solutions:</strong> <span id="final-roots" class="math"></span></p>
+          <p id="final-repeated-root" hidden></p>
           <p><strong>Number of Real Solutions:</strong> <span id="final-real"></span> &nbsp; <strong>Number of Imaginary Complex Solutions:</strong> <span id="final-complex"></span></p>
           <button type="button" id="try-again">Try Again</button>
           <button type="button" id="next-example">Next Example</button>
         </section>
       </section>
     </main>
-    <script type="module" src="./app.js?v=20261124a"></script>
-    <script type="module" src="../back-navigation.js?v=20261123p12"></script>
+    <script type="module" src="./app.js?v=20261125s"></script>
+    <script type="module" src="../back-navigation.js?v=20261125p12a"></script>
   </body>
 </html>

@@ -7,7 +7,7 @@
     <title>Solve Using the Quadratic Formula</title>
     <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
     <link rel="stylesheet" href="../quadratic-convert/styles.css" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20261125b" />
   </head>
   <body>
     <main>
@@ -152,7 +152,11 @@
         <div class="answer-row q14-actions"><button id="reset" type="button">Try Again</button></div>
       </section>
     </main>
-    <script type="module" src="./app.js"></script>
-    <script type="module" src="../back-navigation.js"></script>
+    <script type="module" src="./app.js?v=20261125b"></script>
+    <script type="module">
+      if (new URLSearchParams(location.search).get('embedded') !== 'true') {
+        import('../back-navigation.js');
+      }
+    </script>
   </body>
 </html>

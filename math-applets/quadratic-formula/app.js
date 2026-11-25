@@ -758,4 +758,20 @@ $('#next-problem').onclick = () => {
 };
 
 $('#reset').onclick = reset;
-reset();
+const parameters = new URLSearchParams(location.search);
+if (parameters.get('embedded') === 'true') {
+  document.body.classList.add('q14-embedded');
+  $('#equation-label').textContent = 'Solve this quadratic';
+  const coefficients = ['a', 'b', 'c'].map(key => parameters.get(key));
+  if (coefficients.some(value => value === null || !/^-?\d+$/.test(value) || Math.abs(Number(value)) > 100)
+      || Number(coefficients[0]) === 0) {
+    $('#equation').textContent = 'Unable to load quadratic formula help: invalid coefficients.';
+    $('.q14-work').hidden = true;
+  } else {
+    const [a, b, c] = coefficients.map(Number);
+    customProblem = { kind: 'standard', a, b, c };
+    reset();
+    $('#formula-choice-step').hidden = true;
+    $('#formula-step').hidden = false;
+  }
+} else reset();

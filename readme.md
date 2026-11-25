@@ -92,13 +92,31 @@ imaginary complex solutions.
 node --test math-applets/polynomial-given-factor/model.test.mjs
 ```
 
-The P12 applet has eight cubic and quartic examples. Students list factors of
+The P12 applet has 22 cubic and quartic examples with rational, irrational,
+and non-real complex solutions, including repeated roots. Students list factors of
 the constant and, for non-monic polynomials, the leading coefficient; they
 combine these into possible rational roots, enter the coefficients once, and
 test any candidate with guided synthetic division. Failed trials remain listed
-when another candidate is tested.
+when another candidate is tested, and students can abandon a non-root early.
+Checks for numbers in the division work appear below it; the early-skip and
+remainder Yes/No buttons appear beside their prompts.
+After finding a root and writing the factored form, students may continue
+synthetic division directly from the unadjusted bottom row while rational roots
+remain. Yes/No buttons offer continued division and check whether the remaining
+factor factors further. After each successful division, students write the
+updated factors; they can then continue dividing or factor the remaining
+quotient. Once the remaining quotient is linear, they proceed directly to
+solving, so cubics need at most two divisions and quartics at most three. When
+no rational roots remain in a higher-degree quotient, students are directed to
+use a different method.
+Their written factoring work remains below the division. Repeated factors are
+shown with exponents, and double roots are identified and counted once in the
+final solution list and counts.
 Successful trials continue into factoring, solving, and counting real and
 imaginary complex solutions, with optional factoring and square-root help.
+Examples 17, 21, and 22 lead to quadratics with nonzero linear terms and offer
+the Q14 quadratic-formula work below the solution entry, starting with
+coefficient substitution.
 
 ```bash
 node --test math-applets/polynomial-rational-roots/model.test.mjs

@@ -1,11 +1,12 @@
-import { examples, fractionText, checkList, candidateFromInput, syntheticTrial, successfulFactorization, checkSolutions } from './model.mjs?v=20261123a';
+import { examples, fractionText, factoredText, checkList, candidateFromInput, hasRemainingRationalRoot, syntheticTrial, successfulFactorization, advanceKnownFactors, checkSolutions } from './model.mjs?v=20261125i';
+import { algebraicText, checkAlgebraic, continuedTrial, isZero } from './algebraic.mjs?v=20261125c';
 import { polynomialText, checkAnswer, checkInteger, checkRoot } from '../polynomial-synthetic-division/model.mjs?v=20261123n';
 import { numberText, input, renderSyntheticBoard } from '../polynomial-synthetic-division/board.mjs?v=20261123a';
 import { parseRationalNumber } from '../quadratic-convert/model.mjs';
 import { checkStep } from '../polynomial-factoring/model.mjs?v=20261123h';
 import { parsePolynomial } from '../quadratic-systems/model.mjs';
 import { showGroups, groupedDivision, factoringBox } from '../polynomial-factoring/factoring-aids.mjs?v=20261123a';
-import { addSquareRootHelp } from '../polynomial-given-factor/square-root-help.mjs?v=20261123a';
+import { addSquareRootHelp } from '../polynomial-given-factor/square-root-help.mjs?v=20261125a';
 import { clearConfetti, fireConfetti } from '../quadratic-graphing/confetti.js';
 
 const $ = selector => document.querySelector(selector);
@@ -13,10 +14,12 @@ const picker = $('#example-picker');
 const form = $('#question');
 const board = $('#division');
 const setup = $('#root-setup');
+const rootChoice = $('#root-choice');
 const fields = $('#answer-fields');
 const workFields = $('#work-fields');
 const history = $('#work-history');
 const help = $('#factoring-help');
+const formulaHelp = $('#formula-help');
 const feedback = $('#feedback');
 let example;
 let phase;
@@ -29,6 +32,11 @@ let column;
 let factorization;
 let steps;
 let stepIndex;
+let continued;
+let currentDividend;
+let initialFactorization;
+let knownFactors;
+let continuedFactorStep;
 
 function workInput(label) {
   const element = input(label);
@@ -62,12 +70,12 @@ function renderSetup() {
   if (candidatesDone) {
     const possibilities = document.createElement('p');
     possibilities.className = 'math';
-    possibilities.textContent = `Possible rational roots: ± ${example.candidates.map(fractionText).join(', ')}`;
+    possibilities.textContent = `Possible rational roots: ${example.candidates.map(candidate => `± ${fractionText(candidate)}`).join(', ')}`;
     setup.append(possibilities);
   }
 }
 
-function addEquation(equation, labels) {
+function addEquation(equation, labels, container = workFields) {
   const row = document.createElement('div');
   row.className = 'equation-row math';
   const pieces = equation.split('□');
@@ -75,7 +83,7 @@ function addEquation(equation, labels) {
     if (text) row.append(document.createTextNode(text));
     if (index < pieces.length - 1) row.append(workInput(labels[index]));
   });
-  workFields.append(row);
+  container.append(row);
 }
 
 function addResult(text) {
@@ -85,8 +93,13 @@ function addResult(text) {
   history.append(result);
 }
 
+function repeatedRootNote() {
+  return example.repeatedRoots.map(([root, count]) =>
+    `x = ${numberText(root)} is a ${count === 2 ? 'double root' : `root of multiplicity ${count}`}; count it once as a distinct real solution.`).join(' ');
+}
+
 function makePracticeSteps() {
-  const { divisor, quotient, remaining, factorTexts, factored, factorEquations } = factorization;
+  const { divisor, quotient, remaining, grouped, quadraticFactors, distinctFactors, factored, factorEquations } = factorization;
   const outside = polynomialText(divisor);
   const quotientText = polynomialText(quotient);
   const list = [{
@@ -94,7 +107,7 @@ function makePracticeSteps() {
     note: 'Enter the divisor first and the quotient second.',
     equation: '(□)(□) = 0',
     labels: ['Divisor', 'Quotient'],
-    result: `(${outside})(${quotientText}) = 0`,
+    result: `${factoredText([divisor, quotient])} = 0`,
     check: values => [checkAnswer(values[0], [0, ...divisor]), checkAnswer(values[1], quotient)],
   }, {
     title: `Will (${quotientText}) factor more?`,
@@ -103,15 +116,16 @@ function makePracticeSteps() {
   }];
   if (remaining.length > 1) {
     const grouping = quotient.length === 4;
+    const linear = grouping ? grouped.find(factor => factor.length === 2) : null;
+    const quadratic = grouping ? grouped.find(factor => factor.length === 3) : null;
+    const canGroup = grouping && quadratic[1] === 0;
     list.push({
       title: 'Which method should you use next?',
       note: `Choose a method for ${quotientText}.`,
-      options: ['Factorable quadratic', 'GCF', 'Grouping', 'Special quadratic form'],
-      answer: grouping ? 'Grouping' : 'Factorable quadratic',
+      options: ['Factorable quadratic', 'GCF', 'Grouping', 'Special quadratic form', 'Synthetic division'],
+      answer: grouping ? (canGroup ? 'Grouping' : 'Synthetic division') : 'Factorable quadratic',
     });
-    if (grouping) {
-      const linear = remaining.find(factor => factor.length === 2);
-      const quadratic = remaining.find(factor => factor.length === 3);
+    if (canGroup) {
       const [a, b] = linear;
       const constant = quadratic[2];
       const firstGroup = polynomialText([a, b, 0, 0]);
@@ -137,43 +151,61 @@ function makePracticeSteps() {
         check: values => values.map(value => checkAnswer(value, [0, ...linear])),
       });
     }
-    const polynomialAnswers = remaining.map(factor => parsePolynomial(polynomialText(factor).replaceAll('²', '^2').replaceAll('−', '-')));
+    const nextFactors = grouping ? grouped : remaining;
+    const polynomialAnswers = nextFactors.map(factor => parsePolynomial(polynomialText(factor).replaceAll('²', '^2').replaceAll('−', '-')));
     const factorStep = { polynomialAnswers, unordered: true };
     list.push({
-      title: grouping ? 'Factor out the matching expression.' : 'Factor the quadratic quotient.',
-      note: 'Enter both complete factors. Keep the divisor outside.',
+      title: canGroup ? 'Factor out the matching expression.' : grouping ? 'Factor the cubic quotient.' : 'Factor the quadratic quotient.',
+      note: grouping && !canGroup ? 'Find a linear factor and its quadratic quotient. Keep the divisor outside.'
+        : 'Enter both complete factors. Keep the divisor outside.',
       equation: `(${outside})(□)(□) = 0`,
       labels: ['Factor 1', 'Factor 2'],
       box: grouping ? null : { a: quotient[0], b: quotient[1], c: quotient[2] },
-      result: `${factored} = 0`,
+      result: `${factoredText([divisor, ...nextFactors])} = 0`,
       check: values => checkStep(factorStep, values),
     });
+    if (quadraticFactors) {
+      const linearText = polynomialText(linear);
+      const answers = quadraticFactors.map(factor => parsePolynomial(polynomialText(factor).replaceAll('−', '-')));
+      list.push({
+        title: 'Factor the remaining quadratic.',
+        note: 'Enter both complete factors, including repeated factors.',
+        equation: `(${outside})(${linearText})(□)(□) = 0`,
+        labels: ['Factor 1', 'Factor 2'],
+        box: { a: quadratic[0], b: quadratic[1], c: quadratic[2] },
+        result: `${factored} = 0`,
+        check: values => checkStep({ polynomialAnswers: answers, unordered: true }, values),
+      });
+    }
   }
   list.push({
     title: 'Set each factor equal to zero.',
-    note: 'Enter each complete factor. Factors may be entered in any order.',
-    equation: factorTexts.map(() => '□ = 0').join(', '),
-    labels: factorTexts.map((factor, index) => `Zero factor ${index + 1}`),
-    result: factorTexts.map(factor => `${factor} = 0`).join(', '),
+    note: `Enter each complete factor. Factors may be entered in any order. ${repeatedRootNote()}`.trim(),
+    equation: distinctFactors.map(() => '□ = 0').join(', '),
+    labels: distinctFactors.map((factor, index) => `Zero factor ${index + 1}`),
+    result: distinctFactors.map(factor => `${factor} = 0`).join(', '),
     check: values => checkStep(factorEquations, values),
   });
   const quadratic = remaining.find(factor => factor.length === 3);
-  const squareRootHelp = quadratic ? [{
+  const squareRootHelp = quadratic && quadratic[0] === 1 && quadratic[1] === 0 ? [{
     factor: polynomialText(quadratic),
     value: -quadratic[2],
     solutions: example.solutions.filter(solution => solution.includes('i') || solution.includes('sqrt')),
   }] : [];
+  const quadraticHint = quadratic && quadratic[1] !== 0
+    ? ` Use the quadratic formula or complete the square for ${polynomialText(quadratic)} = 0.` : '';
   list.push({
     title: 'Find all roots/zeros/solutions.',
-    note: 'Enter each distinct solution once, in any order. Use sqrt(7) for radicals and i for imaginary solutions.',
+    note: `Enter each distinct solution once, in any order. Use sqrt(7) for radicals and i for imaginary solutions.${quadraticHint} ${repeatedRootNote()}`.trim(),
     equation: `x = ${example.solutions.map(() => '□').join(', ')}`,
     labels: example.solutions.map((solution, index) => `Solution ${index + 1}`),
     result: `x = ${example.solutions.map(numberText).join(', ')}`,
     squareRootHelp,
-    check: values => checkSolutions(values, example.solutions),
+    quadraticFormulaHelp: quadratic && quadratic[1] !== 0 ? quadratic : null,
+    check: values => checkSolutions(values, example.solutions, example.basis),
   }, {
     title: 'How many solutions are real and how many are complex?',
-    note: 'Count imaginary complex solutions separately from real solutions. Irrational real solutions are real.',
+    note: `Count distinct solutions; count a repeated root once. Irrational real solutions are real. ${repeatedRootNote()}`.trim(),
     labels: ['Number of Real Solutions', 'Number of Imaginary Complex Solutions'],
     result: `${example.realCount} real, ${example.complexCount} imaginary complex`,
     check: values => [checkInteger(values[0], example.realCount), checkInteger(values[1], example.complexCount)],
@@ -181,11 +213,54 @@ function makePracticeSteps() {
   return list;
 }
 
-function updateWorkWidth() {
-  $('.practice-layout').classList.toggle('wide-work', phase === 'practice' && !help.querySelector('aside:not([hidden])'));
+function polynomialAnswer(factor) {
+  return parsePolynomial(polynomialText(factor).replaceAll('²', '^2').replaceAll('−', '-'));
 }
 
-function addHelpToggle(label, panel, open) {
+function makeContinuedFactorStep() {
+  const factors = knownFactors.written;
+  const scale = knownFactors.divided.reduce((product, factor) => product * factor[0], 1);
+  const adjustment = knownFactors.quotient && scale !== 1
+    ? ` Divide the latest unboxed numbers by ${scale} to get the remaining quotient.` : '';
+  return {
+    title: 'Write the new factored form after synthetic division.',
+    note: `Enter all factors separately, including repeats and the remaining quotient, in any order.${adjustment}`,
+    equation: `${factors.map(() => '(□)').join('')} = 0`,
+    labels: factors.map((_, index) => `Factor ${index + 1}`),
+    result: `${factoredText(factors)} = 0`,
+    check: values => checkStep({ polynomialAnswers: factors.map(polynomialAnswer), unordered: true }, values),
+  };
+}
+
+function prepareContinuedFactoring() {
+  const zeroIndex = steps.findIndex(step => step.title === 'Set each factor equal to zero.');
+  if (zeroIndex < 0) throw new Error('The zero-equation step is missing.');
+  steps = steps.slice(zeroIndex);
+  if (knownFactors.remaining.length > 1) {
+    const factors = knownFactors.remaining;
+    const quotient = knownFactors.quotient;
+    const outside = factoredText(knownFactors.divided);
+    steps.unshift({
+      title: 'Factor the remaining quadratic.',
+      note: 'Enter both complete factors. Keep the factors already found outside.',
+      equation: `${outside}(□)(□) = 0`,
+      labels: ['Factor 1', 'Factor 2'],
+      box: { a: quotient[0], b: quotient[1], c: quotient[2] },
+      result: `${factoredText([...knownFactors.divided, ...factors])} = 0`,
+      check: values => checkStep({ polynomialAnswers: factors.map(polynomialAnswer), unordered: true }, values),
+    });
+  }
+  stepIndex = 0;
+  phase = 'practice';
+}
+
+function updateWorkWidth() {
+  $('.practice-layout').classList.toggle('wide-work',
+    ['practice', 'continued-factors'].includes(phase)
+      && !help.querySelector('aside:not([hidden])') && !formulaHelp.querySelector('aside:not([hidden])'));
+}
+
+function addHelpToggle(label, panel, open, container = help) {
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.className = 'p8-box-toggle';
@@ -197,7 +272,7 @@ function addHelpToggle(label, panel, open) {
   };
   toggle.addEventListener('click', () => { open = !open; update(); updateWorkWidth(); });
   update();
-  help.append(toggle, panel);
+  container.append(toggle, panel);
   return toggle;
 }
 
@@ -210,7 +285,11 @@ function renderHelp(step) {
     grouped.className = 'math';
     showGroups([step.groupData.firstGroup, step.groupData.secondGroup], grouped, false);
     panel.append(grouped);
-    if (step.showDivision) panel.append(groupedDivision(step.groupData));
+    if (step.showDivision) {
+      const division = groupedDivision(step.groupData);
+      division.insertBefore(document.createTextNode(' + '), division.lastElementChild);
+      panel.append(division);
+    }
     addHelpToggle('Grouping', panel, false);
   }
   if (step.box) {
@@ -222,14 +301,46 @@ function renderHelp(step) {
     addHelpToggle('Factoring Box', panel, false);
   }
   if (step.squareRootHelp) {
-    step.squareRootHelp.forEach((item, index) => addSquareRootHelp(item, index, addHelpToggle, workFields));
+    step.squareRootHelp.forEach((item, index) => addSquareRootHelp(item, index, addHelpToggle, workFields,
+      (values, answers) => checkSolutions(values, answers, example.basis)));
   }
+  if (step.quadraticFormulaHelp) {
+    const [a, b, c] = step.quadraticFormulaHelp;
+    const panel = document.createElement('aside');
+    panel.id = 'quadratic-formula-help';
+    panel.setAttribute('aria-label', 'Quadratic formula help');
+    const frame = document.createElement('iframe');
+    frame.title = 'Quadratic formula practice';
+    frame.src = `../quadratic-formula/?embedded=true&a=${a}&b=${b}&c=${c}`;
+    frame.addEventListener('load', () => {
+      const content = frame.contentDocument.querySelector('main');
+      const resize = () => { frame.style.height = `${Math.ceil(content.getBoundingClientRect().height)}px`; };
+      new ResizeObserver(resize).observe(content);
+      resize();
+    });
+    const back = document.createElement('button');
+    back.type = 'button';
+    back.textContent = 'Return to all solutions';
+    panel.append(frame, back);
+    const toggle = addHelpToggle('Quadratic Formula', panel, true, formulaHelp);
+    back.addEventListener('click', () => {
+      toggle.click();
+      workFields.querySelector('input').focus();
+    });
+  }
+}
+
+function yesNoQuestion() {
+  return ['trial-result', 'continue-choice', 'continued-factor-choice'].includes(phase)
+    || (phase === 'practice' && steps[stepIndex].options?.join(',') === 'Yes,No');
 }
 
 function renderQuestion() {
   fields.replaceChildren();
+  rootChoice.replaceChildren();
   workFields.replaceChildren();
   help.replaceChildren();
+  formulaHelp.replaceChildren();
   fields.removeAttribute('role');
   fields.removeAttribute('aria-labelledby');
   fields.removeAttribute('aria-describedby');
@@ -250,9 +361,9 @@ function renderQuestion() {
     addEquation('± □', ['Possible rational roots']);
     workFields.querySelector('input').classList.add('list-entry');
   } else if (phase === 'choose') {
-    title.textContent = 'Choose a possible rational root to test.';
+    title.textContent = continued ? 'Choose another possible rational root to test.' : 'Choose a possible rational root to test.';
     note.textContent = 'Enter one positive or negative value from your list. Use a fraction when needed.';
-    addEquation('x = □', ['Rational root to test']);
+    addEquation("I'll test x = □", ['Rational root to test'], rootChoice);
   } else if (phase === 'coefficients') {
     title.textContent = 'Enter the coefficients of the polynomial.';
     note.textContent = 'Use descending powers of x. Enter 0 for each missing term.';
@@ -264,18 +375,24 @@ function renderQuestion() {
     note.textContent = `Multiply ${numberText(trial.rootText)} by ${numberText(trial.results[column - 1])}. Enter the product under the next coefficient. Fractions are allowed.`;
   } else if (phase === 'add') {
     title.textContent = 'Add the column.';
-    note.textContent = `Add ${numberText(example.dividend[column])} and ${numberText(trial.products[column - 1])}. Enter the sum below the line.`;
+    note.textContent = `Add ${numberText(trial.dividend[column])} and ${numberText(trial.products[column - 1])}. Enter the sum below the line.`;
   } else if (phase === 'trial-result') {
     title.textContent = `Based on the remainder, is ${numberText(trial.rootText)} a root?`;
     note.textContent = 'A remainder of 0 means the number is a root.';
-    renderChoices(['Yes', 'No']);
+  } else if (phase === 'continue-choice') {
+    title.textContent = 'Continue using synthetic division?';
+    note.textContent = 'Continue with the unboxed bottom row, or move on to factoring and solving.';
+  } else if (phase === 'continued-factor-choice') {
+    title.textContent = `Will (${polynomialText(knownFactors.quotient)}) factor more?`;
+    note.textContent = '';
   } else {
-    const step = steps[stepIndex];
+    const step = phase === 'continued-factors' ? continuedFactorStep : steps[stepIndex];
     title.textContent = step.title;
     note.textContent = step.note || '';
     renderHelp(step);
-    if (step.options) renderChoices(step.options);
-    else if (step.equation) addEquation(step.equation, step.labels);
+    if (step.options) {
+      if (!yesNoQuestion()) renderChoices(step.options);
+    } else if (step.equation) addEquation(step.equation, step.labels);
     else {
       step.labels.forEach(labelText => {
         const label = document.createElement('label');
@@ -284,9 +401,21 @@ function renderQuestion() {
       });
     }
   }
+  const check = $('#check-button');
+  const skip = $('#skip-trial');
+  const divisionPhase = ['coefficients', 'bring', 'multiply', 'add'].includes(phase);
+  const divisionActions = $('#division-actions');
+  divisionActions.hidden = !divisionPhase;
+  (divisionPhase ? divisionActions : $('#question-actions')).prepend(check);
+  check.hidden = yesNoQuestion();
+  skip.hidden = !['bring', 'multiply', 'add'].includes(phase);
+  if (!skip.hidden) skip.textContent = `x = ${numberText(trial.rootText)} is not a factor; try another number`;
+  $('#decision-yes').hidden = !yesNoQuestion();
+  $('#decision-no').hidden = !yesNoQuestion();
   updateWorkWidth();
-  const active = setup.querySelector('input') || board.querySelector('.division-input')
-    || workFields.querySelector('input') || fields.querySelector('input');
+  const active = setup.querySelector('input') || rootChoice.querySelector('input') || board.querySelector('.division-input')
+    || workFields.querySelector('input') || fields.querySelector('input')
+    || (yesNoQuestion() ? $('#decision-yes') : null);
   if (active) active.focus();
 }
 
@@ -321,6 +450,11 @@ function renderExample() {
   qDone = false;
   candidatesDone = false;
   trial = null;
+  continued = false;
+  currentDividend = null;
+  initialFactorization = null;
+  knownFactors = null;
+  continuedFactorStep = null;
   factorization = null;
   stepIndex = 0;
   clearConfetti();
@@ -328,6 +462,8 @@ function renderExample() {
   $('#failed-trials').replaceChildren();
   $('#attempt-history').hidden = true;
   board.replaceChildren();
+  board.hidden = false;
+  $('#previous-divisions').replaceChildren();
   $('#division-area').hidden = true;
   $('#quotient-adjustment').hidden = true;
   form.hidden = false;
@@ -339,9 +475,12 @@ function renderExample() {
 function complete() {
   workFields.replaceChildren();
   help.replaceChildren();
+  formulaHelp.replaceChildren();
   updateWorkWidth();
   $('#final-factored').textContent = factorization.factored;
   $('#final-roots').textContent = example.solutions.map(numberText).join(', ');
+  $('#final-repeated-root').textContent = repeatedRootNote();
+  $('#final-repeated-root').hidden = !example.repeatedRoots.length;
   $('#final-real').textContent = example.realCount;
   $('#final-complex').textContent = example.complexCount;
   form.hidden = true;
@@ -361,8 +500,110 @@ function markInputs(inputs, matches) {
   return false;
 }
 
+function trialFailed() {
+  return continued ? !isZero(trial.remainder) : trial.remainder.numerator !== 0;
+}
+
+function recordFailedTrial() {
+  const attempt = document.createElement('li');
+  attempt.className = 'math';
+  const remainder = continued ? algebraicText(trial.remainder, example.basis) : fractionText(trial.remainder);
+  attempt.textContent = `${numberText(trial.rootText)}: remainder ${numberText(remainder)}; not a root.`;
+  $('#failed-trials').append(attempt);
+  $('#attempt-history').hidden = false;
+  phase = 'choose';
+}
+
+function startFactoring() {
+  phase = 'practice';
+}
+
+function answerTrial(isRoot) {
+  if (isRoot === trialFailed()) {
+    feedback.textContent = 'Use the remainder to decide whether this is a root.';
+    feedback.className = 'feedback no';
+    return;
+  }
+  if (trialFailed()) {
+    recordFailedTrial();
+  } else if (!continued) {
+    initialFactorization = successfulFactorization(example, root);
+    if (!initialFactorization) throw new Error('The zero remainder did not match a factor.');
+    const adjustment = $('#quotient-adjustment');
+    adjustment.hidden = root.denominator === 1;
+    adjustment.textContent = adjustment.hidden ? '' : `For divisor ${polynomialText(initialFactorization.divisor)}, divide each unboxed number by ${root.denominator} to get the quotient coefficients. For continued synthetic division, use the unadjusted bottom row.`;
+    factorization = initialFactorization;
+    knownFactors = { divided: [factorization.divisor], remaining: factorization.remaining };
+    steps = makePracticeSteps();
+    stepIndex = 0;
+    phase = 'practice';
+  } else {
+    knownFactors = advanceKnownFactors(knownFactors.divided, knownFactors.remaining, root);
+    if (!knownFactors) throw new Error('The zero remainder did not match a remaining factor.');
+    if (trial.results.length === 2) addResult(`Final constant after synthetic division: ${numberText(trial.results[0])}`);
+    continuedFactorStep = makeContinuedFactorStep();
+    phase = 'continued-factors';
+  }
+  renderQuestion();
+}
+
+function answerDecision(yes) {
+  if (phase === 'trial-result') {
+    answerTrial(yes);
+    return;
+  }
+  if (phase === 'continue-choice') {
+    if (!yes) {
+      if (continued) phase = 'continued-factor-choice';
+      else startFactoring();
+    } else {
+      const nextDividend = trial.results.slice(0, -1);
+      if (!hasRemainingRationalRoot(example, nextDividend)) {
+        feedback.textContent = 'No rational roots remain. Use a different method, such as factoring or the square root method.';
+        feedback.className = 'feedback no';
+        return;
+      }
+      currentDividend = nextDividend;
+      const copy = board.cloneNode(true);
+      copy.removeAttribute('id');
+      copy.setAttribute('aria-label', 'Completed synthetic division');
+      copy.lastElementChild.firstElementChild.classList.add('root-cell');
+      $('#previous-divisions').append(copy);
+      continued = true;
+      phase = 'choose';
+      renderSyntheticBoard(board, { dividend: currentDividend, rootText: null }, phase, 0);
+      board.hidden = true;
+    }
+  } else {
+    const correct = phase === 'continued-factor-choice'
+      ? knownFactors.remaining.length > 1 : steps[stepIndex].answer === 'Yes';
+    if (yes !== correct) {
+      feedback.textContent = 'That is not quite right. Look at the quotient and try again.';
+      feedback.className = 'feedback no';
+      return;
+    }
+    if (phase === 'continued-factor-choice') prepareContinuedFactoring();
+    else stepIndex++;
+  }
+  renderQuestion();
+}
+
+$('#decision-yes').addEventListener('click', () => answerDecision(true));
+$('#decision-no').addEventListener('click', () => answerDecision(false));
+
+$('#skip-trial').addEventListener('click', () => {
+  if (!trialFailed()) {
+    feedback.textContent = 'This number is a root. Continue the synthetic division.';
+    feedback.className = 'feedback no';
+    return;
+  }
+  recordFailedTrial();
+  renderQuestion();
+});
+
 form.addEventListener('submit', event => {
   event.preventDefault();
+  if (yesNoQuestion()) return;
   if (phase === 'p' || phase === 'q' || phase === 'candidates') {
     const element = phase === 'candidates' ? workFields.querySelector('input') : setup.querySelector('input');
     const expected = phase === 'p' ? example.constantFactors : phase === 'q' ? example.leadingFactors : example.candidates;
@@ -374,41 +615,28 @@ form.addEventListener('submit', event => {
     } else if (phase === 'q') { qDone = true; phase = 'candidates'; }
     else { candidatesDone = true; startCoefficientSetup(); }
   } else if (phase === 'choose') {
-    const element = workFields.querySelector('input');
+    const element = rootChoice.querySelector('input');
     root = candidateFromInput(element.value, example);
     if (!markInputs([element], [Boolean(root)])) {
-      feedback.textContent = 'Enter one positive or negative value from the possible rational roots.';
+      feedback.textContent = 'Enter one positive or negative rational value from the possible rational roots.';
       return;
     }
-    trial = syntheticTrial(example, root);
+    trial = continued ? continuedTrial(currentDividend, fractionText(root), example.basis) : syntheticTrial(example, root);
+    if (!trial) throw new Error('Unable to start synthetic division for this rational root.');
     column = 0;
     phase = 'bring';
-    $('#quotient-adjustment').hidden = true;
+    if (continued) {
+      $('#previous-divisions').lastElementChild.lastElementChild.firstElementChild.textContent = numberText(trial.rootText);
+      board.hidden = false;
+    } else $('#quotient-adjustment').hidden = true;
     renderSyntheticBoard(board, trial, phase, column);
-  } else if (phase === 'trial-result') {
-    const selected = fields.querySelector('input:checked');
-    if (!selected || (selected.value === 'Yes') !== (trial.remainder.numerator === 0)) {
-      feedback.textContent = selected ? 'Use the remainder to decide whether this is a root.' : 'Choose Yes or No.';
-      feedback.className = 'feedback no';
-      return;
-    }
-    if (trial.remainder.numerator !== 0) {
-      const attempt = document.createElement('li');
-      attempt.className = 'math';
-      attempt.textContent = `${numberText(trial.rootText)}: remainder ${numberText(fractionText(trial.remainder))}; not a root.`;
-      $('#failed-trials').append(attempt);
-      $('#attempt-history').hidden = false;
-      phase = 'choose';
-    } else {
-      factorization = successfulFactorization(example, root);
-      if (!factorization) throw new Error('The zero remainder did not match a factor.');
-      const adjustment = $('#quotient-adjustment');
-      adjustment.hidden = root.denominator === 1;
-      adjustment.textContent = adjustment.hidden ? '' : `For divisor ${polynomialText(factorization.divisor)}, divide each unboxed number by ${root.denominator} to get the quotient coefficients. Do not divide the remainder.`;
-      steps = makePracticeSteps();
-      stepIndex = 0;
-      phase = 'practice';
-    }
+    if (continued) board.firstElementChild.hidden = true;
+  } else if (phase === 'continued-factors') {
+    const inputs = [...workFields.querySelectorAll('input')];
+    if (!markInputs(inputs, continuedFactorStep.check(inputs.map(element => element.value)))) return;
+    addResult(continuedFactorStep.result);
+    if (!knownFactors.quotient || knownFactors.quotient.length === 2) prepareContinuedFactoring();
+    else phase = 'continue-choice';
   } else if (phase === 'practice') {
     const step = steps[stepIndex];
     if (step.options) {
@@ -425,6 +653,7 @@ form.addEventListener('submit', event => {
     }
     stepIndex++;
     if (stepIndex === steps.length) { complete(); return; }
+    if (stepIndex === 1 && !continued) phase = 'continue-choice';
   } else {
     const inputs = [...board.querySelectorAll('.division-input')];
     let matches;
@@ -432,7 +661,8 @@ form.addEventListener('submit', event => {
     else {
       const expected = phase === 'bring' ? trial.results[0] : phase === 'multiply'
         ? trial.products[column - 1] : trial.results[column];
-      matches = [checkRoot(inputs[0].value, parseRationalNumber(expected).value)];
+      matches = [continued ? checkAlgebraic(inputs[0].value, expected, example.basis)
+        : checkRoot(inputs[0].value, parseRationalNumber(expected).value)];
     }
     if (!markInputs(inputs, matches)) return;
     if (phase === 'coefficients') {
@@ -441,9 +671,12 @@ form.addEventListener('submit', event => {
     }
     else if (phase === 'bring') { column = 1; phase = 'multiply'; }
     else if (phase === 'multiply') phase = 'add';
-    else if (column === example.dividend.length - 1) phase = 'trial-result';
+    else if (column === trial.dividend.length - 1) phase = 'trial-result';
     else { column++; phase = 'multiply'; }
-    if (phase !== 'choose') renderSyntheticBoard(board, trial, phase === 'trial-result' ? 'final' : phase, column);
+    if (phase !== 'choose') {
+      renderSyntheticBoard(board, trial, phase === 'trial-result' ? 'final' : phase, column);
+      if (continued) board.firstElementChild.hidden = true;
+    }
   }
   renderQuestion();
 });

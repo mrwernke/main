@@ -2,6 +2,7 @@ import { simplifyFraction, parseRationalNumber } from '../quadratic-convert/mode
 import { polynomialText } from '../polynomial-synthetic-division/model.mjs?v=20261123n';
 import { checkStep } from '../polynomial-factoring/model.mjs?v=20261123h';
 import { parsePolynomial } from '../quadratic-systems/model.mjs';
+import { checkAlgebraic, continuedTrial, isZero, radicalBasis } from './algebraic.mjs?v=20261125c';
 
 function multiply(first, second) {
   const result = Array(first.length + second.length - 1).fill(0);
@@ -21,8 +22,21 @@ export function fractionText({ numerator, denominator }) {
   return denominator === 1 ? String(numerator) : `${numerator}/${denominator}`;
 }
 
+export function factoredText(factors) {
+  const counts = new Map();
+  factors.map(polynomialText).forEach(factor => counts.set(factor, (counts.get(factor) || 0) + 1));
+  return [...counts].map(([factor, count]) =>
+    `(${factor})${count === 1 ? '' : count === 2 ? '²' : `^${count}`}`).join('');
+}
+
 function makeExample(factors, solutions) {
   const dividend = factors.reduce(multiply);
+  const quadratic = factors.find(factor => factor.length === 3);
+  const rootCounts = new Map();
+  factors.filter(factor => factor.length === 2).forEach(([a, b]) => {
+    const root = fractionText(simplifyFraction(-b, a));
+    rootCounts.set(root, (rootCounts.get(root) || 0) + 1);
+  });
   const constantFactors = divisors(dividend.at(-1));
   const leadingFactors = divisors(dividend[0]);
   const candidates = [];
@@ -34,9 +48,12 @@ function makeExample(factors, solutions) {
       }
     }
   }
-  candidates.sort((a, b) => a.numerator / a.denominator - b.numerator / b.denominator);
+  candidates.sort((a, b) => Number(a.denominator !== 1) - Number(b.denominator !== 1)
+    || a.numerator / a.denominator - b.numerator / b.denominator);
   return {
     dividend, factors, solutions, constantFactors, leadingFactors, candidates,
+    repeatedRoots: [...rootCounts].filter(([, count]) => count > 1),
+    basis: quadratic ? radicalBasis(quadratic[1] ** 2 - 4 * quadratic[0] * quadratic[2]) : 0,
     realCount: solutions.filter(solution => !solution.includes('i')).length,
     complexCount: solutions.filter(solution => solution.includes('i')).length,
   };
@@ -44,13 +61,27 @@ function makeExample(factors, solutions) {
 
 export const examples = [
   makeExample([[1, -2], [1, -1], [1, 3]], ['2', '1', '-3']),
-  makeExample([[1, -2], [1, 0, 9]], ['2', '3i', '-3i']),
+  makeExample([[1, -2], [1, -2], [1, 1]], ['2', '-1']),
+  makeExample([[1, -3], [1, 2], [1, 4]], ['3', '-2', '-4']),
+  makeExample([[1, -2], [1, 2], [1, -1], [1, 1]], ['2', '-2', '1', '-1']),
+  makeExample([[1, -2], [1, -2], [1, 2], [1, 3]], ['2', '-2', '-3']),
+  makeExample([[3, -1], [1, -2], [1, 1]], ['1/3', '2', '-1']),
+  makeExample([[2, -1], [1, -1], [1, 1], [1, 2]], ['1/2', '1', '-1', '-2']),
   makeExample([[1, 1], [1, 0, -7]], ['-1', 'sqrt(7)', '-sqrt(7)']),
-  makeExample([[1, -1], [1, 2], [1, 0, 4]], ['1', '-2', '2i', '-2i']),
-  makeExample([[2, -1], [1, 0, 4]], ['1/2', '2i', '-2i']),
-  makeExample([[3, 2], [1, 0, -7]], ['-2/3', 'sqrt(7)', '-sqrt(7)']),
-  makeExample([[2, -1], [1, -2], [1, 0, 9]], ['1/2', '2', '3i', '-3i']),
-  makeExample([[3, 1], [1, 2], [1, 0, -7]], ['-1/3', '-2', 'sqrt(7)', '-sqrt(7)']),
+  makeExample([[1, -2], [1, 0, -2]], ['2', 'sqrt(2)', '-sqrt(2)']),
+  makeExample([[1, 3], [1, 0, -3]], ['-3', 'sqrt(3)', '-sqrt(3)']),
+  makeExample([[1, -2], [1, 1], [1, 0, -5]], ['2', '-1', 'sqrt(5)', '-sqrt(5)']),
+  makeExample([[1, -1], [1, -1], [1, 0, -7]], ['1', 'sqrt(7)', '-sqrt(7)']),
+  makeExample([[1, -2], [1, 0, 9]], ['2', '3i', '-3i']),
+  makeExample([[1, 1], [1, 0, 4]], ['-1', '2i', '-2i']),
+  makeExample([[1, -1], [1, 0, 12]], ['1', '2sqrt(3)i', '-2sqrt(3)i']),
+  makeExample([[1, 3], [1, 0, 8]], ['-3', '2sqrt(2)i', '-2sqrt(2)i']),
+  makeExample([[1, -2], [1, 2, 4]], ['2', '-1+sqrt(3)i', '-1-sqrt(3)i']),
+  makeExample([[1, 2], [1, -1], [1, 0, 4]], ['-2', '1', '2i', '-2i']),
+  makeExample([[1, -2], [1, -1], [1, 0, 12]], ['2', '1', '2sqrt(3)i', '-2sqrt(3)i']),
+  makeExample([[1, 3], [1, -1], [1, 0, 8]], ['-3', '1', '2sqrt(2)i', '-2sqrt(2)i']),
+  makeExample([[1, 2], [1, -4, 1]], ['-2', '2+sqrt(3)', '2-sqrt(3)']),
+  makeExample([[1, -3], [1, -2, 5]], ['3', '1+2i', '1-2i']),
 ];
 
 export function checkList(text, expected, allowEquivalentDuplicates = false) {
@@ -71,6 +102,16 @@ export function candidateFromInput(text, example) {
   const match = example.candidates.find(candidate => candidate.numerator / candidate.denominator === Math.abs(parsed.value));
   if (!match) return null;
   return { numerator: Math.sign(parsed.value) * match.numerator, denominator: match.denominator };
+}
+
+export function hasRemainingRationalRoot(example, dividend) {
+  if (dividend.length < 2) return false;
+  return example.candidates.some(candidate => [-1, 1].some(sign => {
+    const root = { ...candidate, numerator: sign * candidate.numerator };
+    const result = continuedTrial(dividend, fractionText(root), example.basis);
+    if (!result) throw new Error('Unable to check the remaining rational roots.');
+    return isZero(result.remainder);
+  }));
 }
 
 function add(first, second) {
@@ -98,32 +139,68 @@ export function syntheticTrial(example, root) {
   };
 }
 
-export function successfulFactorization(example, root) {
-  const index = example.factors.findIndex(factor =>
+function rootFactorIndex(factors, root) {
+  return factors.findIndex(factor =>
     factor.length === 2 && -factor[1] * root.denominator === factor[0] * root.numerator);
+}
+
+export function advanceKnownFactors(divided, remaining, root) {
+  const index = rootFactorIndex(remaining, root);
+  if (index < 0) return null;
+  const nextDivided = [...divided, remaining[index]];
+  const nextRemaining = remaining.filter((factor, i) => i !== index);
+  const quotient = nextRemaining.length ? nextRemaining.reduce(multiply) : null;
+  return {
+    divided: nextDivided,
+    remaining: nextRemaining,
+    quotient,
+    written: quotient ? [...nextDivided, quotient] : nextDivided,
+  };
+}
+
+export function successfulFactorization(example, root) {
+  const index = rootFactorIndex(example.factors, root);
   if (index < 0) return null;
   const divisor = example.factors[index];
   const remaining = example.factors.filter((factor, i) => i !== index);
   const quotient = remaining.length === 1 ? remaining[0] : remaining.reduce(multiply);
+  let grouped = remaining;
+  let quadraticFactors = null;
+  if (remaining.length === 3 && remaining.every(factor => factor.length === 2)) {
+    const pairs = [];
+    for (let i = 0; i < remaining.length; i++) {
+      for (let j = i + 1; j < remaining.length; j++) {
+        const quadratic = multiply(remaining[i], remaining[j]);
+        if (quadratic[0] === 1) pairs.push({ i, j, quadratic });
+      }
+    }
+    const pair = pairs.find(item => item.quadratic[1] === 0) || pairs[0];
+    if (!pair) throw new Error('No monic quadratic factor is available for this quotient.');
+    quadraticFactors = [remaining[pair.i], remaining[pair.j]];
+    grouped = [remaining.find((factor, i) => i !== pair.i && i !== pair.j), pair.quadratic];
+  }
   const factorTexts = [divisor, ...remaining].map(polynomialText);
+  const distinctFactors = [...new Set(factorTexts)];
   return {
-    divisor, remaining, quotient, factorTexts,
-    factored: factorTexts.map(factor => `(${factor})`).join(''),
+    divisor, remaining, quotient, grouped, quadraticFactors, factorTexts,
+    factored: factoredText([divisor, ...remaining]),
     factorEquations: {
-      polynomialAnswers: factorTexts.map(factor => parsePolynomial(factor.replaceAll('²', '^2').replaceAll('−', '-'))),
+      polynomialAnswers: distinctFactors.map(factor => parsePolynomial(factor.replaceAll('²', '^2').replaceAll('−', '-'))),
       zeroFactors: true, unordered: true,
     },
+    distinctFactors,
   };
 }
 
-export function checkSolutions(values, expected) {
+export function checkSolutions(values, expected, basis = 0) {
   const unused = new Set(expected.keys());
   return values.map(value => {
     const parsed = parseRationalNumber(value);
     const match = [...unused].find(index => {
       const target = parseRationalNumber(expected[index]);
       return parsed && target ? parsed.value === target.value
-        : checkStep({ answers: [expected[index]], roots: true }, [value])[0];
+        : checkAlgebraic(value, expected[index], basis)
+          || checkStep({ answers: [expected[index]], roots: true }, [value])[0];
     });
     if (match === undefined) return false;
     unused.delete(match);

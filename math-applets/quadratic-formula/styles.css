@@ -50,6 +50,20 @@
 .q14-complete h2 { margin-top:0; }
 .q14-actions { margin-top:20px; }
 
+body.q14-embedded { min-width:0; }
+body.q14-embedded main { max-width:none; padding:12px; }
+body.q14-embedded .topbar, body.q14-embedded main > h1, body.q14-embedded .intro,
+body.q14-embedded .card-picker-group, body.q14-embedded .q14-actions,
+body.q14-embedded #next-problem, body.q14-embedded .applet-feedback-footer { display:none; }
+body.q14-embedded .equation-card { margin:0 0 16px; padding:12px; }
+body.q14-embedded .equation { font-size:1.5rem; }
+body.q14-embedded .q14-work { padding:12px; }
+body.q14-embedded .q14-step h2 { font-size:1.1rem; }
+body.q14-embedded .q14-formula-options { grid-template-columns:minmax(0,1fr); }
+body.q14-embedded .q14-expression { font-size:1.1rem; gap:4px; }
+body.q14-embedded .q14-expression input { width:38px; padding:7px 2px; }
+body.q14-embedded .q14-numerator { gap:2px; }
+
 .card-picker-group { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
 .make-own-btn { background:var(--paper); color:var(--ink); border:1px solid var(--paper); padding:6px 14px; font:700 .82rem "Trebuchet MS",sans-serif; letter-spacing:.04em; cursor:pointer; transition:background .15s ease, color .15s ease; }
 .make-own-btn:hover { background:#fff; color:var(--ink); }
