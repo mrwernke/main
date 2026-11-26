@@ -169,13 +169,11 @@ access. Restrict the spreadsheet itself to authorized school accounts.
    this project as a web app executing as yourself, with access **Only myself**.
    Keep its popup open while making roster changes; the private project now
    needs permission to write the `Student Roster` tab.
-   The test-only deployment in `grades/school-dashboard-test.html` is not this
-   reader and does not provide spreadsheet data.
 4. Set only `CHECKS_SCRIPT_URL` in `math-applets/site-tracker.js` to the
    **public collector** deployment's `/exec` URL, leaving the existing
    `SCRIPT_URL` unchanged. Republish the site. In the grades area, open **Skill
-   practice and checks**, enter the **private reader** deployment URL, and
-   sign in with the school account. Allow popups.
+   practice and checks**; its private reader URL is prefilled. Sign in with the
+   school account and allow popups.
 5. Test using synthetic data and a signed-out student browser: practice an
    example, submit a check on the same browser, and verify both records appear
    in the school Sheet and the private dashboard. Confirm that a signed-out

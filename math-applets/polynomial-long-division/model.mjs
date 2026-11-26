@@ -15,7 +15,7 @@ export function polynomialText(coefficients) {
   return terms.map(({ coefficient, power }, index) => termText(coefficient, power, index === 0)).join('') || '0';
 }
 
-function createExample(dividend, divisor) {
+export function createExample(dividend, divisor) {
   const degree = dividend.length - 1;
   const divisorDegree = divisor.length - 1;
   const quotient = Array(dividend.length).fill(0);

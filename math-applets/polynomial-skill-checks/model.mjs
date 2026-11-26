@@ -1,9 +1,27 @@
-import { examples as longExamples } from '../polynomial-long-division/model.mjs';
-import { examples as syntheticExamples } from '../polynomial-synthetic-division/model.mjs';
+import { createExample as createLongDivisionExample, examples as longExamples } from '../polynomial-long-division/model.mjs?v=20261126p9check2';
+import { createExample as createSyntheticExample } from '../polynomial-synthetic-division/model.mjs';
 import { parsePolynomialCoefficients } from '../polynomial-utils.mjs';
 import { parseRationalNumber } from '../quadratic-convert/model.mjs';
 
-export const examples = { P9: longExamples, P10: syntheticExamples };
+const p9CheckExamples = [
+  ...longExamples.filter(example =>
+    [3, 4].includes(example.dividend.length - 1)
+    && example.divisor.length === 2
+    && example.divisor[0] === 1),
+  createLongDivisionExample([1, -1, -5, 1], [1, 1]),
+  createLongDivisionExample([1, -1, -5, 11, -14], [1, -2]),
+  createLongDivisionExample([1, 1, -2, 11, -1], [1, 3]),
+];
+
+const p10CheckExamples = [
+  createSyntheticExample([1, -2, -1, 2], [1, -1]),
+  createSyntheticExample([1, -1, -6, 0], [1, 2]),
+  createSyntheticExample([1, -1, -7, 1, 6], [1, 1]),
+  createSyntheticExample([1, -5, 2, 8, 0], [1, -4]),
+  createSyntheticExample([1, 1, -6, 0, 0], [1, 3]),
+];
+
+export const examples = { P9: p9CheckExamples, P10: p10CheckExamples };
 
 const close = (a, b) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) < 1e-8;
 const same = (a, b) => Boolean(a && b && a.length === b.length && a.every((value, i) => close(value, b[i])));

@@ -1,4 +1,4 @@
-import { examples, gradeLong, gradeSynthetic, normalizeName, validName } from './model.mjs?v=20261125a';
+import { examples, gradeLong, gradeSynthetic, normalizeName, validName } from './model.mjs?v=20261126p9check3';
 import { polynomialText, termText } from '../polynomial-long-division/model.mjs';
 import { CHECKS_SCRIPT_URL, getDeviceId } from '../site-tracker.js?v=20261126school1';
 
@@ -155,6 +155,10 @@ function field(name, label) {
   return input;
 }
 
+function exampleKey(example) {
+  return `${example.dividend.join(',')}|${example.divisor.join(',')}`;
+}
+
 function row() {
   const element = document.createElement('div');
   element.className = 'division-row';
@@ -250,7 +254,8 @@ function answers() {
 
 function showAttempt() {
   const example = examples[skill][draft.exampleIndex];
-  if (!example || !Number.isFinite(draft.startedAt) || !draft.id) throw new Error('The saved check is invalid.');
+  if (!example || draft.exampleKey !== exampleKey(example)
+    || !Number.isFinite(draft.startedAt) || !draft.id) throw new Error('The saved check is invalid.');
   $('#problem').textContent = `(${polynomialText(example.dividend)}) ÷ (${polynomialText(example.divisor)})`;
   const board = $('#division');
   board.replaceChildren();
@@ -293,7 +298,10 @@ $('#start').addEventListener('click', () => {
     const previous = read(attemptsKey, []).filter(item => item.skill === skill).at(-1);
     const choices = examples[skill].map((_, index) => index).filter(index => index !== previous?.exampleIndex);
     const exampleIndex = choices[Math.floor(Math.random() * choices.length)];
-    draft = { id: crypto.randomUUID(), exampleIndex, startedAt: Date.now(), fields: {} };
+    draft = {
+      id: crypto.randomUUID(), exampleIndex, exampleKey: exampleKey(examples[skill][exampleIndex]),
+      startedAt: Date.now(), fields: {},
+    };
     write(draftKey, draft);
     showError('');
     showAttempt();
@@ -360,7 +368,13 @@ try {
       localStorage.removeItem(draftKey);
       draft = null;
     }
-    if (draft) {
+    if (draft && (!examples[skill][draft.exampleIndex]
+      || draft.exampleKey !== exampleKey(examples[skill][draft.exampleIndex]))) {
+      localStorage.removeItem(draftKey);
+      draft = null;
+      dashboard();
+      showError('Your unfinished check used a problem that is no longer available. Start a new check to continue.');
+    } else if (draft) {
       showAttempt();
       syncPending();
     } else dashboard();

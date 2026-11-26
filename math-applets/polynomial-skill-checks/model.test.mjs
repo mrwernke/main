@@ -2,6 +2,29 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { examples, gradeLong, gradeSynthetic, normalizeName, validName } from './model.mjs';
 import { polynomialText } from '../polynomial-long-division/model.mjs';
+import { examples as syntheticExamples } from '../polynomial-synthetic-division/model.mjs';
+
+test('P9 check examples are cubic or quartic divided by a monic linear polynomial', () => {
+  assert.equal(examples.P9.length, 5);
+  assert.equal(new Set(examples.P9.map(example =>
+    `${example.dividend.join(',')}|${example.divisor.join(',')}`)).size, 5);
+  for (const example of examples.P9) {
+    assert.ok([3, 4].includes(example.dividend.length - 1));
+    assert.equal(example.divisor.length, 2);
+    assert.equal(example.divisor[0], 1);
+  }
+});
+
+test('P10 check examples are five cubic or quartic polynomials with integer zeros', () => {
+  assert.equal(examples.P10.length, 5);
+  assert.equal(new Set(examples.P10.map(example =>
+    `${example.dividend.join(',')}|${example.divisor.join(',')}`)).size, 5);
+  for (const example of examples.P10) {
+    assert.ok([3, 4].includes(example.dividend.length - 1));
+    assert.ok(Number.isInteger(example.root));
+    assert.equal(example.remainder, 0);
+  }
+});
 
 test('complete correct work earns one on every division example', () => {
   for (const example of examples.P9) {
@@ -44,7 +67,7 @@ test('synthetic division awards follow-through and accepts recovery to correct w
     products: ['2', '3', '-8'], results: ['4', '3', '-8', '-2'],
     quotient: '4x^2+3x-8', remainder: '-2',
   };
-  const result = gradeSynthetic(examples.P10[0], answers);
+  const result = gradeSynthetic(syntheticExamples[0], answers);
   assert.equal(result.processCorrect, result.processTotal - 1);
   assert.equal(result.finalCorrect, 2);
   answers.products[1] = '5';
@@ -53,7 +76,7 @@ test('synthetic division awards follow-through and accepts recovery to correct w
   answers.results[3] = '0';
   answers.quotient = '4x^2+5x-6';
   answers.remainder = '0';
-  assert.equal(gradeSynthetic(examples.P10[0], answers).finalCorrect, 2);
+  assert.equal(gradeSynthetic(syntheticExamples[0], answers).finalCorrect, 2);
 });
 
 test('blank or malformed work does not earn follow-through credit', () => {
