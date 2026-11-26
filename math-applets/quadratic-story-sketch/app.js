@@ -48,6 +48,7 @@ function finishChoice(button, containerSelector, stepSelector, feedbackSelector,
   } else {
     $('#complete-text').textContent = `Your sketch matches the story: ${graphDescription(item())}.`;
     $('#complete').hidden = false;
+    document.dispatchEvent(new Event('wmr-practice-complete'));
     $('#complete').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 }

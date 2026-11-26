@@ -1,0 +1,28 @@
+main { max-width: 1100px; }
+.features-work { display: block; margin-top: 20px; }
+.instruction { color: var(--muted); line-height: 1.5; }
+#identity-form { display: grid; gap: 12px; max-width: 320px; }
+label { display: grid; gap: 5px; font-weight: 700; }
+input, select { font: inherit; max-width: 100%; }
+#error:empty, #sync-status:empty { display: none; }
+#student { font-weight: 700; }
+#history ul { padding-left: 22px; }
+#history li { margin: 6px 0; }
+.attempt-heading { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+#problem { font-size: 1.3rem; }
+.division-scroll { overflow-x: auto; margin: 20px 0; }
+.division { width: max-content; min-width: 100%; }
+.division-row { display: grid; grid-template-columns: 90px repeat(var(--columns), 75px); min-height: 44px; }
+.division-row > span { display: flex; justify-content: center; align-items: center; padding: 3px; white-space: pre; }
+.division-row .divisor { justify-content: flex-end; padding-right: 10px; }
+.division-row .dividend-cell { border-top: 2px solid var(--ink); }
+.division-row .dividend-cell.first { border-left: 2px solid var(--ink); border-top-left-radius: 7px; }
+.division-row .product-cell { border-bottom: 1px solid var(--ink); gap: 3px; }
+.division-row .root-cell { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); border-bottom-right-radius: 7px; }
+.division-row .result-cell { border-top: 2px solid var(--ink); }
+.division-row .remainder-cell input { border: 2px solid var(--ink); }
+.division-input { width: 100%; min-width: 0; padding: 5px 2px; text-align: center; }
+.final-fields { display: flex; flex-wrap: wrap; gap: 16px; margin: 20px 0; }
+.final-fields input { width: 230px; }
+button + button { margin-left: 8px; }
+@media (max-width: 600px) { .features-work { padding: 14px; } }

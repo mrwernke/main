@@ -1,0 +1,29 @@
+.features-work { display: grid; }
+#question { border: 0; padding: 0; }
+#equation { font-size: 1.4rem; overflow-wrap: anywhere; }
+#feature-summary p { margin: 6px 0; }
+#feature-summary .end-behavior-summary { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; }
+.end-behavior-summary .infinity { font-size: 1.35em; line-height: 1; }
+#question-fields { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+#question-fields label { display: inline-flex; align-items: center; gap: 6px; }
+#question-fields input { width: 90px; }
+#question-fields select, #table-controls select { max-width: 100%; }
+#calculation { overflow-x: auto; }
+#calculation:empty { display: none; }
+#calculation .direct-answer { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+#calculation .direct-answer input { width: 90px; }
+#calculation .division { width: max-content; min-width: 0; margin: 12px 0; }
+#table-section { margin-top: 20px; }
+#table-section table { margin: 12px 0; }
+#table-section th, #table-section td { padding: 6px; }
+#table-section td button { padding: 5px 8px; }
+#table-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; margin: 12px 0; }
+#table-controls[hidden] { display: none; }
+#table-controls label { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
+#table-controls select { padding: 7px; }
+#sketch-controls { margin-top: 12px; }
+#segment-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+#segment-buttons button { padding: 6px 8px; }
+.curve-segments { pointer-events: none; }
+.end-behavior-arrows { fill: none; stroke: #596679; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+#plane.sketching { cursor: crosshair; }

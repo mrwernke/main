@@ -24,8 +24,11 @@ paused) as subdirectories.
 - `math-applets/quadratic-story-sketch/` - sketch a quadratic from real-world context using the y-intercept, opening direction, and vertex position.
 - `math-applets/quadratic-modeling/` - build real-world quadratic models from vertices, intercepts, and points.
 - `math-applets/quadratic-systems/` - solve systems containing a quadratic function by setting expressions equal and factoring.
+- `math-applets/polynomial-standard-graphing/` - graph standard-form polynomials using features, a table, and plotted points.
+- `math-applets/polynomial-context-graphs/` - analyze polynomial graphs in nine real-world situations (P13–P16).
 - `math-applets/polynomial-long-division/` - guided polynomial long division with six examples.
 - `math-applets/polynomial-synthetic-division/` - guided synthetic division with seven examples.
+- `math-applets/polynomial-skill-checks/` - independent P9 and P10 division checks and tracker integration.
 - `math-applets/polynomial-given-factor/` - factor and solve using a given factor, root, zero, or x-intercept.
 - `math-applets/polynomial-rational-roots/` - find possible rational roots, test them, and solve.
 - `math-applets/absolute-value-equations/` - guided and independent practice solving a|bx + c| + d = e equations.
@@ -45,6 +48,37 @@ Every applet page loads `math-applets/back-navigation.js` for its nearby-applet
 header links. When adding an applet, register its code, title, path, and position
 in the appropriate unit list in that file; the shared header then shows up to
 two previous and two next applets on every page.
+
+The P1 applet guides students through degree, leading coefficient, end behavior,
+and y-intercept. General side arrows illustrate end behavior; students plot the
+y-intercept, then build a nine-row table outward from zero using direct or
+synthetic substitution. They plot their values and select intervals to reveal
+the curve; the vertical scale adjusts as larger values are calculated and
+returns to a root-focused view after sketching. The
+examples have the maximum number of turns and cover real, non-real complex,
+and double-root solution patterns. After graphing, students count distinct real
+and non-real complex solutions.
+
+```bash
+node --test math-applets/polynomial-standard-graphing/model.test.mjs
+```
+
+The combined P13–P16 applet uses nine contextual polynomial graphs, including
+higher-degree examples with negative outputs, multiple intercepts, and double
+and triple roots. Each has
+a unique absolute maximum and minimum, and no x-intercept at time zero. Students
+count, find, and interpret intercepts. For each global or local extremum, they
+decide whether it exists and enter ordered pairs; local extrema also require a
+count. Endpoints can be local or global extrema, but global extrema are not
+counted as local in this applet. They then explore how a quantity is changing
+and write domain and range as compound inequalities. Marked coordinates in some
+graphs are rounded to the nearest tenth. For minimum degree and leading sign,
+the applet explicitly gives an assumed end behavior: a finite contextual
+segment alone does not determine the polynomial's degree or leading coefficient.
+
+```bash
+node --test math-applets/polynomial-context-graphs/model.test.mjs
+```
 
 The P9 long-division applet places answer blanks in the division work as
 students divide leading terms, multiply, subtract, and bring down the next term.
@@ -72,6 +106,93 @@ to the answer, with a remainder over the divisor when needed.
 
 ```bash
 node --test math-applets/polynomial-synthetic-division/model.test.mjs
+```
+
+The P9 and P10 skill checks present one practice-bank problem with the entire
+division workspace and final quotient and remainder available at once. They do
+not check answers until submission. The process and final answer each contribute
+half of the score out of 1; correct follow-through from a student's entered
+work earns credit. The timer starts when the check starts and includes time away
+or after a reload. Student information, unfinished work, and attempt history
+are saved in the browser. The browser's existing `wmr_uid` connects submitted
+scores to traffic-log entries; clearing browser storage or switching browsers
+loses the local identity and history. This is not a student login, and the
+client-side scores and device ID are not tamper-proof.
+
+The existing personal-account traffic logger remains unchanged. Practice and
+check records use a separate school-owned spreadsheet and write-only web app,
+configured through `CHECKS_SCRIPT_URL` in `math-applets/site-tracker.js`.
+
+Practice records contain a browser ID, skill and completed-example ID, not a
+student's name or period. Only the first check asks for those; once
+a check is submitted, the dashboard matches earlier and later practice by ID.
+The dashboard's **All users** view includes IDs seen in the school check or
+practice records, including unnamed browsers. Visits stored only in the
+separate personal tracker are not included. Different browsers or clearing
+storage create different IDs; a teacher can manually merge them in the
+dashboard and separate them again if needed. Merged practice uses distinct
+examples across all linked browsers, while check attempts and time are added.
+Teachers can correct a name or period for a browser group. These changes are
+stored in a `Student Roster` tab and do not alter original submissions or the
+identity shown on a student's own browser; later submissions still use the
+teacher's correction in the dashboard. Separating a browser restores its
+pre-merge teacher correction or its own most recent check, if any.
+Check time is elapsed wall time. Practice events are queued locally and
+retried on later practice visits if sending fails. The dashboard counts each
+different preset example once per browser and skill; custom problems and older
+records without an example ID are not counted. FT3 is an explorer without a
+completion check, so its count is unavailable. Shared P13–P16 practice is
+attributed to each of those four skills.
+
+### School tracker and private dashboard setup
+
+Use **two separate Apps Script projects** so that the student-facing web app
+can never read the dashboard. Do not deploy the dashboard project with public
+access. Restrict the spreadsheet itself to authorized school accounts.
+
+1. Create a school-owned spreadsheet. Make a tab named `Visits` with the
+   columns Timestamp, User ID, Canvas Username, Device, Browser, Canvas, Page,
+   Visit Count, and Referrer, in that order. The existing personal visit logger
+   can stay separate; this tab is required by the compatible collector.
+2. In the school spreadsheet, choose **Extensions > Apps Script**. Replace the
+   project code with `math-applets/polynomial-skill-checks/tracker-apps-script.gs`,
+   set `SCHOOL_SHEET_ID` to the ID from the spreadsheet URL and
+   `VISITS_SHEET_NAME` to `Visits`, save, and deploy a **web app** executing
+   as yourself with access **Anyone**, if school policy permits. This public
+   deployment accepts writes but has no endpoint for reading records. The
+   first submissions create `Skill Checks` and `Practice Activity` tabs.
+3. Create a **separate** Apps Script project for the private reader. Copy
+   `grades/school-dashboard-apps-script.gs` into it, set `SCHOOL_SHEET_ID` to
+   the ID from the school spreadsheet URL. The published GitHub Pages and
+   local preview origins are already listed in `ALLOWED_ORIGINS`; add any other
+   site's exact origin without a trailing slash or path. Deploy
+   this project as a web app executing as yourself, with access **Only myself**.
+   Keep its popup open while making roster changes; the private project now
+   needs permission to write the `Student Roster` tab.
+   The test-only deployment in `grades/school-dashboard-test.html` is not this
+   reader and does not provide spreadsheet data.
+4. Set only `CHECKS_SCRIPT_URL` in `math-applets/site-tracker.js` to the
+   **public collector** deployment's `/exec` URL, leaving the existing
+   `SCRIPT_URL` unchanged. Republish the site. In the grades area, open **Skill
+   practice and checks**, enter the **private reader** deployment URL, and
+   sign in with the school account. Allow popups.
+5. Test using synthetic data and a signed-out student browser: practice an
+   example, submit a check on the same browser, and verify both records appear
+   in the school Sheet and the private dashboard. Confirm that a signed-out
+   browser cannot access the private deployment. School policies or filters
+   may prevent anonymous submissions; do not assume recording works until
+   this test succeeds.
+
+Check attempts not yet sent show as waiting on the student's browser and retry
+when the page reopens, when the browser comes online, or on **Retry saving**.
+History remains local, not retrieved from Sheets. Student submissions are not
+authenticated, and client-side scores and browser IDs can be forged. The
+grades page's passcode overlay does not secure data; Google account access to
+the private reader and spreadsheet is the security boundary.
+
+```bash
+node --test math-applets/polynomial-skill-checks/*.test.mjs
+node --test grades/skill-dashboard-model.test.mjs grades/school-dashboard-apps-script.test.mjs
 ```
 
 The P11 applet has ten examples with the given factor, root, zero, or

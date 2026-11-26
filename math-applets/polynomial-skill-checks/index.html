@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Polynomial Division Skill Check</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="./styles.css?v=20261125a" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Skill check</span></div>
+      <h1 id="title">Polynomial Division Skill Check</h1>
+      <p class="instruction">One problem per attempt. Work and final answer each count for half of the score. Your work is scored when you submit.</p>
+      <p id="error" class="feedback no" role="alert"></p>
+      <section id="identity" class="features-work" hidden>
+        <h2>Student information</h2>
+        <p>This browser remembers your name and class period for future skill checks. Submitted scores are recorded for your teacher.</p>
+        <form id="identity-form">
+          <label>Class period <select name="period" required><option value="">Choose a period</option><option>B2</option><option>B3</option><option>G3</option><option>G4</option></select></label>
+          <label>First name <input name="firstName" type="text" autocomplete="given-name" maxlength="60" required /></label>
+          <label>Last name <input name="lastName" type="text" autocomplete="family-name" maxlength="60" required /></label>
+          <button type="submit">Continue</button>
+        </form>
+      </section>
+      <section id="dashboard" class="features-work" hidden>
+        <p id="student"></p>
+        <section id="history" aria-label="Previous attempts"></section>
+        <p id="sync-status" role="status"></p>
+        <button id="retry-sync" type="button" hidden>Retry saving</button>
+        <button id="start" type="button">Start check</button>
+      </section>
+      <section id="attempt" class="features-work" hidden>
+        <div class="attempt-heading"><h2>Skill check</h2><span id="timer" aria-label="Elapsed time"></span></div>
+        <p id="problem" class="math"></p>
+        <form id="work-form">
+          <div class="division-scroll" tabindex="0" aria-label="Scrollable division work"><div id="division" class="division math"></div></div>
+          <div class="final-fields">
+            <label>Quotient <input type="text" name="quotient" autocomplete="off" /></label>
+            <label>Remainder <input type="text" name="remainder" autocomplete="off" /></label>
+          </div>
+          <button type="submit">Submit check</button>
+        </form>
+      </section>
+      <section id="result" class="features-work" hidden aria-live="polite">
+        <h2>Check submitted</h2>
+        <p id="result-summary"></p>
+        <p id="result-sync"></p>
+        <button id="continue" type="button">View attempts</button>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261126school1"></script>
+  </body>
+</html>

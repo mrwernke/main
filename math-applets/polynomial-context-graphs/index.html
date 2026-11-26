@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Polynomial Graphs in Context</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="./styles.css?v=20261125p13g" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Polynomial Graphs in Context</h1>
+      <p class="intro">Use each graph to interpret intercepts, extrema, domain, range, and polynomial behavior.</p>
+      <section class="features-work" aria-label="Contextual polynomial graph practice">
+        <div class="graph-pane">
+          <div class="pane-head">
+            <h2>The situation</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <p id="scenario"></p>
+          <svg id="plane" viewBox="0 0 640 440" role="img" aria-labelledby="graph-title graph-description"></svg>
+          <p id="graph-note" class="instruction"></p>
+        </div>
+        <div class="question-pane">
+          <h2>Analyze the graph</h2>
+          <div id="progress" class="instruction" aria-live="polite"></div>
+          <form id="question" novalidate>
+            <h3 id="question-title"></h3>
+            <p id="question-note" class="instruction"></p>
+            <div id="question-fields"></div>
+            <button type="submit" id="check">Check</button>
+            <p id="feedback" class="feedback" role="status"></p>
+          </form>
+          <div id="answers" aria-live="polite"></div>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Example Complete</h2>
+            <button id="try-again" type="button">Try Again</button>
+            <button id="next-example" type="button">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261125p13n"></script>
+    <script type="module" src="../back-navigation.js?v=20261125p13"></script>
+  </body>
+</html>

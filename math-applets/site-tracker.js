@@ -1,10 +1,20 @@
 // Lightweight, privacy-friendly site traffic logger for Wernke Math Resources.
 // Fully compatible with school-issued Chromebooks, Lightspeed Filters, and Canvas iframes.
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_Ced2G9s6EDDVP5ZnXeWYF28HVX-cEOyEU508HJPElzB86R5do4R8i8LgndXTwXdxPQ/exec';
+export const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_Ced2G9s6EDDVP5ZnXeWYF28HVX-cEOyEU508HJPElzB86R5do4R8i8LgndXTwXdxPQ/exec';
+export const CHECKS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvmeAojxpa1Jb0nquUyq_GY0fN2LqqCueLuznq1JeD83pNKNOG9Lvelaoqe7X_VgPRhw/exec';
 const SESSION_GAP_MS = 30 * 60 * 1000; // 30 minutes of inactivity starts a new visit session
 
 let hasLoggedThisPage = false;
+
+export function getDeviceId() {
+  let uid = localStorage.getItem('wmr_uid');
+  if (!uid) {
+    uid = 'u_' + Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 8);
+    localStorage.setItem('wmr_uid', uid);
+  }
+  return uid;
+}
 
 function getDeviceAndBrowser() {
   const ua = navigator.userAgent || '';
@@ -31,11 +41,7 @@ export function logVisit() {
     const now = Date.now();
 
     // 1. Get or create persistent anonymous user ID
-    let uid = localStorage.getItem('wmr_uid');
-    if (!uid) {
-      uid = 'u_' + Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 8);
-      localStorage.setItem('wmr_uid', uid);
-    }
+    const uid = getDeviceId();
 
     // 2. Track visit count (increments after 30 min of inactivity or on first visit)
     const lastSeen = parseInt(localStorage.getItem('wmr_last_seen') || '0', 10);

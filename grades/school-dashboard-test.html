@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test School Dashboard Access</title>
+  <style>
+    body { font: 1rem system-ui, sans-serif; background: #f4f6f8; color: #333; padding: 20px; }
+    main { max-width: 900px; margin: auto; padding: 24px; background: white; border: 1px solid #ddd; border-radius: 8px; }
+    h1 { color: #1b5e20; }
+    label { display: grid; gap: 6px; font-weight: 700; margin: 18px 0; }
+    input { font: inherit; padding: 9px; border: 1px solid #aaa; border-radius: 4px; }
+    button { font: 700 1rem system-ui, sans-serif; padding: 10px 16px; border: 0; border-radius: 4px; color: white; background: #1b5e20; cursor: pointer; }
+    #status:empty { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="./">← Grade processor</a>
+    <h1>Test school dashboard access</h1>
+    <p>Enter the URL of your private school Apps Script test deployment. A separate window will sign in and send a test message back here. No spreadsheet contents are read.</p>
+    <form id="test-form">
+      <label>Private test web-app URL
+        <input id="url" type="url" required autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec">
+      </label>
+      <button type="submit">Test school sign-in</button>
+    </form>
+    <p id="status" role="status"></p>
+  </main>
+  <script>
+    let popup;
+    let nonce;
+    document.getElementById('test-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const status = document.getElementById('status');
+      let url;
+      try {
+        url = new URL(document.getElementById('url').value.trim());
+      } catch {
+        status.textContent = 'Enter a valid Apps Script web-app URL.';
+        return;
+      }
+      if (url.protocol !== 'https:' || url.hostname !== 'script.google.com'
+          || !/^\/(?:a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]+\/exec$/.test(url.pathname)) {
+        status.textContent = 'Enter the HTTPS Apps Script deployment URL ending in /exec.';
+        return;
+      }
+      nonce = crypto.randomUUID();
+      url.searchParams.set('origin', location.origin);
+      url.searchParams.set('nonce', nonce);
+      popup = window.open(url.href, 'school-dashboard-test', 'popup,width=700,height=700');
+      status.textContent = popup
+        ? 'Complete school sign-in in the new window, then return here.'
+        : 'The browser blocked the sign-in window. Allow popups for this page and try again.';
+    });
+    window.addEventListener('message', event => {
+      if (!popup || !/^https:\/\/[a-z0-9-]+-script\.googleusercontent\.com$/i.test(event.origin)
+          || event.source?.top !== popup || event.data?.type !== 'school-dashboard-test'
+          || event.data.nonce !== nonce) return;
+      document.getElementById('status').textContent = 'Success: the private school web app sent its test message to this page.';
+      nonce = null;
+    });
+  </script>
+</body>
+</html>

@@ -1,4 +1,5 @@
-import './site-tracker.js';
+import './site-tracker.js?v=20261126school1';
+import { startPracticeTracking } from './practice-tracker.mjs';
 
 // Source of truth for the nearby-applet links in every applet header.
 // Register new applets here in unit order; each applet page loads this module.
@@ -41,6 +42,7 @@ const unitApplets = [
   {
     name: 'Unit 4: Polynomial Functions',
     applets: [
+      { code: 'P1', title: 'Graph a Polynomial in Standard Form', path: '/math-applets/polynomial-standard-graphing/' },
       { code: 'P2', title: 'Graph a Polynomial in Factored Form', path: '/math-applets/polynomial-factored-graphing/' },
       { code: 'P3', title: 'Polynomial Characteristics', path: '/math-applets/polynomial-features/' },
       { code: 'P4', title: 'Polynomial Degree and End Behavior', path: '/math-applets/polynomial-degree-end-behavior/' },
@@ -52,6 +54,7 @@ const unitApplets = [
       { code: 'P10', title: 'Polynomial Synthetic Division', path: '/math-applets/polynomial-synthetic-division/' },
       { code: 'P11', title: 'Factor and Solve Given a Factor or Zero', path: '/math-applets/polynomial-given-factor/' },
       { code: 'P12', title: 'Solve with Rational Root Theorem', path: '/math-applets/polynomial-rational-roots/' },
+      { code: 'P13–P16', title: 'Polynomial Graphs in Context', path: '/math-applets/polynomial-context-graphs/' },
     ],
   },
 ];
@@ -153,6 +156,7 @@ sharedStyles.href = new URL('./site-chrome.css', import.meta.url).href;
 document.head.append(sharedStyles);
 
 const current = findCurrentApplet();
+if (current) startPracticeTracking(current.applet.code);
 const topbar = document.querySelector('.topbar');
 if (topbar && !topbar.querySelector('.site-applet-nav')) {
   if (current) addNearbyApplets(topbar, current.unit, current.appletIndex);

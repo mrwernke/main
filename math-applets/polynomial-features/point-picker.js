@@ -2,7 +2,9 @@ import { svgElement, xPixel, yPixel } from '../absolute-value-features/graph.js'
 
 const cursorMoves = { ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, -5], ArrowDown: [0, 5] };
 
-export function createPointPicker(plane, dialog, { projectX = xPixel } = {}) {
+export function createPointPicker(plane, dialog, {
+  projectX = xPixel, projectY = yPixel, yTolerance = () => Infinity, yStep = () => 5,
+} = {}) {
   const heading = dialog.querySelector('strong');
   const status = dialog.querySelector('.feedback');
   const markLayer = svgElement('g', { 'aria-hidden': 'true' });
@@ -31,6 +33,21 @@ export function createPointPicker(plane, dialog, { projectX = xPixel } = {}) {
     status.className = 'feedback no';
   }
 
+  function markPoint({ x, y, label, labelOffset }) {
+    const px = projectX(x);
+    const py = projectY(y);
+    const position = `${px},${py}`;
+    if (!markedPositions.has(position)) {
+      markLayer.append(svgElement('circle', { cx: px, cy: py, r: 5, class: 'graph-point-marker' }));
+      markedPositions.add(position);
+    }
+    if (label) {
+      markLayer.append(svgElement('text', {
+        x: px, y: py + labelOffset, 'text-anchor': 'middle', class: 'graph-point-label',
+      }, label));
+    }
+  }
+
   function selectAt(x, y) {
     if (!selection) return false;
     const { remaining, accepts, wrongMessage, onComplete } = selection;
@@ -46,7 +63,8 @@ export function createPointPicker(plane, dialog, { projectX = xPixel } = {}) {
     let nearest;
     let distance = 14;
     for (const point of remaining) {
-      const candidate = Math.hypot(projectX(point.x) - x, yPixel(point.y) - y);
+      if (Math.abs(projectY(point.y) - y) >= yTolerance()) continue;
+      const candidate = Math.hypot(projectX(point.x) - x, projectY(point.y) - y);
       if (candidate <= distance) {
         nearest = point;
         distance = candidate;
@@ -57,19 +75,8 @@ export function createPointPicker(plane, dialog, { projectX = xPixel } = {}) {
       return false;
     }
 
-    const { label, labelOffset } = nearest;
-    const px = projectX(nearest.x);
-    const py = yPixel(nearest.y);
-    const position = `${px},${py}`;
-    if (!markedPositions.has(position)) {
-      markLayer.append(svgElement('circle', { cx: px, cy: py, r: 5, class: 'graph-point-marker' }));
-      markedPositions.add(position);
-    }
-    if (label) {
-      markLayer.append(svgElement('text', {
-        x: px, y: py + labelOffset, 'text-anchor': 'middle', class: 'graph-point-label',
-      }, label));
-    }
+    const { label } = nearest;
+    markPoint(nearest);
     remaining.delete(nearest);
     if (remaining.size === 0) {
       stop();
@@ -91,12 +98,13 @@ export function createPointPicker(plane, dialog, { projectX = xPixel } = {}) {
     if (!selection) return;
     const move = cursorMoves[event.key];
     if (move || event.key === 'Enter' || event.key === ' ') event.preventDefault();
-    if (move) moveCursor(cursorX + move[0], cursorY + move[1]);
+    if (move) moveCursor(cursorX + move[0], cursorY + Math.sign(move[1]) * yStep(event));
     if (event.key === 'Enter' || event.key === ' ') selectAt(cursorX, cursorY);
   });
 
   return {
     get active() { return Boolean(selection); },
+    markPoint,
     selectAt,
     reset() {
       stop();
@@ -112,7 +120,7 @@ export function createPointPicker(plane, dialog, { projectX = xPixel } = {}) {
       plane.tabIndex = 0;
       plane.classList.add('picking-graph-point');
       plane.setAttribute('aria-describedby', `${heading.id} ${status.id}`);
-      moveCursor(projectX(startX), yPixel(0));
+      moveCursor(projectX(startX), projectY(0));
       dialog.show();
       plane.focus();
     },

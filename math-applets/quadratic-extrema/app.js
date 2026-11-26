@@ -259,6 +259,7 @@ $('#final-form').addEventListener('submit', event => {
   freezeStep('#step-final', '#final-feedback');
   $('#complete-statement').textContent = `The vertex is a ${extremumType(item())} of y = ${formatNumber(answer.y)} at x = ${formatNumber(answer.x)}.`;
   $('#complete').hidden = false;
+  document.dispatchEvent(new Event('wmr-practice-complete'));
   $('#complete').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 });
 

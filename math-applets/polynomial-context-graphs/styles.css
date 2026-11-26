@@ -1,0 +1,31 @@
+.features-work { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+#plane { display: block; width: 100%; height: auto; background: white; }
+#plane .tick, #plane .axis-label { fill: #17233d; font-family: "Trebuchet MS", "Segoe UI", sans-serif; font-size: 15px; }
+#plane .axis-label { font-size: 16px; font-weight: 700; }
+#plane .endpoint { fill: #a45138; stroke: white; stroke-width: 1.5; }
+#plane .marked-point { fill: #a45138; stroke: white; stroke-width: 1; }
+#plane .point-label { fill: #17233d; font: 700 12px "Trebuchet MS", "Segoe UI", sans-serif; paint-order: stroke; stroke: white; stroke-width: 3px; stroke-linejoin: round; }
+#question { border: 0; padding: 0; }
+#question-title { margin-bottom: 8px; }
+#question-fields { display: grid; gap: 12px; margin: 14px 0; }
+#question-fields label { display: grid; gap: 5px; }
+#question-fields fieldset { display: grid; gap: 8px; border: 0; padding: 0; margin: 0; min-width: 0; }
+#question-fields legend { font-weight: 700; margin-bottom: 5px; }
+#question-fields .x-intercept-fields { display: flex; flex-wrap: wrap; gap: 8px; }
+#question-fields .x-intercept-fields label { width: 90px; }
+#question-fields .extrema-presence { display: flex; gap: 8px; }
+#question-fields .point-row { display: flex; align-items: center; gap: 6px; }
+#question-fields .point-row input { width: 90px; min-width: 0; }
+#question-fields .choice-options label { display: flex; align-items: flex-start; gap: 8px; }
+#question-fields .choice-options input { width: auto; flex: none; margin-top: 4px; }
+#question-fields .choice-options span { min-width: 0; overflow-wrap: anywhere; }
+#question-fields .choice-options.invalid { outline: 2px solid var(--red); outline-offset: 4px; }
+#question-fields .interval-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+#question-fields .interval-row input { width: 75px; min-width: 0; }
+#question-fields .interval-row select { width: 55px; }
+#question-fields input { width: min(100%, 210px); }
+#question-fields select { width: 100%; max-width: 100%; padding: 7px; }
+#question-fields .invalid { border-color: var(--red); background: #fff0ee; }
+#answers p { padding: 8px 0; border-top: 1px solid var(--line); }
+#answers strong { color: var(--green); }
+@media (max-width: 900px) { .features-work { grid-template-columns: 1fr; } }

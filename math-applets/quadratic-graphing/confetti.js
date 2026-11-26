@@ -3,8 +3,10 @@ confettiCanvas.className = 'confetti';
 confettiCanvas.setAttribute('aria-hidden', 'true');
 confettiCanvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999';
 let confettiBits = [], confettiTimer = null;
+let completionReported = false;
 
-export function clearConfetti() {
+export function clearConfetti(resetCompletion = true) {
+  if (resetCompletion) completionReported = false;
   if (confettiTimer !== null) cancelAnimationFrame(confettiTimer);
   confettiTimer = null;
   confettiBits = [];
@@ -12,7 +14,9 @@ export function clearConfetti() {
 }
 
 export function fireConfetti(count) {
-  clearConfetti();
+  if (!completionReported) document.dispatchEvent(new Event('wmr-practice-complete'));
+  completionReported = true;
+  clearConfetti(false);
   confettiCanvas.width = innerWidth;
   confettiCanvas.height = innerHeight;
   document.body.appendChild(confettiCanvas);
@@ -50,5 +54,5 @@ function confettiTick() {
     ctx.restore();
   });
   if (confettiBits.length) confettiTimer = requestAnimationFrame(confettiTick);
-  else clearConfetti();
+  else clearConfetti(false);
 }

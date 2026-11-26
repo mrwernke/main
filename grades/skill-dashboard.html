@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skill Practice and Checks</title>
+  <style>
+    body { font: 1rem system-ui, sans-serif; background: #f4f6f8; color: #333; padding: 20px; }
+    main { max-width: 1500px; margin: auto; padding: 24px; background: white; border: 1px solid #ddd; border-radius: 8px; }
+    h1 { color: #1b5e20; }
+    label { display: inline-grid; gap: 6px; font-weight: 700; margin: 8px 12px 8px 0; }
+    input, select, button { font: inherit; padding: 9px; border: 1px solid #aaa; border-radius: 4px; }
+    input { width: min(600px, 80vw); }
+    button { font-weight: 700; color: white; background: #1b5e20; cursor: pointer; }
+    .table-wrap { overflow-x: auto; }
+    details { margin: 18px 0; border: 1px solid #ddd; border-radius: 6px; padding: 12px; }
+    summary { font-weight: 700; cursor: pointer; }
+    .roster-form { border-top: 1px solid #ddd; padding-top: 8px; margin-top: 12px; }
+    .roster-form input { width: 180px; }
+    table { border-collapse: collapse; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; min-width: 110px; }
+    th { background: #e8f5e9; color: #1b5e20; }
+    th:first-child, td:first-child { position: sticky; left: 0; text-align: left; min-width: 180px; background: #fff; }
+    th:first-child { background: #e8f5e9; }
+    small { display: block; color: #555; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="./">← Grade processor</a>
+    <h1>Skill practice and checks</h1>
+    <p>Sign in with the school account that owns the private dashboard deployment. Student records are not stored on this page.</p>
+    <form id="connect">
+      <label>Private school dashboard web-app URL
+        <input id="url" type="url" required autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec">
+      </label>
+      <button>Sign in and load</button>
+    </form>
+    <p id="status" role="status">No records loaded.</p>
+    <label>Period <select id="period"><option value="ALL">All users</option><option selected>B2</option><option>B3</option><option>G3</option><option>G4</option></select></label>
+    <label>Unit <select id="unit"><option value="2">Unit 2</option><option value="3">Unit 3</option><option value="4" selected>Unit 4</option></select></label>
+    <details id="roster" hidden>
+      <summary>Manage students and browser IDs</summary>
+      <p>Corrections apply to the dashboard, not to the student's browser. Merges are manual and can be undone. Original check and practice records are not changed.</p>
+      <form id="edit-student" class="roster-form">
+        <h2>Edit name or period</h2>
+        <label>Student or browser <select id="edit-id" required></select></label>
+        <label>First name <input id="first-name" maxlength="60" required></label>
+        <label>Last name <input id="last-name" maxlength="60" required></label>
+        <label>Period <select id="edit-period" required><option value="">Choose</option><option>B2</option><option>B3</option><option>G3</option><option>G4</option></select></label>
+        <button>Save correction</button>
+      </form>
+      <form id="merge-student" class="roster-form">
+        <h2>Merge students</h2>
+        <label>Keep this student <select id="merge-target" required></select></label>
+        <label>Merge this student into them <select id="merge-source" required></select></label>
+        <button>Merge</button>
+      </form>
+      <form id="unmerge-student" class="roster-form">
+        <h2>Separate a browser</h2>
+        <label>Browser to separate <select id="unmerge-id" required></select></label>
+        <button>Separate</button>
+      </form>
+    </details>
+    <p>All users includes browser IDs seen in school practice or checks; visits recorded only by the separate personal tracker are not included. Practice shows distinct preset examples completed out of the total available. Custom problems and older records without an example ID are not counted. FT3 has no completion check, so its count is unavailable.</p>
+    <div class="table-wrap"><table id="results"></table></div>
+  </main>
+  <script type="module" src="./skill-dashboard.js"></script>
+</body>
+</html>

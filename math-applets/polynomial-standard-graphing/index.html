@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+    <title>Graph a Polynomial in Standard Form</title>
+    <link rel="stylesheet" href="../quadratic-graphing/styles.css" />
+    <link rel="stylesheet" href="../absolute-value-features/styles.css?v=20261120" />
+    <link rel="stylesheet" href="../polynomial-features/styles.css" />
+    <link rel="stylesheet" href="../polynomial-synthetic-division/styles.css?v=20261123h" />
+    <link rel="stylesheet" href="./styles.css?v=20261125p1g" />
+  </head>
+  <body data-family="polynomial">
+    <main>
+      <div class="topbar"><a class="back" href="../../">← Wernke's Math Resources</a><span class="eyebrow">Interactive math applet</span></div>
+      <h1>Graph a Polynomial in Standard Form</h1>
+      <section class="features-work" aria-label="Polynomial graphing practice">
+        <div class="graph-pane">
+          <div class="pane-head">
+            <h2>The graph</h2>
+            <label class="picker-label">Example <select id="example-picker" aria-label="Choose an example"></select></label>
+          </div>
+          <svg id="plane" viewBox="0 0 520 520" role="img" aria-labelledby="graph-title"></svg>
+          <p id="ends-key" class="instruction" hidden>Side arrows show the general end behavior, not exact points on the curve.</p>
+          <dialog class="graph-point-dialog" id="plot-dialog" aria-labelledby="plot-title">
+            <strong id="plot-title"></strong>
+            <p>Click the graph, or move with the arrow keys and press Enter. Up and down move one y-unit; hold Shift to move ten.</p>
+            <p class="feedback" id="plot-status" aria-live="polite"></p>
+          </dialog>
+          <div id="sketch-controls" hidden>
+            <p>Click anywhere between two neighboring points to reveal that part of the curve, or use the buttons below.</p>
+            <div id="segment-buttons"></div>
+            <p id="sketch-feedback" class="feedback" role="status"></p>
+          </div>
+        </div>
+        <div class="question-pane">
+          <h2>Build the graph</h2>
+          <p id="equation" class="math"></p>
+          <div id="feature-summary" aria-live="polite"></div>
+          <form id="question" novalidate>
+            <p id="question-title" class="fq-label"></p>
+            <p id="question-note" class="instruction"></p>
+            <div id="question-fields"></div>
+            <div id="calculation"></div>
+            <button type="submit" id="check-button">Check</button>
+            <p id="feedback" class="feedback" role="status"></p>
+          </form>
+          <section id="table-section" hidden>
+            <h3>Table of values</h3>
+            <p class="instruction">Start with the y-intercept at 0, then work outward one integer at a time on either side. You can plot a value as soon as you find it.</p>
+            <table>
+              <thead><tr><th scope="col">x</th><th scope="col">f(x)</th><th scope="col">Graph</th></tr></thead>
+              <tbody id="table-body"></tbody>
+            </table>
+            <div id="table-controls" hidden>
+              <label>How would you like to evaluate the next point?
+                <select id="method">
+                  <option value="direct">Direct substitution</option>
+                  <option value="synthetic">Synthetic substitution</option>
+                </select>
+              </label>
+              <label>Next x-value <select id="next-x"></select></label>
+              <button type="button" id="calculate">Calculate</button>
+            </div>
+            <button type="button" id="sketch" hidden>Ready to sketch</button>
+            <p id="table-feedback" class="feedback" role="status"></p>
+          </section>
+          <section id="complete" hidden aria-live="polite">
+            <h2>Graph Complete</h2>
+            <button id="try-again" type="button">Try Again</button>
+            <button id="next-example" type="button">Next Example</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js?v=20261125p1g"></script>
+    <script type="module" src="../back-navigation.js?v=20261125p1"></script>
+  </body>
+</html>

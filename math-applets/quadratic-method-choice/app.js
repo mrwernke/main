@@ -40,6 +40,7 @@ function chooseMethod(button, method) {
   setFeedback(`Correct. ${explanation(problems[index], method)}`, true);
   $('#complete-text').textContent = `${functionText(problems[index])} can be solved efficiently by ${methods.find(option => option.id === method).label.toLowerCase()}.`;
   $('#complete').hidden = false;
+  document.dispatchEvent(new Event('wmr-practice-complete'));
 }
 
 function buildPicker() {
