@@ -4,7 +4,7 @@ This project is a standalone SAT Math Prep application. It includes a built-in b
 
 ## Prerequisites
 
-1. Install Node.js 20+.
+1. Install Node.js 24+.
 2. In the project directory, install dependencies:
 
 ```bash
